@@ -1,0 +1,526 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html ng-app="myApp">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>BankPro | Vendor Info</title>
+<link rel="stylesheet" href="/resources/public/css/style.default.css" type="text/css" />
+<link rel="stylesheet" type="text/css" href="/resources/public/css/main.css">
+<link href="/resources/public/css/bootstrap.min.css" rel="stylesheet">
+<link href="/resources/public/css/font-awesome.css" rel="stylesheet">
+			<script type="text/javascript" src="/resources/public/js/plugins/jquery-1.11.3.min.js"></script>
+			<script type="text/javascript"	src="/resources/public/js/plugins/jquery-1.7.min.js"></script>
+			<script type="text/javascript"	src="/resources/public/js/plugins/jquery-ui-1.8.16.custom.min.js"></script>
+			<script type="text/javascript"	src="/resources/public/js/plugins/jquery.cookie.js"></script>
+			<script type="text/javascript"	src="/resources/public/js/custom/general.js"></script>
+			<script type="text/javascript"  src="/resources/public/js/custom/index.js"></script>
+			<script src="/resources/public/js/bootstrap.min.js"></script>
+            <script type="text/javascript"	src="/resources/public/js/plugins/jquery.smartWizard-2.0.min.js"></script>
+            <script type="text/javascript" src="/resources/public/js/plugins/jquery.colorbox-min.js"></script>
+            
+<script type="text/javascript" src="/resources/public/js/custom/angular.js"></script>
+<script type="text/javascript" src="/resources/public/js/custom/angular-cookies.min.js"></script>
+<script type="text/javascript" src="/resources/public/js/angular-file-upload.js"></script>
+<script type="text/javascript" src="/resources/public/js/vendorInfo.js"></script>
+
+<!-- Add header.js to get user access permissions -->
+<script type="text/javascript" src="/resources/public/js/header.js"></script>
+
+<script type="text/javascript">
+	jQuery(document).ready(function() {
+		// Smart Wizard     
+		jQuery('#wizard').smartWizard({
+			onFinish : onFinishCallback
+		});
+		jQuery('#wizard2').smartWizard({
+			onFinish : onFinishCallback
+		});
+		jQuery('#wizard3').smartWizard({
+			onFinish : onFinishCallback
+		});
+		jQuery('#wizard4').smartWizard({
+			onFinish : onFinishCallback
+		});
+
+		function onFinishCallback() {
+//			alert('Finish Clicked');
+		//	form.submit();
+		}
+
+		jQuery(".inline").colorbox({
+			inline : true,
+			width : '60%',
+			height : '500px'
+		});
+
+	//	jQuery('select, input:checkbox').uniform();
+	});
+</script>
+</head>
+
+<body class="withvernav" ng-controller="newVendorCntrl" id="createVendorApp">
+
+<div class="bodywrapper">
+
+<div ng-include="'topheader.html'"></div>
+<script>
+	setTimeout( function() {
+ 		$('#vendor').addClass('current')
+	} ,3000);
+</script>
+
+    
+    <div class="vernav2 iconmenu" ng-controller="UserRoleCntrl">
+    	<ul>
+        	<li class="current"><a href="#formsub" class="editor">Vendor </a>
+            	<span class="arrow"></span>
+            	<ul id="formsub">
+            	<li class="current"><a href="vendorInfo.html">Vendor List</a></li>
+                <li ng-if="vm.userRoleList.roleDesciption.indexOf('Vendor Approve') >= 0"><a href="forms.html">Approve</a></li>
+                </ul>
+            </li>
+            <li ng-if="vm.userRoleList.roleDesciption.indexOf('Employee') >= 0"><a href="employee.html" class="">Employee</a></li>
+        </ul>
+        <a class="togglemenu"></a>
+        <br /><br />
+    </div><!--leftmenu-->
+        
+    <div class="centercontent">
+    
+        <div class="pageheader">
+           
+            <div class="pageheader_edit">
+                <h1 class="pagetitle">Add Vendor</h1>
+            </div>
+            <div class="clearphone"></div> 
+            <div class="search pull_right">
+                <form action="#" method="post">
+                    <input type="text" name="keyword" id="keyword" value="Search" />
+                    <button class="submitbutton"></button>
+                </form>
+            </div>
+
+           
+        </div><!--pageheader-->
+        <div class="clearfix"></div>
+        <hr>
+				<form class="form-inline" enctype=”multipart/form-data” ng-controller="FileUploadCtrl">
+	
+					<div id="contentwrapper" class="contentwrapper pt-0">
+						<div id="tabbed" class="subcontent">
+
+							<!-- START OF DEFAULT WIZARD -->
+
+							<div id="wizard" class="wizard">
+								<br />
+								<ul class="hormenu">
+									<li><a href="#wiz1step1"> <span class="h2">Step
+												1</span> <span class="dot"><span></span></span> <span class="label">Basic Information</span>
+									</a></li>
+									<li><a href="#wiz1step2"> <span class="h2">Step
+												2</span> <span class="dot"><span></span></span> <span class="label">Address	and contact</span>
+									</a></li>
+									<li><a href="#wiz1step3"> <span class="h2">Step
+												3</span> <span class="dot"><span></span></span> <span class="label">Documents</span>
+									</a></li>
+								</ul>
+
+								<br clear="all" />
+								<br />
+								<br />
+
+								<div id="wiz1step1" class="formwiz">
+									<div class="contenttitle2 ml-15">
+										<h3>Step 1: Basic Information</h3>
+									</div>
+
+
+									<div class="row">
+										<div class="form-group col-md-6">
+											<label for="" class="col-sm-4">Supplier Name</label> <input
+												type="text" ng-focus="focus('suplierName')"
+												ng-model="ven.suplierName" name="suplierName" id="suplierName"
+												class="form-control col-md-7">
+										</div>
+
+										<!-- <div class="form-group col-md-6">
+											<label for="" class="col-md-4">Supplier Number</label>
+											<input	type="text" name="sup"  ></input>
+											 <input	type="text" ng-focus="focus('suplierNo')" ng-model="ven.suplierNo"
+												name="suplierNo" id="suplierNo" class="form-control col-md-7">
+										</div> -->
+										<div class="form-group col-md-6">
+											<label for="" class="col-md-4">Payment Name</label>
+											 <input	type="text" ng-focus="focus('paymentName')"	ng-model="ven.paymentName" 
+											 name="paymentName" id="paymentName"
+												class="form-control col-md-7">
+										</div>
+
+										<div class="form-group col-md-6">
+											<label for="" class="col-md-4">Pan Number</label>
+											 <input	type="text" ng-focus="focus('panNumber')" ng-model="ven.panNumber"
+												name="panNumber" id="panNumber" class="form-control pan_w col-md-7">
+										</div>
+
+
+										  <div class="form-group col-md-6">
+                                            <label for="" class="col-md-4">Vendor Type</label>
+                                            
+                                            	<select class="form-control form_select" name="vendorType" ng-model="ven.vendorType" >
+													<option ng-repeat="vendorTypeObj in vm.vendorType" value="{{vendorTypeObj.vendorTypeName}}">{{vendorTypeObj.vendorTypeName}}</option>
+												</select>
+                                            
+                                          </div>
+                                          <div class="form-group col-md-6">
+                                            <label for="" class="col-md-4">Company Type</label>
+                                            
+                                            <select class="form-control form_select" name="companyType" ng-model="ven.companyType" >
+													<option ng-repeat="companyTypeObj in vm.companyType" value="{{companyTypeObj.compName}}">{{companyTypeObj.compName}}</option>
+											</select>
+                                            
+                                          </div>
+
+										<div class="form-group col-md-6">
+											<label for="" class="col-md-4">Payment Method</label>
+											
+											<select class="form-control form_select" name="paymentMethod" ng-model="ven.paymentMethod" >
+													<option ng-repeat="payMethodObj in vm.paymentMethod" value="{{payMethodObj.paymentMethodName}}">{{payMethodObj.paymentMethodName}}</option>
+											</select>
+											
+										</div>
+
+										<div class="form-group col-md-6">
+											<label for="" class="col-md-4">Payment Terms</label>
+											
+											 <select class="form-control form_select" name="paymentTerm" ng-model="ven.paymentTerm" >
+													<option ng-repeat="termObj in vm.paymentTerm" value="{{termObj.termName}}">{{termObj.termName}}</option>
+											</select>
+											
+										</div>
+										
+										 <div class="col-md-12">
+                                            <div class="contenttitle2 ml-15">
+                                              <h3> Bank Information</h3>
+                                            </div>
+                                          </div>
+
+										<div class="form-group col-md-6">
+											<label for="" class="col-md-4">Bank Name</label>
+											 <input	type="text" ng-focus="focus('bankName')" ng-model="ven.bankName"
+											  name="bankName" id="bankName" class="form-control col-md-7">
+										</div>
+
+										<div class="form-group col-md-6">
+											<label for="" class="col-md-4">Branch Address</label> 
+											<input	type="text" ng-focus="focus('branchAddress')"
+												ng-model="ven.branchAddress" name="branchAddress" id="branchAddress"	class="form-control col-md-7">
+										</div>
+
+										<div class="form-group col-md-6">
+											<label for="" class="col-md-4">Account Number</label> 
+											<input	type="text" ng-focus="focus('accountNo')" ng-model="ven.accountNo"
+												name="accountNo" id="accountNo" class="form-control col-md-7">
+										</div>
+
+										<div class="form-group col-md-6">
+											<label for="" class="col-md-4">Account Name</label> 
+											<input type="text" ng-focus="focus('accName')"
+												ng-model="ven.accName" name="accName" id="accNameee" class="form-control col-md-7">
+										</div>
+
+										<div class="form-group col-md-6">
+											<label for="" class="col-md-4">Currency</label>
+											 <input	type="text" ng-focus="focus('currency')" ng-model="ven.currency"
+												name="currency" id="currency" class="form-control col-md-7">
+										</div>
+
+										<div class="form-group col-md-6">
+											<label for="" class="col-md-4">MMID </label> 
+											<input	type="text" ng-focus="focus('mID')" ng-model="ven.mID"
+												name="mID" id="mID" class="form-control col-md-7 pan_w">
+										</div>
+										
+										<div class="form-group col-md-6">
+                                            <label for="" class="col-md-4">IFSC </label>
+                                            <input type="text"  ng-focus="focus('ifscCode')" ng-model="ven.ifscCode"
+												name="ifscCode" id="ifscCode" class="form-control col-md-7 pan_w" id="" placeholder="">
+                                          </div>
+
+									</div>
+
+								</div>
+								<!--#wiz1step1-->
+
+								<div id="wiz1step2" class="formwiz">
+									<div class="contenttitle2 ml-15">
+										<h3>Step 2: Address and Contact</h3>
+									</div>
+
+									<div class="row">
+
+										<div class="form-group col-md-6">
+											<label for="" class="col-md-4">Select Country</label> 
+											
+											<select	ng-change="loadStateName(ven.countryID)"  
+											                     class="form-control" ng-model="ven.countryID" style="width: 165px;">
+												<option value="">-- Select Country --</option>
+												<option ng-repeat="cntryObj in vm.countriesData" value="{{cntryObj.countryID}}">{{cntryObj.countryName}}</option>
+											</select>
+								
+										</div>
+
+										<div class="form-group col-md-6">
+											<label for="" class="col-md-4">State</label> 											
+											<select	class="form-control" ng-model="ven.stateId" style="width: 165px;">
+												<option value="">-- Select state --</option>
+												<option ng-repeat="stateObj in vm.stateList" value="{{stateObj.stateId}}">{{stateObj.stateName}}</option>
+											</select>
+											
+										</div>
+
+										<div class="form-group col-md-6">
+											<label for="" class="col-md-4">City</label> 
+											<input	type="text" ng-focus="focus('citiName')" ng-model="ven.citiName"
+												name="citiName" id="citiName" class="form-control col-md-7"
+												placeholder="">
+										</div>
+
+										<div class="form-group col-md-6">
+											<label for="" class="col-md-4">Phone Number</label>
+											 <input	type="text" ng-focus="focus('phnNo')" ng-model="ven.phnNo"
+												name="phnNo" id="phnNooo" class="form-control col-md-7 pan_w">
+										</div>
+
+										<div class="form-group col-md-6">
+											<label for="" class="col-md-4">First Name</label> 
+											<input ng-focus="focus('firstName')" ng-model="ven.firstName"
+												name="firstName" id="firstNameee" class="form-control col-md-7">
+										</div>
+
+										<div class="form-group col-md-6">
+											<label for="" class="col-md-4">Last Name</label> 
+											<input	ng-focus="focus('lastName')" ng-model="ven.lastName"
+												name="lastName" id="lastNameeee" class="form-control col-md-7">
+										</div>
+										<!--  <div class="form-group col-md-6">
+                                            <label for="" class="col-md-4">Company Type</label>
+                                            <select class="form-control form_select">
+                                              <option>Select Type</option>
+                                              <option>2</option>
+                                              <option>3</option>
+                                            </select>
+                                          </div> -->
+										
+										<div class="form-group col-md-6">
+											<label for="" class="col-md-4">Primary Email ID</label>
+											 <input	ng-focus="focus('primEmailId')" ng-model="ven.primEmailId"
+												name="primEmailId" id="primEmailId" class="form-control col-md-7">
+										</div>
+
+										<div class="form-group col-md-6">
+											<label for="" class="col-md-4">Email ID</label>
+											 <input ng-focus="focus('email')" ng-model="ven.email"
+												name="email" id="emailll" class="form-control col-md-7">
+										</div>
+
+										<!-- <div class="form-group col-md-6">
+											<label for="" class="col-md-4">Address Name</label>
+											 <input	ng-focus="focus('addName')" ng-model="vn.addName"
+												name="addName" id="addNameeee" class="form-control col-md-7">
+										</div> -->
+
+										<div class="form-group col-md-6">
+											<label for="" class="col-md-4">Pin Code</label> 
+											<input	ng-focus="focus('pinCode')" ng-model="ven.pinCode"
+												name="pinCode" id="pinCode" class="form-control col-md-7 pan_w">
+										</div>
+
+										<div class="form-group col-md-6">
+											<label for="" class="col-md-4">Fax Number</label>
+											 <input ng-focus="focus('faxNumber')" ng-model="ven.faxNumber"
+												name="faxNumber" id="faxNumber" class="form-control col-md-7">
+										</div>
+
+										<div class="form-group col-md-6">
+											<label for="" class="col-md-4">Address Line 1</label>
+											<textarea ng-focus="focus('addressLine1')" ng-model="ven.addressLine1"
+												name="addressLine1" id="addressLine1" class="form-control" rows="2" ></textarea>
+										</div>
+										<div class="form-group col-md-6">
+											<label for="" class="col-md-4">Address Line 2</label>
+											<textarea ng-focus="focus('addressLine2')" ng-model="ven.addressLine2"
+												name="addressLine2" id="addressLine2" class="form-control" rows="2"></textarea>
+										</div>
+										<div class="form-group col-md-6">
+											<label for="" class="col-md-4">Address Line 3</label>
+											<textarea ng-focus="focus('addressLine3')" ng-model="ven.addressLine3"
+												name="addressLine3" id="addressLine3" class="form-control" rows="2"></textarea>
+										</div>
+
+									</div>
+
+								</div>
+								<!--#wiz1step2-->
+
+								<div id="wiz1step3">
+									<div class="contenttitle2 ml-15">
+										<h3>Step 3: Documents</h3>
+									</div>								
+
+
+									<div class="par terms">
+										<div  class="row">
+											<div class="form-group col-md-6">
+												<label for="" class="col-md-4">Address Proof</label> 
+												<input type="file"	ng-click="setAttributeForFileUpload('addressProof')"
+													id="Debit" nv-file-select="" uploader="uploader">
+											</div>
+
+											<div class="form-group col-md-6">
+												<label for="" class="col-md-3">PAN Card</label>
+												<input type="file"	ng-click="setAttributeForFileUpload('panCard')"
+													id="Debit" nv-file-select="" uploader="uploader">
+											</div>
+
+											<div class="form-group col-md-6">
+												<label for="" class="col-md-4">Cancelled Cheque</label>
+												<input type="file"	ng-click="setAttributeForFileUpload('cancelCheque')"
+													id="Debit" nv-file-select="" uploader="uploader">
+											</div>
+
+											<div class="col-md-12">
+												<div id="panCardDoc-{{ven.vendID}}"
+													ng-if="ven.panCardDoc != '' && ven.panCardDoc != null"
+													class="list_add pull-left w100">
+													<div class="col-md-5 col-sm-2 col-xs-5">Pan Card</div>
+													<a target="_blank"
+														href="https://paymentvista.com:8443/resources/public/tmpFiles/{{ven.panCardDoc}}">
+														<div class="col-md-5 col-sm-2 col-xs-5">{{ven.panCardDoc}}</div>
+													</a>
+													<div class="col-md-2 col-sm-2 col-xs-2">
+														<button type="button"
+															ng-click="deleteColumnValueOfDocOfOrg('panCardDoc',ven.vendID)"
+															title="Remove this row">X</button>
+													</div>
+												</div>
+
+												<div id="addressProofDoc-{{ven.vendID}}" ng-if="ven.addressProof != '' && ven.addressProof != null"
+													class="list_add pull-left w100">
+													<div class="col-md-5 col-sm-5 col-xs-5">Address Proof</div>
+													<div class="col-md-5 col-sm-5 col-xs-5">
+														<a target="_blank"
+															href="https://paymentvista.com:8443/resources/public/tmpFiles/{{ven.addressProof}}">
+															{{ven.addressProof}}</a>
+													</div>
+													<div class="col-md-2 col-sm-2 col-xs-2">
+														<button type="button"
+															ng-click="deleteColumnValueOfDocOfOrg('addressProofDoc',ven.vendID)"
+															title="Remove this row">X</button>
+													</div>
+												</div>
+												
+												<div id="cencelChequeDoc-{{ven.vendID}}"
+													ng-if="ven.cancelCheque != '' && ven.cancelCheque != null"
+													class="list_add pull-left w100">
+													<div class="col-md-5 col-sm-5 col-xs-5">Cancelled Cheque</div>
+													<div class="col-md-5 col-sm-5 col-xs-5">
+														<a target="_blank"
+															href="https://paymentvista.com:8443/resources/public/tmpFiles/{{ven.cancelCheque}}">
+															{{ven.cancelCheque}}</a>
+													</div>
+													<div class="col-md-2 col-sm-2 col-xs-2">
+														<button type="button"
+															ng-click="deleteColumnValueOfDocOfOrg('cencelChequeDoc',ven.vendID)"
+															title="Remove this row">X</button>
+													</div>
+												</div>
+											</div>
+
+									   <div class="col-md-12">
+										 <div class="col-md-12 setting_pad">
+											<div class="col-sm-12 col-xs-12 otherdoc_set p10">
+												<label for="" class="control-label text-left"><b>Add Files</b></label>
+												<div class="clearfix"></div>
+												<div class="col-md-3 pl-0">
+													<input type="text" name="manuallyGivenFileName"	class="form-control mb-10-m w100"
+														ng-model="addFiles.manuallyGivenFileName"	placeholder="Enter File Name">
+												</div>
+												<div class="form-group col-sm-3" >
+													<input type="file" id="fileSelected" ng-click="setAttributeForFileUpload('manualFileSelected')"
+														nv-file-select="" uploader="uploader" class="w100">
+												</div>
+												<button type="button" ng-click="addManualFileForVendor(addFiles)"  
+												        class="stdbtn btn_black btn-xs addbtn mb-10-m">Add</button>
+												<div class="row">
+													<div class="col-md-12">
+														<div id="doc-view-{{docView.docInfoId}}" ng-repeat="docView in DocViewObjList"
+															class="row list_add">
+															<div class="col-md-5 col-sm-2 col-xs-5">{{docView.manuallyGivenFileName}}</div>
+															<a target="_blank"
+																href="https://paymentvista.com:8443/resources/public/tmpFiles/{{docView.fileName}}">
+																<div class="col-md-5 col-sm-2 col-xs-5">{{docView.fileName}}</div>
+															</a>
+															<div class="col-md-2 col-sm-2 col-xs-2">
+																<button type="button"
+																	ng-click="deleteDocInfo(docView.docInfoId)"  title="Remove this row">X</button>
+															</div>
+														</div>
+													</div>
+
+												</div>
+											</div>
+										</div> 
+									</div>
+
+                                       <div class="col-md-12">
+                                        <p><input type="checkbox" type="checkbox"  ng-model="ven.permissionFlag" name="permissionFlag"/>  
+                                        I confirm that this vendor has given me permission to send electronic payments to this bank
+                                         account.through Enbiz payment system. </p>
+                                        
+                                       </div>
+                                        
+
+                                        <div class="col-md-12 hidden_div">
+                                            <div class="col-md-12 ">
+                                           <!--  <a href="#" class="buttonPrevious">Previous</a> -->
+                                             <button type="button" ng-if="venSaveFlag == true"
+                                            ng-click="createVendorInfo(ven)" value="Finish" class="pull-right">Finish </button>
+                                             <button type="button" ng-if="venUpdateFlag == true"
+                                            ng-click="updateVendorInfo(ven)" class="pull-right">update </button>
+                                            </div>
+                                        </div>
+
+
+                                   </div>
+
+									</div>
+								</div>
+							</div>
+							<!--#wiz1step3-->
+
+						</div>
+						<!--#wizard-->
+
+						<!-- END OF DEFAULT WIZARD -->
+
+					</div>
+					<!-- #tabbed -->
+				</form></div><!--contentwrapper-->
+                       
+        <br clear="all" />
+        
+	</div><!-- centercontent -->
+   
+    </div><!--bodywrapper-->
+
+<!--   
+<script type="text/javascript"
+		data-main="/resources/public/js/run-vendorInfo"	src="/resources/bower_components/requirejs/require.js"></script> -->
+
+<style>
+.pageheader {border-bottom:0;}
+</style>
+</body>
+
+</html>

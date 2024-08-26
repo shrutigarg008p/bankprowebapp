@@ -1,0 +1,1244 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html ng-app="myApp">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>BankPro Registration</title>
+<link rel="stylesheet" href="/resources/public/css/style.default.css" type="text/css" />
+<link rel="stylesheet" type="text/css" href="/resources/public/css/main.css">
+
+<link href="/resources/public/css/bootstrap.min.css" rel="stylesheet">
+<link href="/resources/public/css/font-awesome.css" rel="stylesheet">
+
+<script type="text/javascript" src="/resources/public/js/plugins/jquery-1.12.1.min.js"></script>
+<script type="text/javascript" src="/resources/public/js/plugins/jquery-1.7.min.js"></script>
+<script type="text/javascript" src="/resources/public/js/plugins/jquery-ui-1.8.16.custom.min.js"></script>
+<script type="text/javascript" src="/resources/public/js/plugins/jquery.cookie.js"></script>
+<script type="text/javascript" src="/resources/public/js/plugins/jquery.uniform.min.js"></script>
+<!-- <script type="text/javascript" src="/resources/public/js/custom/general.js"></script> -->
+<script type="text/javascript" src="/resources/public/js/custom/index.js"></script>
+
+<script type="text/javascript" src="/resources/public/js/custom/pickList.js"></script>
+<script src="/resources/public/js/bootstrap.min.js"></script> 
+<script type="text/javascript" src="/resources/public/js/custom/angular.js"></script>
+<script type="text/javascript" src="/resources/public/js/angular-file-upload.js"></script>
+<script type="text/javascript" src="/resources/public/js/invoice.js"></script>
+
+
+<!-- datepicker -->
+<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>  
+
+<!-- Add header.js to get user access permissions -->
+<script type="text/javascript" src="/resources/public/js/header.js"></script>
+
+
+</head>
+
+<body ng-controller="invoiceApprovalCntrl" class="withvernav">
+
+<div class="bodywrapper">
+	
+	<div id="msgTimeOut" ng-if= "successMsg != ''" >
+		<p class="bg_success">
+			<i class="glyphicon glyphicon-ok"></i> <span><b>SUCCESS!</b></span><br>
+				{{successMsg}}
+		</p>
+		<script>
+			setTimeout(function() {
+				error = '';
+				$('#msgTimeOut').hide();
+			}, 10000);
+		</script>
+	</div>
+	
+	<div id="msgTimeOut" ng-if="error != ''" style="display:none;">
+		<p class="bg_error">
+			<i class="glyphicon glyphicon-remove"></i> <span><b>ERROR!</b></span><br>
+				{{error}}
+		</p>
+		<script>			
+			setTimeout(function() {
+				error = '';
+					$('#msgTimeOut').hide();
+			}, 10000);
+		</script>
+	</div>
+	
+	
+<div ng-include="'topheader.html'"></div>
+<script>
+	setTimeout( function() {
+ 		$('#create-invoice1').addClass('current')
+	} ,3000);
+</script>
+	
+
+	<div class="vernav2 iconmenu" ng-controller="UserRoleCntrl">
+		<ul>
+			<li li ng-if="(vm.userRoleList.roleDesciption.indexOf('Admin') >= 0) || (vm.userRoleList.roleDesciption.indexOf('View Invoice') >= 0)"><a href="invoice-list.html" class="editor">View </a></li>
+			<li class="current" ng-if="(vm.userRoleList.roleDesciption.indexOf('Admin') >= 0) || (vm.userRoleList.roleDesciption.indexOf('Approve Invoice') >= 0)"><a href="approve-invoice.html" class="">Approve Invoices</a></li>
+		</ul>
+		<a class="togglemenu"></a> <br />
+		<br />
+	</div>
+		<!--leftmenu-->
+
+		<div class="centercontent">
+
+			<div class="pageheader">
+
+				<div class="pageheader_edit">
+					<h1 class="pagetitle">Approve Invoices</h1>
+				</div>
+				<div class="clearphone"></div>
+				<div class="search pull_right">
+					<form action="#" method="post">
+						<input type="text" name="keyword" id="keyword" value="Search" />
+						<button class="submitbutton"></button>
+					</form>
+				</div>
+
+
+			</div>
+			<!--pageheader-->
+			<div class="clearfix"></div>
+
+
+			<div class="col-md-12">
+
+				<!-- Nav tabs -->
+				<ul class="nav nav-tabs" role="tablist">
+					<li role="presentation" class="active"><a href="#approve"
+						aria-controls="home" role="tab" data-toggle="tab">Approve</a></li>
+					<li role="presentation"><a href="#approvalHistory"
+						aria-controls="profile" role="tab" data-toggle="tab" ng-click="invoiceAppHistory()" >Approval History</a></li>
+				</ul>
+
+				<!-- Tab panes -->
+				<div class="tab-content">
+					<div role="tabpanel" class="tab-pane active" id="approve">
+						
+						<form name="form" id="invoiceApprove" class="form-horizontal">
+						<div class="main_search">
+							<div class="col-md-4 search_by">
+								<label for=""><b>Search by Date:</b></label><br> 
+								From <input type="text" ng-model="invc.dateFrom" name="datePickFrom" id="datePickFrom" /> &nbsp; &nbsp; To: &nbsp;<input type="text" ng-model="invc.dateTo" name="datePickTo" id="datePickTo" />
+								<!-- From <input type="text" ng-model="invc.startDate" name="datePickFrom" id="datePickFrom" /> &nbsp; &nbsp; To: &nbsp;<input type="text" ng-model="invc.endDate" name="datePickTo" id="datePickTo" /> -->
+
+							</div>
+
+							<div class="col-md-4 search_by">
+								<div class="form-group">
+									<label for=""><b>Search by Name :</b></label><br>
+										<div class="col-md-10 pl-0">
+											<input type="" class="form-control" ng-model="invc.Name" name="Name" name="Name" placeholder="Name">
+										</div>
+								</div>
+							</div>
+
+							<div class="col-md-4 search_by">
+
+								<div class="form-group">
+									<lable for="">
+									<b>Search by Amount :</b></lable> <br> 
+									From <input type="text" ng-model="invc.amountFrom" name="amountFrom" class="hasamount"> &nbsp; &nbsp; To: &nbsp;<input type="text" ng-model="invc.amountTo" name="amountTo" class="hasamount">
+									<!-- From <input type="text" ng-model="invc.fromAmount" name="fromAmount" class="hasamount"> &nbsp; &nbsp; To: &nbsp;<input type="text" ng-model="invc.toAmount" name="toAmount" class="hasamount"> -->
+									<button class="btn btn-primary ml-10" type="botton" ng-click="searchInvoices(invc)">Search</button>
+								</div>
+							</div>
+						</div>
+						</form>
+						
+						<div class="clearfix"></div>
+						<table class="table table-hover">
+							<thead class="table-head">
+								<tr>
+									<th>Name</th>
+									<th>Account No.</th>
+									<th>IFSC</th>
+									<th>Primary Email</th>
+									<th>Payment Method</th>
+									<th>Phone No.</th>
+									<th>&nbsp;</th>
+									<th>&nbsp;</th>
+								</tr>
+							</thead>
+
+							<tbody>
+								<tr ng-repeat="invoiceApp in pendingApprovalList">
+									<td>
+										<div class="select_select pull-left">
+											<button class="btn btn-default dropdown-toggle select_btn"
+												type="button" id="dropdownMenu1" data-toggle="dropdown"	aria-haspopup="true" aria-expanded="true">
+												<i class="fa fa-chevron-circle-down" aria-hidden="true"
+													class="arrow_select"></i>
+											</button>
+											<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+												<li ng-click="viewInvoiceInfo(invoiceApp.invoiceID)" data-toggle="modal" data-target="#myModalViewww"><span>View </span></li>
+												<li ng-click="getAproverLog(invoiceApp)" data-toggle="modal" data-target="#myModalApprovallog">Approval Log</li>
+												<li ng-click="getAuditTrailData(invoiceApp.invoiceID)" data-toggle="modal" data-target="#myModalLog">Audit Log</li>
+											</ul>
+										</div> <span class="mt-2 pull-left"><a href="" ng-click="vendorInfo(invoiceApp.venID)"
+											data-toggle="modal" data-target="#myModalView">{{invoiceApp.name}}</a></span>
+										<div class="clearfix"></div>
+									</td>
+									<td ng-bind="invoiceApp.accountNo"></td>
+									<td ng-bind="invoiceApp.ifsc"></td>
+									<td ng-bind="invoiceApp.primaryEmail"></td>
+									<td ng-bind="invoiceApp.paymentMethod"></td>
+									<td ng-bind="invoiceApp.phnNo"></td>
+									<td>
+										<button class="btn btn-success btn-xs" data-toggle="modal" ng-click ="approveInvoice(invoiceApp.invoiceID)"
+											data-target="#myModalComment">Approve</button> &nbsp;
+										<button class="btn btn-danger btn-xs" data-toggle="modal" ng-click ="declineInvoice(invoiceApp.invoiceID)"
+											data-target="#myModalDeclineComment">Decline</button>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div role="tabpanel" class="tab-pane" id="approvalHistory">
+
+					<form name="form" id="invoiceApprove" class="form-horizontal">
+						<div class="main_search">
+							<div class="col-md-4 search_by">
+								<label for=""><b>Search by Date:</b></label><br> 
+								From <input type="text" ng-model="invcHis.dateFrom" name="datePickFrom" id="datePickFromHis" /> &nbsp; &nbsp; To: &nbsp;<input type="text" ng-model="invcHis.dateTo" name="datePickTo" id="datePickToHis" />
+							</div>
+
+							<div class="col-md-4 search_by">
+								<div class="form-group">
+									<label for=""><b>Search by Name :</b></label><br>
+										<div class="col-md-10 pl-0">
+											<input type="" class="form-control" ng-model="invcHis.Name" name="Name" name="Name" placeholder="Name">
+										</div>
+								</div>
+							</div>
+
+							<div class="col-md-4 search_by">
+
+								<div class="form-group">
+									<lable for="">
+									<b>Search by Amount :</b></lable> <br> 
+									From <input type="text" ng-model="invcHis.amountFrom" name="amountFrom" class="hasamount"> &nbsp; &nbsp; To: &nbsp;<input type="text" ng-model="invcHis.amountTo" name="amountTo" class="hasamount">
+									<!-- From <input type="text" ng-model="invc.fromAmount" name="fromAmount" class="hasamount"> &nbsp; &nbsp; To: &nbsp;<input type="text" ng-model="invc.toAmount" name="toAmount" class="hasamount"> -->
+									<button class="btn btn-primary ml-10" type="botton" ng-click="searchInvoiceHistory(invcHis)">Search</button>
+								</div>
+							</div>
+						</div>
+						</form>
+						
+						<div class="clearfix"></div>
+
+
+						<table class="table table-hover">
+							<thead class="table-head">
+								<tr>
+									<th>Name</th>
+									<th>Account No.</th>
+									<th>IFSC</th>
+									<th>Primary Email</th>
+									<th>Payment Method</th>
+									<th>Status</th>
+									<th>Phone No.</th>
+								</tr>
+							</thead>
+
+							<tbody>
+								<tr ng-repeat="invoiceAppHis in approvalHistoryList">
+									<td>
+										<div class="select_select pull-left">
+											<button class="btn btn-default dropdown-toggle select_btn"
+												type="button" id="dropdownMenu1" data-toggle="dropdown"
+												aria-haspopup="true" aria-expanded="true">
+												<i class="fa fa-chevron-circle-down" aria-hidden="true"
+													class="arrow_select"></i>
+											</button>
+											<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+												<li ng-click="viewInvoiceInfo(invoiceAppHis.invoiceID)" data-toggle="modal" data-target="#myModalViewww"><span>View </span></li>
+												<li ng-click="getAproverLog(invoiceAppHis)" data-toggle="modal" data-target="#myModalApprovallog">Approval Log</li>
+											<!--  <li ng-click="getAproverLog(invoiceAppHis)" data-toggle="modal" data-target="#myModalCommentView">Comment</li> -->
+												<li ng-click="getAuditTrailData(invoiceAppHis.invoiceID)" data-toggle="modal" data-target="#myModalLog">Audit Log</li>
+											</ul>
+										</div> <span class="mt-2 pull-left"><a href=""
+											data-toggle="modal" data-target="#myModalView" ng-click="vendorInfo(invoiceAppHis.venID)" ng-bind="invoiceAppHis.name"></a></span>
+									</td>
+									
+									<td ng-bind="invoiceAppHis.accountNo"></td>
+									<td ng-bind="invoiceAppHis.ifsc"></td>
+									<td ng-bind="invoiceAppHis.primaryEmail"></td>
+									<td ng-bind="invoiceAppHis.paymentMethod"></td>
+									<td ng-bind="invoiceAppHis.paymentMethod"></td>
+									<td ng-bind="invoiceAppHis.phnNo"></td>
+								</tr>
+
+							</tbody>
+						</table>
+					</div>
+
+				</div>
+
+			</div>
+
+
+			<div class="col-md-12">
+				<!-- add user -->
+				<div class="modal fade" tabindex="-1" role="dialog" id="myModal">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header loginboxinner">
+								<button type="button" class="close" data-dismiss="modal"
+									aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+								<h4 class="modal-title">
+									<i class="fa fa-plus"></i> Add New Employee
+								</h4>
+							</div>
+							<div class="modal-body">
+								<form class="form-horizontal">
+									<div class="form-group">
+										<label for="" class="col-sm-4 control-label">First
+											Name<span class="mandatory">*</span>
+										</label>
+										<div class="col-sm-8">
+											<input type="email" class="form-control" id="" placeholder="">
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="" class="col-sm-4 control-label">Last Name<span
+											class="mandatory">*</span></label>
+										<div class="col-sm-8">
+											<input type="type" class="form-control" id="" placeholder="">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="" class="col-sm-4 control-label">Account
+											No.<span class="mandatory">*</span>
+										</label>
+										<div class="col-sm-8">
+											<input type="type" class="form-control" id="" placeholder="">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="" class="col-sm-4 control-label">City<span
+											class="mandatory">*</span></label>
+										<div class="col-sm-8">
+											<input type="type" class="form-control" id="" placeholder="">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="" class="col-sm-4 control-label">Phone No.<span
+											class="mandatory">*</span></label>
+										<div class="col-sm-8">
+											<input type="email" class="form-control" id="" placeholder="">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="" class="col-sm-4 control-label">IFSC Code<span
+											class="mandatory">*</span></label>
+										<div class="col-sm-8">
+											<input type="email" class="form-control" id="" placeholder="">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="" class="col-sm-4 control-label">Bank name<span
+											class="mandatory">*</span></label>
+										<div class="col-sm-8">
+											<input type="email" class="form-control" id="" placeholder="">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="" class="col-sm-4 control-label">Branch<span
+											class="mandatory">*</span></label>
+										<div class="col-sm-8">
+											<input type="email" class="form-control" id="" placeholder="">
+										</div>
+									</div>
+
+
+
+
+								</form>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-default"
+									data-dismiss="modal">Cancel</button>
+								<button type="button" class="btn btn-primary">Add</button>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- add user end -->
+
+
+				<!-- edit user -->
+				<div class="modal fade" tabindex="-1" role="dialog" id="myModalEdit">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal"
+									aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+								<h4 class="modal-title">
+									<i class="fa fa-edit"></i> Edit Vendor
+								</h4>
+							</div>
+							<div class="modal-body">
+								<form class="form-horizontal">
+									<div class="form-group">
+										<label for="" class="col-sm-4 control-label">First
+											Name </label>
+										<div class="col-sm-8">
+											<input type="email" class="form-control" id=""
+												placeholder="Prefilled">
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="" class="col-sm-4 control-label">Last Name</label>
+										<div class="col-sm-8">
+											<input type="type" class="form-control" id=""
+												placeholder="Prefilled">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="" class="col-sm-4 control-label">Email ID
+										</label>
+										<div class="col-sm-8">
+											<input type="email" class="form-control" id=""
+												placeholder="Prefilled">
+										</div>
+									</div>
+
+
+									<div class="form-group">
+										<label for="" class="col-sm-4 control-label">Contact
+											No.</label>
+										<div class="col-sm-8">
+											<input type="email" class="form-control" id=""
+												placeholder="Prefilled">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="" class="col-sm-4 control-label">Name of
+											Organization</label>
+										<div class="col-sm-8">
+											<input type="email" class="form-control" id=""
+												placeholder="Prefilled">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="" class="col-sm-4 control-label">Role</label>
+										<div class="col-sm-8">
+											<select class="form-control">
+												<option>Invoice Maker</option>
+												<option>2</option>
+												<option>3</option>
+											</select>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="" class="col-sm-4 control-label"></label>
+										<div class="col-sm-7">
+											<select class="form-control">
+												<option>Payment Approver</option>
+												<option>2</option>
+												<option>3</option>
+											</select>
+										</div>
+
+										<div class="col-sm-1 p0">
+											<a href="#" class="btn btn3 btn_black radius50"><i
+												class="fa fa-plus"></i></a>
+										</div>
+									</div>
+
+
+									<div class="form-group">
+										<label for="" class="col-sm-4 control-label">Employee
+											No.</label>
+										<div class="col-sm-8">
+											<input type="email" class="form-control" id=""
+												placeholder="Prefilled">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="" class="col-sm-4 control-label">Address</label>
+										<div class="col-sm-8">
+											<textarea class="form-control" rows="3"></textarea>
+										</div>
+									</div>
+
+								</form>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-default"
+									data-dismiss="modal">Cancel</button>
+								<button type="button" class="btn btn-primary">Add</button>
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+			<br clear="all" />
+
+		</div>
+		<!-- centercontent -->
+
+
+
+
+	</div>
+	<!--bodywrapper-->
+
+
+	<div class="col-md-12">
+		<!-- add user -->
+		<div class="modal fade" tabindex="-1" role="dialog" id="myModal">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header loginboxinner">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<h4 class="modal-title">
+							<i class="fa fa-plus"></i> Add New Employee
+						</h4>
+					</div>
+					<div class="modal-body">
+						<form class="form-horizontal">
+							<div class="form-group">
+								<label for="" class="col-sm-4 control-label">First Name<span
+									class="mandatory">*</span>
+								</label>
+								<div class="col-sm-8">
+									<input type="email" class="form-control" id="" placeholder="">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="" class="col-sm-4 control-label">Last Name<span
+									class="mandatory">*</span></label>
+								<div class="col-sm-8">
+									<input type="type" class="form-control" id="" placeholder="">
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label for="" class="col-sm-4 control-label">Account No.<span
+									class="mandatory">*</span></label>
+								<div class="col-sm-8">
+									<input type="type" class="form-control" id="" placeholder="">
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label for="" class="col-sm-4 control-label">City<span
+									class="mandatory">*</span></label>
+								<div class="col-sm-8">
+									<input type="type" class="form-control" id="" placeholder="">
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label for="" class="col-sm-4 control-label">Phone No.<span
+									class="mandatory">*</span></label>
+								<div class="col-sm-8">
+									<input type="email" class="form-control" id="" placeholder="">
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label for="" class="col-sm-4 control-label">IFSC Code<span
+									class="mandatory">*</span></label>
+								<div class="col-sm-8">
+									<input type="email" class="form-control" id="" placeholder="">
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label for="" class="col-sm-4 control-label">Bank name<span
+									class="mandatory">*</span></label>
+								<div class="col-sm-8">
+									<input type="email" class="form-control" id="" placeholder="">
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label for="" class="col-sm-4 control-label">Branch<span
+									class="mandatory">*</span></label>
+								<div class="col-sm-8">
+									<input type="email" class="form-control" id="" placeholder="">
+								</div>
+							</div>
+
+
+
+
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+						<button type="button" class="btn btn-primary">Add</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- add user end -->
+
+
+		<!-- edit user -->
+		<div class="modal fade" tabindex="-1" role="dialog" id="myModalEdit">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<h4 class="modal-title">
+							<i class="fa fa-edit"></i> Edit Vendor
+						</h4>
+					</div>
+					<div class="modal-body">
+						<form class="form-horizontal">
+							<div class="form-group">
+								<label for="" class="col-sm-4 control-label">First Name
+								</label>
+								<div class="col-sm-8">
+									<input type="email" class="form-control" id=""
+										placeholder="Prefilled">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="" class="col-sm-4 control-label">Last Name</label>
+								<div class="col-sm-8">
+									<input type="type" class="form-control" id=""
+										placeholder="Prefilled">
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label for="" class="col-sm-4 control-label">Email ID </label>
+								<div class="col-sm-8">
+									<input type="email" class="form-control" id=""
+										placeholder="Prefilled">
+								</div>
+							</div>
+
+
+							<div class="form-group">
+								<label for="" class="col-sm-4 control-label">Contact No.</label>
+								<div class="col-sm-8">
+									<input type="email" class="form-control" id=""
+										placeholder="Prefilled">
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label for="" class="col-sm-4 control-label">Name of
+									Organization</label>
+								<div class="col-sm-8">
+									<input type="email" class="form-control" id=""
+										placeholder="Prefilled">
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label for="" class="col-sm-4 control-label">Role</label>
+								<div class="col-sm-8">
+									<select class="form-control">
+										<option>Invoice Maker</option>
+										<option>2</option>
+										<option>3</option>
+									</select>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label for="" class="col-sm-4 control-label"></label>
+								<div class="col-sm-7">
+									<select class="form-control">
+										<option>Payment Approver</option>
+										<option>2</option>
+										<option>3</option>
+									</select>
+								</div>
+
+								<div class="col-sm-1 p0">
+									<a href="#" class="btn btn3 btn_black radius50"><i
+										class="fa fa-plus"></i></a>
+								</div>
+							</div>
+
+
+							<div class="form-group">
+								<label for="" class="col-sm-4 control-label">Employee
+									No.</label>
+								<div class="col-sm-8">
+									<input type="email" class="form-control" id=""
+										placeholder="Prefilled">
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label for="" class="col-sm-4 control-label">Address</label>
+								<div class="col-sm-8">
+									<textarea class="form-control" rows="3"></textarea>
+								</div>
+							</div>
+
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+						<button type="button" class="btn btn-primary">Add</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- comment start 1 for Invoice Approval-->
+		<div class="modal fade" id="myModalComment" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+			<div class="modal-dialog ">
+				<div class="modal-content">
+					<div class="modal-header loginboxinner">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<h4 class="modal-title">
+							<i class="fa fa-edit"></i> Comment
+						</h4>
+					</div>
+					<h5><div ng-show= "commenterror" class = "alert alert-danger">{{commenterror}}</div></h5>
+					<div class="modal-body">
+						<form>
+							<div class="form-group">
+								<label for="">Wright a comment</label>
+								<textarea ng-model="comment" class="form-control" rows="3"></textarea>
+							</div>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default"  data-dismiss="modal">Skip</button>
+						<button type="button" ng-click ="submitApprovalInvoice(invoiceIdForApproval,comment)" class="btn btn-primary">Submit</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- comment 1 close for Invoice Approval-->
+		
+		<!-- comment start 1 for Invoice Decline-->
+		<div class="modal fade" id="myModalDeclineComment" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+			<div class="modal-dialog ">
+				<div class="modal-content">
+					<div class="modal-header loginboxinner">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<h4 class="modal-title">
+							<i class="fa fa-edit"></i> Comment
+						</h4>
+					</div>
+					<h5><div ng-show= "commenterror" class = "alert alert-danger">{{commenterror}}</div></h5>
+					<div class="modal-body">
+						<form>
+							<div class="form-group">
+								<label for="">Wright a comment</label>
+								<textarea ng-model="comment" class="form-control" rows="3"></textarea>
+							</div>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default"  data-dismiss="modal">Skip</button>
+						<button type="button" ng-click ="submitDeclineInvoice(invoiceIdForDecline,comment)" class="btn btn-primary">Submit</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- comment 1 close for Invoice Decline-->
+		
+		
+		
+
+		<!-- comment view start 1 -->
+		<div class="modal fade" id="myModalCommentView" tabindex="-1"
+			role="dialog" aria-labelledby="myModalLabel">
+			<div class="modal-dialog ">
+				<div class="modal-content">
+					<div class="modal-header loginboxinner">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<h4 class="modal-title">
+							<i class="fa fa-eye"></i> Comment
+						</h4>
+					</div>
+					<div class="modal-body">
+						
+							<div class="form-group" ng-repeat="aprLogObj in approverLog">
+								<p ng-bind="aprLogObj.comment"></p>
+							</div>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- comment view1 close-->
+
+
+
+		<!-- view user 1-->
+		<div class="modal fade" tabindex="-1" role="dialog" id="myModalViewww">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header loginboxinner">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title">
+						<i class="fa fa-plus"></i> View
+					</h4>
+				</div>
+				<div class="modal-body">
+					<div class="col-md-12" id="contentwrapper">
+						<form class="form-inline">
+							<div class="">
+								<div class="row">
+									<div class="row">
+										<div class="form-group col-md-6">
+											<label for="" class="col-md-5">Beneficiary Name </label> : {{venId.beneficiaryName}}
+										</div>
+										<div class="form-group col-md-6">
+											<label for="" class="col-md-5">Invoice Type</label> : {{venId.invoiceType}}
+										</div>
+									</div>
+
+									<div class="row">
+										<div class="form-group col-md-6">
+											<label for="" class="col-md-5">Invoice Number </label> :
+											{{venId.invoiceNumber}}
+										</div>
+										<div class="form-group col-md-6">
+											<label for="" class="col-md-5">Invoice Date </label>
+											{{venId.invoiceDate}}
+										</div>
+									</div>
+
+									<div class="row">
+										<div class="form-group col-md-6">
+											<label for="" class="col-md-5">Payment Term</label> : {{venId.paymentTerm}}
+										</div>
+
+										<div class="form-group col-md-6">
+											<label for="" class="col-md-5">Approver</label> : 
+										</div>
+									</div>
+
+
+									<div class="row">
+										<div class="form-group col-md-6">
+											<label for="" class="col-md-5">Due Date</label> : {{venId.dueDate}}
+										</div>
+
+										<div class="form-group col-md-6">
+											<label for="" class="col-md-5">Amount</label> : {{venId.amount}}
+										</div>
+									</div>
+									<div class="row">
+										<div class="form-group col-md-6">
+											<label for="" class="col-md-5">Description</label> : {{venId.description}}
+										</div>
+
+										<div class="form-group col-md-6">
+											<label for="" class="col-md-5">PO Number</label> : {{venId.poNumber}}
+										</div>
+									</div>
+
+									<div class="row">
+										<div class="form-group col-md-6">
+											<label for="" class="col-md-5">Taxes (%)</label> : {{venId.taxPercent}}%
+										</div>
+										<div class="form-group col-md-6">
+											<label for="" class="col-md-5">Taxes(Amount)</label> : {{venId.taxAmount}}
+										</div>
+									</div>
+
+									<div class="row">
+										<div class="form-group col-md-6">
+											<label for="" class="col-md-5">Total Amount</label> : Pending
+										</div>
+
+										<div class="form-group col-md-6">
+											<label for="" class="col-md-5">TDS Deduction(%)</label> : {{venId.tdsDeductionPrecnt}}%
+										</div>
+									</div>
+
+									<div class="row">
+										<div class="form-group col-md-6">
+											<label for="" class="col-md-5">TDS Deduction(Amount)</label>: {{venId.tdsDeductionAmt}}
+										</div>
+
+										<div class="form-group col-md-6">
+											<label for="" class="col-md-5">Any Other Deductions</label> :{{venId.otherDeductionAmt}}
+										</div>
+									</div>
+
+									<div class="row">
+										<div class="form-group col-md-6">
+											<label for="" class="col-md-5">Note For Approver</label> :	{{venId.beneficiaryName}}
+										</div>
+									</div>
+
+									<div class="clearfix"></div>
+									<div class="col-md-12">
+										<label for="" class="col-md-6 p0"><h5 class="added_h5">Added Files -</h5></label>
+										<table class="table table-hover">
+											<thead class="table-head">
+												<tr>
+													<th>File Name</th>
+													<th>File Attachment</th>
+													<th>Uploaed Date</th>
+													<th>Uploaded By</th>
+												</tr>
+											</thead>
+
+											<tbody>
+												<tr ng-repeat="docView in DocViewObjList">
+													<td>{{docView.manuallyGivenFileName}}</td>
+													<td><a target="_blank"
+														href="https://paymentvista.com:8443/resources/public/tmpFiles/{{docView.fileName}}">
+															<div class="col-md-5 col-sm-2 col-xs-5">{{docView.fileName}}</div>
+													</a></td>
+													<td>{{docView.creationDateTime}}</td>
+													<td>{{docView.createdBy}}</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+
+
+										<div class="col-md-12">
+											<label for="" class="col-md-12 p0"><h5
+													class="added_h5">Audit Log -</h5></label>
+											<hr>
+												<table class="table table-hover">
+													<thead class="table-head">
+														<tr>
+															<th>Date</th>
+															<th>Action</th>
+															<th>Action By</th>
+														</tr>
+													</thead>
+													<tbody>
+														<tr ng-repeat="auditObj in auditData">
+															<td	ng-bind="(auditObj.creationDateTime == null) ? '-----' : auditObj.creationDateTime"></td>
+															<td	ng-bind="(auditObj.actionType == null) ? '-----' : auditObj.actionType"></td>
+															<td	ng-bind="(auditObj.createdBy == null) ? '-----' : auditObj.createdBy"></td>
+														</tr>
+													</tbody>
+												</table>
+										</div>
+
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+				<div class="clearfix"></div>
+
+			</div>
+		</div>
+	</div>
+				
+		<!-- view user end -->
+
+	</div>
+
+
+
+
+	<!-- audit log -->
+	<div class="modal fade" tabindex="-1" role="dialog" id="myModalLog">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title">
+						<i class="fa fa-edit"></i> Audit Log
+					</h4>
+				</div>
+				<div class="modal-body">
+					<form class="form-horizontal">
+						<table class="table table-hover">
+							<thead class="table-head">
+								<tr>
+									<th>Operation Type</th>
+									<th>Action Type</th>
+									<th>Field Type</th>
+									<th>Old Value</th>
+									<th>New Value</th>
+									<th>Creation Date/time</th>
+									<th>Created By</th>
+								</tr>
+							</thead>
+
+							<tbody>
+								<tr ng-repeat="auditObj in auditData">
+									<td	ng-bind="(auditObj.operationType == null) ? '-----' : auditObj.operationType"></td>
+									<td	ng-bind="(auditObj.actionType == null) ? '-----' : auditObj.actionType"></td>
+									<td	ng-bind="(auditObj.fieldType == null) ? '-----' : auditObj.fieldType"></td>
+									<td	ng-bind="(auditObj.oldValue == null) ? '-----' : auditObj.oldValue"></td>
+									<td ng-bind="(auditObj.newValue == null) ? '-----' : auditObj.newValue"></td>
+									<td ng-bind="(auditObj.creationDateTime == null) ? '-----' : auditObj.creationDateTime"></td>
+									<td	ng-bind="(auditObj.createdBy == null) ? '-----' : auditObj.createdBy"></td>
+
+								</tr>
+							</tbody>
+						</table>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+
+	<!-- approval log -->
+	<div class="modal fade" tabindex="-1" role="dialog" id="myModalApprovallog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title">
+						<i class="fa fa-edit"></i> Approval Log
+					</h4>
+				</div>
+				<div class="modal-body">
+					<form class="form-horizontal">
+						<table class="table table-hover">
+							<thead class="table-head">
+								<tr>
+									<th>Date</th>
+									<th>Approver Name</th>
+									<th>Approval Status</th>
+									<th>Comment</th>
+								</tr>
+							</thead>
+
+							<tbody  ng-repeat="aprLogObj in approverLog">
+								<tr>
+									<td ng-bind="aprLogObj.appCreatedDate"></td>
+									<td ng-bind="aprLogObj.appCreatedBy"></td>
+									<td ng-bind="aprLogObj.appStatus">
+										<div ng-if="aprLogObj.appStatus == 0">Decline</div>
+    	                        		<div ng-if="aprLogObj.appStatus == 1">Approve</div>
+									</td>
+									<td ng-bind="aprLogObj.comment"></td>
+								</tr>
+							</tbody>
+						</table>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+
+	<!-- view vendor -->
+	<div class="modal fade" tabindex="-1" role="dialog" id="myModalView">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header loginboxinner">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"><i class="fa fa-eye"></i> View</h4>
+              </div>
+              <div class="modal-body">
+                <form class="form-horizontal">
+                  
+                    <div class="form-group">
+                    <label for="" class="col-md-4 col-sm-4 col-xs-4 control-label"> Name :</label>
+                    <div class="col-sm-8 pt-7">
+                     {{ven.firstName}}
+                    </div>
+                  </div>
+                  <hr class="viewhr">
+                  <div class="form-group">
+                    <label for="" class="col-md-4 col-sm-4 col-xs-4 control-label">Email ID :</label>
+                    <div class="col-sm-8 pt-7">
+                      {{ven.email}}
+                    </div>
+                  </div>
+                  <hr class="viewhr">
+                  <div class="form-group">
+                    <label for="" class="col-md-4 col-sm-4 col-xs-4 control-label">Supplier Name :</label>
+                    <div ng-bind="ven.suplierName" class="col-sm-8 pt-7">
+                    </div>
+                  </div>
+                  <hr class="viewhr">
+                  <div class="form-group">
+                    <label for="" class="col-md-4 col-sm-4 col-xs-4 control-label">Supplier No :</label>
+                    <div class="col-sm-8 pt-7">
+                      {{ven.suplierNo}}
+                    </div>
+                  </div>
+
+                  <hr class="viewhr">
+
+                    <div class="form-group">
+                        <label for="" class="col-md-4 col-sm-4 col-xs-4 control-label">Payment Name :</label>
+                        <div class="col-sm-8 pt-7">
+                            {{ven.paymentName}}
+                        </div>
+                    </div>
+                    <hr class="viewhr">
+                   
+                    <div class="form-group">
+                        <label for="" class="col-md-4 col-sm-4 col-xs-4 control-label">PAN Number :</label>
+                        <div class="col-sm-8 pt-7">
+                        {{ven.panNumber}}
+                        </div>
+                    </div>
+                    <hr class="viewhr">
+
+                    <div class="form-group">
+                        <label for="" class="col-md-4 col-sm-4 col-xs-4 control-label">Vendor Type :</label>
+                        <div class="col-sm-8 pt-7">
+                         {{ven.vendorType}}
+                        </div>
+                    </div>
+                    <hr class="viewhr">
+
+                    <div class="form-group">
+                        <label for="" class="col-md-4 col-sm-4 col-xs-4 control-label">Company Type :</label>
+                        <div class="col-sm-8 pt-7">
+                          {{ven.companyType}}
+                        </div>
+                    </div>
+                    <hr class="viewhr">
+
+                    <div class="form-group">
+                        <label for="" class="col-md-4 col-sm-4 col-xs-4 control-label">Payment Method :</label>
+                        <div class="col-sm-8 pt-7">
+                          {{ven.paymentMethod}}
+                        </div>
+                    </div>
+                    <hr class="viewhr">
+
+                    <div class="form-group">
+                        <label for="" class="col-md-4 col-sm-4 col-xs-4 control-label">Payment Terms :</label>
+                        <div class="col-sm-8 pt-7">
+                          {{ven.paymentTerm}}
+                        </div>
+                    </div>
+                    <hr class="viewhr">
+                    <div class="form-group">
+                        <label for="" class="col-md-4 col-sm-4 col-xs-4 control-label">Bank Name :</label>
+                        <div class="col-sm-8 pt-7">
+                          {{ven.bankName}}
+                        </div>
+                    </div>
+                    <hr class="viewhr">
+                    <div class="form-group">
+                        <label for="" class="col-md-4 col-sm-4 col-xs-4 control-label">Branch Name:</label>
+                        <div class="col-sm-8 pt-7">
+                         {{ven.branchAddress}}
+                        </div>
+                    </div>
+                    <hr class="viewhr">
+                    <div class="form-group">
+                        <label for="" class="col-md-4 col-sm-4 col-xs-4 control-label">Account No.:</label>
+                        <div class="col-sm-8 pt-7">
+                          {{ven.accountNo}}
+                        </div>
+                    </div>
+                    <hr class="viewhr">
+                    <div class="form-group">
+                        <label for="" class="col-md-4 col-sm-4 col-xs-4 control-label">Currency:</label>
+                        <div class="col-sm-8 pt-7">
+                          {{ven.currency}}
+                        </div>
+                    </div>
+                    <hr class="viewhr">
+                    <div class="form-group">
+                        <label for="" class="col-md-4 col-sm-4 col-xs-4 control-label">IFSC :</label>
+                        <div class="col-sm-8 pt-7">
+                          {{ven.ifscCode}}
+                        </div>
+                    </div>
+                    <hr class="viewhr">
+                    <div class="form-group">
+                        <label for="" class="col-md-4 col-sm-4 col-xs-4 control-label">Address :</label>
+                        <div class="col-sm-8 pt-7">
+                          {{ven.addressLine1}}
+                        </div>
+                    </div>
+                </form>
+                <div class= "container-fluid">
+                <table class="table table-hover pull-left">
+                    <thead class="table-head">
+                        <tr>
+                            <th>Date</th>
+                            <th>Action </th>
+                            <th>Action By</th>
+                        </tr>
+                    </thead>
+
+                    <tbody> 
+                        <tr ng-repeat="auditObj in auditData">
+                           <td ng-bind="(auditObj.creationDateTime == null) ? '-----' : auditObj.creationDateTime"></td>
+                           <td ng-bind="(auditObj.actionType == null) ? '-----' : auditObj.actionType"></td>
+                           <td ng-bind="(auditObj.createdBy == null) ? '-----' : auditObj.createdBy"></td>                           
+                        </tr>
+
+                    </tbody>
+                </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+	<!-- view vendor end -->
+
+<script>
+$(document).ready(function() {
+	$("#datePickFrom").datepicker();
+	$("#datePickTo").datepicker();
+	$("#datePickFromHis").datepicker();
+	$("#datePickToHis").datepicker();
+});
+</script>
+
+</body>
+
+
+</html>

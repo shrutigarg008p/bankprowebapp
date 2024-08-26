@@ -1,0 +1,105 @@
+<div id="userRoles" ng-controller="UserRoleCntrl">
+<div class="topheader">
+        <div class="left">
+            <h1 class="logo"> Payment Vista</span></h1>
+           <!--  <span class="slogan">admin template</span> -->
+            
+            
+            
+            <br clear="all" />
+            
+        </div><!--left-->
+        
+        <div class="right">
+            <div class="search">
+                <!-- <form action="#" method="post">
+                    <input type="text" name="keyword" id="keyword" value="Enter keyword(s)" />
+                    <button class="submitbutton"></button>
+                </form> -->
+            </div> 
+
+        	<div class="notification">
+                <a class="count" href="ajax/notifications.html"><span>9</span></a>
+        	</div>
+            <div class="userinfo">
+            	<span>ORG Id: {{vm.userRoleList.orgId}}</span>
+                <span>{{vm.userRoleList.userName}}</span>
+            </div><!--userinfo-->
+            
+            <div class="userinfodrop" style="display: none;">
+            	<div class="avatar">
+                	<a href="#"><img src="images/thumbs/avatarbig.png" alt=""></a>
+                    <div class="changetheme">
+                    	Change theme: <br>
+                    	<a class="default"></a>
+                        <a class="blueline"></a>
+                        <a class="greenline"></a>
+                        <a class="contrast"></a>
+                        <a class="custombg"></a>
+                    </div>
+                </div><!--avatar-->
+                <div class="userdata">
+                	<h4>{{vm.userRoleList.userName}}</h4>
+                    <span class="email">{{vm.userRoleList.userEmail}}</span>
+                    <ul>
+                    	<li><a href="editprofile.html">Edit Profile</a></li>
+                        <li><a href="account-setting.html">Account Settings</a></li>
+                        <li><a href="new-password.html"> Change password </a></li>
+                        <!-- <li><a href="help.html">Help</a></li> -->
+                        <li><a href="/resources/public/index.html">Sign Out</a></li>
+                    </ul>
+                </div><!--userdata-->
+            </div><!--userinfodrop-->
+        </div>
+    </div><!--topheader-->
+    
+    <div class="header">
+        <ul class="headermenu" >        	
+           	<li id="dashboard"><a  href="../dashboard.html"><i class="fa fa-tachometer icon_me"></i>Dashboard</a></li>
+            <li ng-if="(vm.userRoleList.roleDesciption.indexOf('Admin') >= 0) || (vm.userRoleList.roleDesciption.indexOf('User') >= 0)" id="user"><a href="/resources/public/add-newuser.html"><i class="fa fa-user icon_me"></i>User</a></li>
+            <li 
+            	ng-if="(vm.userRoleList.roleDesciption.indexOf('Admin') >= 0) || (vm.userRoleList.roleDesciption.indexOf('Beneficiary') >= 0 || vm.userRoleList.roleDesciption.indexOf('Vendor List') >= 0  
+            	|| vm.userRoleList.roleDesciption.indexOf('Vendor Approve') >= 0 || vm.userRoleList.roleDesciption.indexOf('Employee') >= 0)"   id="vendor">
+            	<a href="/resources/public/vendorInfo.html"><i class="fa fa-users icon_me"></i>Beneficiary</a>
+            </li>
+            <li 
+            	ng-if="(vm.userRoleList.roleDesciption.indexOf('Admin') >= 0) || (vm.userRoleList.roleDesciption.indexOf('Invoice') >= 0 || vm.userRoleList.roleDesciption.indexOf('View Invoice') >= 0 
+            	|| vm.userRoleList.roleDesciption.indexOf('Approve Invoice') >= 0)" id="create-invoice1">
+            	<a href="/resources/public/invoice-list.html"><i class="fa fa-file-text icon_me"></i>Invoices</a>
+            </li>
+            <li 
+            	ng-if="(vm.userRoleList.roleDesciption.indexOf('Admin') >= 0) || (vm.userRoleList.roleDesciption.indexOf('Payment') >= 0 || vm.userRoleList.roleDesciption.indexOf('Payment Create') >= 0 
+            	|| vm.userRoleList.roleDesciption.indexOf('Payment Approve') >= 0)" id="payment-create">
+            	<a href="/resources/public/payment-create.html"><i class="fa fa-credit-card icon_me"></i>Payment</a>
+            </li>
+            <li ng-if="(vm.userRoleList.roleDesciption.indexOf('Admin') >= 0) || (vm.userRoleList.roleDesciption.indexOf('Reports') >= 0)" id="import-history"><a href="/resources/public/reports.html"><i class="fa fa-bar-chart icon_me"></i>Reports</a></li>
+            <li 
+            	ng-if="(vm.userRoleList.roleDesciption.indexOf('Admin') >= 0) || (vm.userRoleList.roleDesciption.indexOf('Settings') >= 0 || vm.userRoleList.roleDesciption.indexOf('Bank Detail') >= 0  
+            	|| vm.userRoleList.roleDesciption.indexOf('Set Approvers') >= 0 || vm.userRoleList.roleDesciption.indexOf('Role Access') >= 0 || vm.userRoleList.roleDesciption.indexOf('Payment Terms') >= 0)" id="setting">
+            	<a href="/resources/public/setting.html"><i class="fa fa-cog icon_me"></i>Settings</a>
+            </li>
+        </ul>    
+    </div>
+ </div>
+    
+<script>
+
+								
+								
+	///// SHOW/HIDE USERDATA WHEN USERINFO IS CLICKED ///// 
+	
+	jQuery('.userinfo').click(function(){
+		if(!jQuery(this).hasClass('active')) {
+			jQuery('.userinfodrop').show();
+			jQuery(this).addClass('active');
+		} else {
+			jQuery('.userinfodrop').hide();
+			jQuery(this).removeClass('active');
+		}
+		//remove notification box if visible
+		jQuery('.notification').removeClass('active');
+		jQuery('.noticontent').remove();
+		
+		return false;
+	});
+</script>

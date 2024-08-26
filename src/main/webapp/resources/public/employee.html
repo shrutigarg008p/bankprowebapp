@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html ng-app="myEmpApp">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Employee </title>
+<link rel="stylesheet" href="/resources/public/css/style.default.css" type="text/css" />
+<link rel="stylesheet" href="/resources/public/css/main.css" type="text/css" />
+
+<link href="/resources/public/css/bootstrap.min.css" rel="stylesheet">
+<link href="/resources/public/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="/resources/public/css/font-awesome.css">
+
+<script type="text/javascript" src="/resources/public/js/plugins/jquery-1.11.3.min.js"></script>
+<script src="/resources/public/js/bootstrap.min.js"></script> 
+<script type="text/javascript" src="/resources/public/js/plugins/jquery-1.7.min.js"></script>
+<script type="text/javascript" src="/resources/public/js/plugins/jquery-ui-1.8.16.custom.min.js"></script>
+<script type="text/javascript" src="/resources/public/js/plugins/jquery.cookie.js"></script>
+<script type="text/javascript"	src="/resources/public/js/plugins/jquery.uniform.min.js"></script>
+<script type="text/javascript" src="/resources/public/js/plugins/jquery.flot.min.js"></script>
+<script type="text/javascript" src="/resources/public/js/plugins/jquery.flot.resize.min.js"></script>
+<script type="text/javascript" src="/resources/public/js/plugins/jquery.slimscroll.js"></script>
+<script type="text/javascript" src="/resources/public/js/plugins/colorpicker.js"></script>
+<script type="text/javascript"	src="/resources/public/js/custom/general.js"></script>
+<script type="text/javascript" src="/resources/public/js/custom/elements.js"></script>
+
+<script src="/resources/public/js/w3data.js"></script>
+<script src="/resources/public/js/bootstrap-button-to-input-file.js"></script>   
+<script type="text/javascript" src="/resources/public/js/custom/adddom.js"></script>
+<script type="text/javascript" src="/resources/public/js/custom/canvasjs.min.js"></script>
+
+<script type="text/javascript" src="/resources/public/js/custom/angular.js"></script>
+<script type="text/javascript" src="/resources/public/js/angular-file-upload.js"></script>
+<script type="text/javascript" src="/resources/public/js/employee.js"></script>
+
+<script src="/resources/public/js/custom/bootstrap-select.min.js"></script>
+<script type="text/javascript" src="/resources/public/js/plugins/jquery.alerts.js"></script>
+<script type="text/javascript" src="/resources/public/js/plugins/jquery.jgrowl.js"></script>
+
+<!-- Add header.js to get user access permissions -->
+<script type="text/javascript" src="/resources/public/js/header.js"></script>
+
+
+</head>
+
+<body class="withvernav" id="employeeApp" ng-controller="EmployeeCtrl">
+
+<div class="bodywrapper">
+
+	<div id="msgTimeOut" ng-if= "successMsg != ''" >
+		<p class="bg_success">
+			<i class="glyphicon glyphicon-ok"></i> <span><b>SUCCESS!</b></span><br>
+				{{successMsg}}
+		</p>
+		<script>
+			setTimeout(function() {
+				error = '';
+				$('#msgTimeOut').hide();
+			}, 10000);
+		</script>
+	</div>
+	
+	<div id="msgTimeOut" ng-if="error != ''">
+		<p class="bg_error">
+			<i class="glyphicon glyphicon-remove"></i> <span><b>ERROR!</b></span><br>
+				{{error}}
+		</p>
+		<script>			
+			setTimeout(function() {
+				error = '';
+					$('#msgTimeOut').hide();
+			}, 10000);
+		</script>
+	</div>
+
+<div ng-include="'topheader.html'"></div>
+<script>
+	setTimeout( function() {
+ 		$('#vendor').addClass('current')
+	} ,3000);
+</script>
+
+    
+    <div class="vernav2 iconmenu" ng-controller="UserRoleCntrl">
+    	<ul>
+        	<li><a href="#formsub" class="editor">Vendor </a>
+            	<span class="arrow"></span>
+            	<ul id="formsub">
+         		    <li ng-if="((vm.userRoleList.roleDesciption.indexOf('Admin') >= 0) || (vm.userRoleList.roleDesciption.indexOf('Vendor List') >= 0))" ><a href="vendorInfo.html">Vendor List</a></li>
+					<li ng-if="((vm.userRoleList.roleDesciption.indexOf('Admin') >= 0) || (vm.userRoleList.roleDesciption.indexOf('Vendor Approve') >= 0))"><a href="approve-beneficiary.html">Approve</a></li>
+                </ul>
+            </li>
+            <li ng-if="((vm.userRoleList.roleDesciption.indexOf('Admin') >= 0) || (vm.userRoleList.roleDesciption.indexOf('Employee') >= 0))" class="current"><a href="employee.html" >Employee</a></li>
+        </ul>
+        <a class="togglemenu"></a>
+        <br /><br />
+    </div><!--leftmenu-->
+        
+    <div class="centercontent">
+    
+        <div class="pageheader">
+           
+            <div class="pageheader_edit">
+                <h1 class="pagetitle">Employee List</h1>
+            </div>
+            <div class="clearphone"></div> 
+            <div class="search pull_right">
+                <form action="#" method="post">
+                    <input type="text" name="keyword" id="keyword" value="Search" />
+                    <button class="submitbutton"></button>
+                </form>
+            </div>
+
+           
+        </div><!--pageheader-->
+        <div class="clearfix"></div>
+        
+        <div class="col-md-12 batch_upload">
+        
+        
+        <!-- Error and Success Message -->
+	    <!-- <tt-error-messages></tt-error-messages>
+	    <div ng-if="showMessage" ng-show="showMessage" class="info-messages"
+			ng-style="{'opacity': vm.infoMessages.length > 0 ? 2 : 0, 'z-index': vm.infoMessages.length > 0 ? 10 : -10}">
+			<img class="info-icon" src="/resources/img/info-icon.png">
+			<div class="messages-group">
+				<div ng-repeat="info in vm.infoMessages">{{info.description}}</div>
+			</div>
+		</div> -->
+        
+        
+        	<form enctype=”multipart/form-data” ng-controller="FileUploadCtrl">
+            <div class="row">
+                <div class="col-md-3 col-xs-12 pr-0">
+                    <label for=""><h5><b>Batch Upload </b></h5></label>
+                     <input type="file"	ng-click="setAttributeForFileUpload('batchUpload')"
+													id="Debit" nv-file-select="" uploader="uploader">
+                </div>
+                <div class="col-md-6 col-xs-12">
+                    <h5 class="mb-15"><b> Download format </b></h5>
+                    <a href="/resources/public/csv/uploadEmployeeSample.csv" class="btn btn-default" target="_blank"> <i class="fa fa-download"></i> Download </a>
+                   	<button class="btn btn-primary ml-10" type="submit" data-toggle="modal" ng-click="uploadEmpBatchFile()">Submit</button>
+                   	
+                  <!-- <button class="btn btn-primary ml-10" type="submit" data-toggle="modal" ng-click="insertFile()" data-target="#myModalSubmiterror">Submit</button> -->
+                </div>
+            </div>
+        </form>
+        </div>
+       
+        <div class="col-md-12 ">
+            <!-- <div class="contenttitle2 pull-left">
+                <h3>Employee List</h3>
+            </div> -->
+
+            <button class="stdbtn btn_black pull-right mb-10" data-toggle="modal" data-target="#myModal"><i class="fa fa-plus-circle"></i> Add New Employee</button>
+        </div>
+        <div class="col-md-12"> 
+        
+	<form name="form" id="registor" class="form-horizontal">
+    	<div class="main_search">
+        	<div class="col-md-3 search_by">
+            	<div class="form-group m0">
+                	<label for=""><b>Search by Name :</b></label><br>
+                    <div class=" pl-0">
+                    	<input type="text" ng-focus="focus('nameToSearch')" ng-model="nameToSearch" 
+	                    						 name="nameToSearch" id="nameToSearch" placeholder="Name" class="form-control"/>
+                    </div>
+                </div>
+            </div> 
+            <div class="col-md-8 search_by">
+                <div class="form-group col-md-4 mt-15">
+                    <div class="checkbox search_in">
+                        <label>
+                            <input type="checkbox"> <b>Show Inactive Users </b>
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-8 pl-0">
+                    <button class="btn btn-primary mt-20" type="button" ng-click="searchEmployees()">Search</button>
+                    <button class="btn btn-primary mt-20" type="button" ng-click="fetchEmployeeListForView()">Reset Search</button>
+            	</div>
+        	</div>
+    	</div>
+	</form>
+        
+        <table class="table table-hover">
+            <thead class="table-head">
+                <tr>
+                    <th>Name</th>
+                    <th>Account No.</th>
+                    <th>Primary Email</th>
+                    <th>Payment Method</th>
+                    <th>Phone No. </th>
+                    <th> &nbsp;</th>
+                </tr>
+            </thead>
+
+            <tbody> 
+                <tr ng-repeat="empOb in vm.empList">
+                    <td>
+                        <div class="select_select pull-left dropdown">
+                            <button class="btn btn-default dropdown-toggle select_btn" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                            <i class="fa fa-chevron-circle-down" aria-hidden="true" class="arrow_select"></i>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                <li ng-click="getEmpDetail(empOb)" data-toggle="modal" data-target="#myModalView"> <span>View </span> </li>
+                                <li ng-click="getEmpDetail(empOb)"  data-toggle="modal" data-target="#myModalEdit"> Edit Employee</li>
+                                <li ng-click="getEmpAuditLogDetail(empOb)"  data-toggle="modal" data-target="#myModalLog">Audit Log</li>
+                                <li ng-click="dsblEmployee(empOb)" data-toggle="modal" data-target="#myModalDelete">Disable Employee</li>
+                            </ul>
+                        </div>
+                        <span class="mt-2 pull-left"><a href="" data-toggle="modal" data-target="#myModalView" ng-click="getEmpDetail(empOb)"><span ng-bind="empOb.suplierName"></span></a></span>
+                    </td>
+                    <td ng-bind="empOb.accountNo"></td>
+                    <td ng-bind="empOb.email"></td> 
+                    <td ng-bind="empOb.paymentMethod"></td>
+                    <td ng-bind="empOb.phnNo"></td>
+                    <td>
+                    <a href="#" class="btn btn4 displaynone" data-toggle="modal" data-target="#myModalEdit" id="myModalEdt"> <i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>                   
+                    <a href="#" class="btn btn4 displaynone" data-toggle="modal" data-target="#myModalDelete" id="myModalDel"> <i class="fa fa fa-trash" aria-hidden="true"></i></a> 
+                    
+                    </td>
+                </tr>               
+            </tbody>
+        </table>
+        </div>
+
+        <br clear="all" />
+        
+	</div><!-- centercontent -->
+    
+</div><!--bodywrapper-->
+
+
+<!-- add employee -->
+<div class="modal fade" tabindex="-1" role="dialog" id="myModal">
+  <div class="modal-dialog">
+  <form class="form-horizontal" name="form" id="addEmployee">
+    <div class="modal-content">
+      <div class="modal-header loginboxinner">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title"><i class="fa fa-plus"></i> Add New Employee</h4>
+      </div>
+      <div class="modal-body">      
+          <div class="form-group">
+            <label for="" class="col-sm-4 control-label">First Name<span class="mandatory">*</span> </label>
+            <div class="col-sm-6">
+            	<input type="text" ng-focus="focus('firstName')" ng-model="emp.firstName" maxlength="155"
+	                    							name="firstName" id="firstname" placeholder="First Name" class="form-control" required />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="" class="col-sm-4 control-label">Last Name<span class="mandatory">*</span></label>
+            <div class="col-sm-6">
+            	<input type="text" ng-focus="focus('lastName')" ng-model="emp.lastName" maxlength="155"
+	                    							name="lastName" id="lastName" placeholder="Last Name" class="form-control" required />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="" class="col-sm-4 control-label">Employee No.<span class="mandatory">*</span></label>
+            <div class="col-sm-6">
+            <input type="number" ng-focus="focus('venEmployeeNo')" ng-model="emp.venEmployeeNo" min=1
+	                    							name="venEmployeeNo" id="empNumber" placeholder="Employeee Number" class="form-control"  />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="" class="col-sm-4 control-label">Email Id<span class="mandatory">*</span></label>
+            <div class="col-sm-6">
+            	<input type="email" ng-focus="focus('email')" ng-model="emp.email" maxlength="155"
+	                    							name="email" id="email" placeholder="Email Id" class="form-control" required />
+            </div>
+          </div>
+
+          <div class="form-group">
+                <label for="" class="col-sm-4 control-label">Payment Method</label>
+                <div class="col-sm-6">
+					<select class="form-control form_select" name="paymentMethod" ng-model="emp.paymentMethod" >
+					<option value="">-- Select Payment Method --</option>
+						<option ng-repeat="payMethodObj in vm.paymentMethod"
+						                    value="{{payMethodObj.paymentMethodName}}">{{payMethodObj.paymentMethodName}}</option>
+					</select>
+					
+                </div>
+            </div>
+
+          <div class="form-group">
+            <label for="" class="col-sm-4 control-label">MMID<span class="mandatory">*</span></label>
+            <div class="col-sm-6">
+            	<input type="text" ng-focus="focus('mID')" ng-model="emp.mID" 
+	                    		maxlength="45" name="mID" id="mmId" placeholder="MMID" class="form-control" required />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="" class="col-sm-4 control-label">PAN No.<span class="mandatory">*</span></label>
+            <div class="col-sm-6">
+            	<input type="text" ng-focus="focus('panNumber')" ng-model="emp.panNumber" maxlength="10"
+	                    							name="panNumber" id="panNumber" placeholder="Pan Number" class="form-control pan_w" required />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="" class="col-sm-4 control-label">Account No.<span class="mandatory">*</span></label>
+            <div class="col-sm-6">
+            	<input type="text" ng-focus="focus('accountNo')" ng-model="emp.accountNo" maxlength="20"
+	                    						name="accountNo" id="accountNo" placeholder="Account Number" class="form-control" required />
+            </div>
+          </div>
+
+          <div class="form-group">
+                <label for="" class="col-sm-4 control-label">Phone No.<span class="mandatory">*</span></label>
+                <div class="col-sm-6">
+                	<input type="text" ng-focus="focus('phnNo')" ng-model="emp.phnNo" maxlength="10"
+	                    		minlength=10 name="phnNo" id="contactNumber" placeholder="Contact Number" class="form-control pan_w" required />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="" class="col-sm-4 control-label">IFSC Code<span class="mandatory">*</span></label>
+                <div class="col-sm-6">
+                <input type="text" ng-focus="focus('ifscCode')" ng-model="emp.ifscCode"  pattern="^[A-Za-z]{4}\d{7}$"
+	                    	maxlength="20"	name="ifscCode" id="ifscCode" placeholder="IFSC Code" class="form-control pan_w" required />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="" class="col-sm-4 control-label">Bank name<span class="mandatory">*</span></label>
+                <div class="col-sm-6">
+                <input type="text" ng-focus="focus('bankName')" ng-model="emp.bankName" maxlength="45"
+	                    					name="bankName" id="bankName" placeholder="Bank Name" class="form-control" required />
+                </div>
+            </div>
+           
+            <div class="form-group">
+                <label for="" class="col-sm-4 control-label">Branch Address<span class="mandatory">*</span></label>
+                <div class="col-sm-6">
+                <input type="text" ng-focus="focus('branchAddress')" ng-model="emp.branchAddress" maxlength="255"
+	                    					name="branchAddress" id="branchAddress" placeholder="Branch Address" class="form-control" required />
+                </div>
+            </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" ng-click="resetEmployeePopValue()" data-dismiss="modal">Cancel</button>
+        <button type="submit" ng-click ="addNewEmployee(emp)" class="btn btn-primary">Add</button>
+      </div>
+    </div>
+	</form>    
+  </div>
+</div>
+<!-- add user end -->
+
+
+<!-- edit user -->
+<div class="modal fade" tabindex="-1" role="dialog" id="myModalEdit">
+  <div class="modal-dialog">
+  <form class="form-horizontal" name="form" id="updateEmployee" ng-submit="updateEmployee()">
+    <div class="modal-content">
+      <div class="modal-header loginboxinner">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title"><i class="fa fa-plus"></i> Edit Employee</h4>
+      </div>
+      <div class="modal-body">
+          <div class="form-group">
+            <label for="" class="col-sm-4 control-label">First Name<span class="mandatory">*</span> </label>
+            <div class="col-sm-6">
+            	<input type="text" class="form-control" id="firstname" ng-focus="focus('firstName')"  
+                      				name="firstname" ng-model="empDetail.firstName" placeholder="First Name">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="" class="col-sm-4 control-label">Last Name<span class="mandatory">*</span></label>
+            <div class="col-sm-6">
+            	<input type="text" ng-focus="focus('lastName')" ng-model="empDetail.lastName" 
+	                    							name="lastName" id="lastName" placeholder="Last Name" required />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="" class="col-sm-4 control-label">Employee No.<span class="mandatory">*</span></label>
+            <div class="col-sm-6">
+            	<input type="text" ng-focus="focus('empNumber')" ng-model="empDetail.venEmployeeNo" 
+	                    							name="empNumber" id="empNumber" placeholder="Employeee Number" class="form-control"  />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="" class="col-sm-4 control-label">Email Id<span class="mandatory">*</span></label>
+            <div class="col-sm-6">
+            	<input type="text" ng-focus="focus('email')" ng-model="empDetail.email" 
+	                    							name="email" id="email" placeholder="Email Id" class="form-control" required />
+            </div>
+          </div>
+
+          <div class="form-group">
+                <label for="" class="col-sm-4 control-label">Payment Method </label>
+                <div class="col-sm-6">			
+					<select class="form-control form_select" name="paymentMethod" ng-model="empDetail.paymentMethod" >
+						<option ng-repeat="payMethodObj in vm.paymentMethod" value="{{payMethodObj.paymentMethodName}}">{{payMethodObj.paymentMethodName}}</option>
+					</select>
+					
+                </div>
+            </div>
+
+          <div class="form-group">
+            <label for="" class="col-sm-4 control-label">MMID<span class="mandatory">*</span></label>
+            <div class="col-sm-6">
+            	<input type="text" ng-focus="focus('mID')" ng-model="empDetail.mID" 
+	                    							name="mID" id="mmId" placeholder="MMID" class="form-control" required />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="" class="col-sm-4 control-label">PAN No.<span class="mandatory">*</span></label>
+            <div class="col-sm-6">
+              <input type="text" ng-focus="focus('panNumber')" ng-model="empDetail.panNumber" 
+	                    							name="panNumber" id="panNumber" placeholder="PAN NUMBER" class="form-control" required />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="" class="col-sm-4 control-label">Account No.<span class="mandatory">*</span></label>
+            <div class="col-sm-6">
+				<input type="text" ng-focus="focus('accountNo')" ng-model="empDetail.accountNo" 
+	                    						name="accountNo" id="accountNo" placeholder="ACCOUNT NUMBER" class="form-control" required />
+            </div>
+          </div>
+
+          <div class="form-group">
+                <label for="" class="col-sm-4 control-label">Phone No.<span class="mandatory">*</span></label>
+                <div class="col-sm-6">
+                  <input type="text" ng-focus="focus('phnNo')" ng-model="empDetail.phnNo" 
+	                    					name="phnNo" id="contactNumber" placeholder="Contact Number" class="form-control" required />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="" class="col-sm-4 control-label">IFSC Code<span class="mandatory">*</span></label>
+                <div class="col-sm-6">
+                  <input type="text" ng-focus="focus('ifscCode')" ng-model="empDetail.ifscCode" 
+	                    					name="ifscCode" id="ifscCode" placeholder="IFSC Code" class="form-control" required />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="" class="col-sm-4 control-label">Bank name<span class="mandatory">*</span></label>
+                <div class="col-sm-6">
+                  <input type="text" ng-focus="focus('bankName')" ng-model="empDetail.bankName" 
+	                    					name="bankName" id="bankName" placeholder="Bank Name" class="form-control" required />
+                </div>
+            </div>
+           
+            <div class="form-group">
+                <label for="" class="col-sm-4 control-label">Branch<span class="mandatory">*</span></label>
+                <div class="col-sm-6">
+                  <input type="text" ng-focus="focus('branchAddress')" ng-model="empDetail.branchAddress" 
+	                    					name="branchAddress" id="branch" placeholder="Branch Address" class="form-control" required />
+                </div>
+            </div>
+          
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <button type="button" ng-click="updateEmployee(empDetail)" class="btn btn-primary">Update</button>
+      </div>
+    </div>
+	</form>    
+  </div>
+</div>
+
+
+
+<!-- audit log -->
+<div class="modal fade" tabindex="-1" role="dialog" id="myModalLog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title"><i class="fa fa-edit"></i> Audit Log</h4>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal">
+            <table class="table table-hover">
+                <thead class="table-head">
+                    <tr>
+                        <th>Operation Type</th>
+                        <th>Action Type</th>
+                        <th>Field Type</th>
+                        <th>Old Value</th>
+                        <th>New Value</th>
+                        <th>Creation Date/time</th>
+                        <th>Created By</th>
+                    </tr>
+                </thead>
+
+                <tbody ng-repeat="auditLogOb in auditLogDetail"> 
+                    <tr>
+                        <td ng-bind="auditLogOb.operationType"></td>
+                        <td ng-bind="auditLogOb.actionType"></td>
+                        <td ng-bind="auditLogOb.fieldType"></td>
+                        <td ng-bind="auditLogOb.oldValue"></td>
+                        <td ng-bind="auditLogOb.newValue"></td>
+                        <td ng-bind="auditLogOb.creationDateTime"></td>
+                        <td ng-bind="auditLogOb.createdBy"></td>
+                    </tr>
+                </tbody>
+                
+            </table>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+        
+
+<!-- trace -->
+<div class="modal fade" id="myModalDelete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog ">
+  	<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		<form name="form" id="registor" class="form-horizontal" >
+    		<div class="modal-content">
+				<div class="modal-body">
+        			<h3 class="text-center">Are you sure you want to disable? </h3>
+      			</div>
+      			<div class="modal-footer">
+        			<button type="button" class="btn btn-default" ng-click="disableEmp(empObj)">Yes</button>
+        			<button type="button" class="btn btn-primary" data-dismiss="modal">No</button>
+      			</div>
+    		</div>
+    	</form>
+    
+	</div>
+</div>
+<!-- trace close-->
+
+
+        
+
+<!-- view employee detail -->
+<div class="modal fade" tabindex="-1" role="dialog" id="myModalView">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header loginboxinner">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title"><i class="fa fa-eye"></i> View Employee</h4>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal">
+          <div class="form-group">
+            <label for="" class="col-sm-4 control-label">First Name :</label>
+            <div class="col-sm-8 pt-7" ng-bind="empDetail.firstName"></div>
+          </div>
+          <hr class="viewhr">
+          <div class="form-group">
+            <label for="" class="col-sm-4 control-label">Last Name :</label>
+            <div class="col-sm-8 pt-7" ng-bind="empDetail.lastName"></div>
+          </div>
+          <hr class="viewhr">
+           <div class="form-group">
+            <label for="" class="col-sm-4 control-label">Employee No. :</label>
+            <div class="col-sm-8 pt-7" ng-bind="empDetail.venEmployeeNo"></div>
+          </div>
+
+          <hr class="viewhr">
+
+            <div class="form-group">
+                <label for="" class="col-sm-4 control-label">Email ID :</label>
+                <div class="col-sm-8 pt-7" ng-bind="empDetail.email"></div>
+            </div>
+            <hr class="viewhr">
+
+             <div class="form-group">
+                <label for="" class="col-sm-4 control-label">Payment Method :</label>
+                <div class="col-sm-8 pt-7" ng-bind="empDetail.paymentMethod"></div>
+            </div>
+            <hr class="viewhr">
+
+            <div class="form-group">
+                <label for="" class="col-sm-4 control-label">MMID :</label>
+                <div class="col-sm-8 pt-7" ng-bind="empDetail.mID"></div>
+            </div>
+            <hr class="viewhr">
+
+            <div class="form-group">
+                <label for="" class="col-sm-4 control-label">PAN No :</label>
+                <div class="col-sm-8 pt-7" ng-bind="empDetail.panNumber"></div>
+            </div>
+            <hr class="viewhr">
+            
+            <div class="form-group">
+                <label for="" class="col-sm-4 control-label">Account No. :</label>
+                <div class="col-sm-8 pt-7" ng-bind="empDetail.accountNo"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="" class="col-sm-4 control-label">Phone No. :</label>
+                <div class="col-sm-8 pt-7" ng-bind="empDetail.phnNo"></div>
+            </div>
+            <hr class="viewhr">
+
+            <div class="form-group">
+                <label for="" class="col-sm-4 control-label">IFSC Code :</label>
+                <div class="col-sm-8 pt-7" ng-bind="empDetail.ifscCode"></div>
+            </div>
+            <hr class="viewhr">
+
+            <div class="form-group">
+                <label for="" class="col-sm-4 control-label">Bank Name :</label>
+                <div class="col-sm-8 pt-7" ng-bind="empDetail.bankName"></div>
+            </div>
+            <hr class="viewhr">
+
+            <div class="form-group">
+                <label for="" class="col-sm-4 control-label">Branch :</label>
+                <div class="col-sm-8 pt-7" ng-bind="empDetail.branchAddress"></div>
+            </div>
+            <hr class="viewhr">
+        </form>
+
+        <table class="table table-hover">
+            <thead class="table-head">
+                <tr>
+                    <th>Date</th>
+                    <th>Action </th>
+                    <th>Action By</th>
+                </tr>
+            </thead>
+
+            <tbody ng-repeat="auditLogOb in auditLogDetail"> 
+                <tr>
+                    <td ng-bind="auditLogOb.creationDateTime"></td>
+                    <td ng-bind="auditLogOb.actionType"></td>
+                    <td ng-bind="auditLogOb.createdBy"></td>                            
+                </tr>
+            </tbody>
+            
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- view user end -->
+
+ 
+
+<!-- approval log -->
+<div class="modal fade" tabindex="-1" role="dialog" id="myModalApprovallog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title"><i class="fa fa-edit"></i> Approval Log </h4>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal">
+            <table class="table table-hover">
+                <thead class="table-head">
+                    <tr>
+                        <th>Date</th>
+                        <th>Approver Name</th>
+                        <th>Approval Status</th>
+                        <th>Comment</th>
+                    </tr>
+                </thead>
+
+                <tbody> 
+                    <tr>
+                        <td>22.05.2016, 12:10 PM</td>
+                        <td>Surendra Singh</td>
+                        <td>Approve</td>
+                        <td>Comment goes here</td>                            
+                    </tr>
+
+                    <tr>
+                        <td>21.05.2016, 12:10 PM</td>
+                        <td>Bhanu Pratap</td>
+                        <td>Approve</td>
+                        <td>Comment goes here</td>                            
+                    </tr>
+
+                    <tr>
+                        <td>19.05.2016, 12:10 PM</td>
+                        <td>Ajay Sharma</td>
+                        <td>Approve</td>
+                        <td>Comment goes here</td>                            
+                    </tr>
+                </tbody>
+            </table>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary">Add</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+<!-- error table -->
+<div class="modal fade" tabindex="-1" role="dialog" id="myModalSubmiterror">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title"><i class="fa fa-edit"></i> Batch Upload</h4>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal">
+            <table class="table table-hover">
+            <thead class="table-head">
+                <tr>
+                    <th>No.</th>
+                    <th>Field Name</th>
+                    <th>Value</th>
+                    <th>Error Message</th>
+                </tr>
+            </thead>
+
+            <tbody> 
+                <tr>
+                    <td>4</td>
+                    <td>Employee</td>
+                    <td>&nbsp;</td>
+                    <td><span class="text-danger"> No Employee Name</span></td>
+                </tr>
+               
+                <tr>
+                    <td>7</td>
+                    <td>Employee</td>
+                    <td>XYZ $ Name</td>
+                    <td><span class="text-danger"> No special character</span></td>
+                </tr>
+                
+            </tbody>
+
+        </table>
+         Please correct these fields.
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+var filestyler = new buttontoinputFile();
+</script>
+
+<script>
+    // w3IncludeHTML();
+
+    
+     function openpopup(value){
+        // alert(value);
+        if(value=="1"){
+             $('#myModalView').trigger('click');
+        }
+
+        if(value==2){
+            $('#myModalEdit').trigger('click');
+        }
+
+         if(value==2){
+            $('#myModalLog').trigger('click');
+        }
+         if(value==3){
+            $('#myModalDelte').trigger('click');
+        }
+    }
+</script>
+
+<script>
+    $(document).on("shown.bs.dropdown", ".dropdown", function () {
+    // calculate the required sizes, spaces
+    var $ul = $(this).children(".dropdown-menu");
+    var $button = $(this).children(".dropdown-toggle");
+    var ulOffset = $ul.offset();
+    // how much space would be left on the top if the dropdown opened that direction
+    var spaceUp = (ulOffset.top - $button.height() - $ul.height()) - $(window).scrollTop();
+    // how much space is left at the bottom
+    var spaceDown = $(window).scrollTop() + $(window).height() - (ulOffset.top + $ul.height());
+    // switch to dropup only if there is no space at the bottom AND there is space at the top, or there isn't either but it would be still better fit
+    if (spaceDown < 0 && (spaceUp >= 0 || spaceUp > spaceDown))
+      $(this).addClass("dropup");
+}).on("hidden.bs.dropdown", ".dropdown", function() {
+    // always reset after close
+    $(this).removeClass("dropup");
+});
+</script>
+</body>
+
+</html>

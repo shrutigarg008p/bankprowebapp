@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Approve Beneficiary</title>
+<link rel="stylesheet" href="/resources/public/css/style.default.css" type="text/css" />
+<link rel="stylesheet" href="/resources/public/css/main.css" type="text/css" />
+
+<link href="/resources/public/css/bootstrap.min.css" rel="stylesheet">
+<link href="/resources/public/css/font-awesome.min.css" rel="stylesheet">
+
+<script src="https://code.jquery.com/jquery-1.12.1.min.js"></script>
+<link rel="stylesheet" type="text/css" href="/resources/public/css/font-awesome.css">
+
+<script type="text/javascript" src="/resources/public/js/plugins/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="/resources/public/js/plugins/jquery-1.7.min.js"></script>
+<script type="text/javascript" src="/resources/public/js/plugins/jquery-ui-1.8.16.custom.min.js"></script>
+<script type="text/javascript" src="/resources/public/js/plugins/jquery.cookie.js"></script>
+<script type="text/javascript" src="/resources/public/js/plugins/jquery.uniform.min.js"></script>
+<script type="text/javascript" src="/resources/public/js/plugins/jquery.flot.min.js"></script>
+<script type="text/javascript" src="/resources/public/js/plugins/jquery.flot.resize.min.js"></script>
+<script type="text/javascript" src="/resources/public/js/plugins/jquery.slimscroll.js"></script>
+<script type="text/javascript" src="/resources/public/js/plugins/colorpicker.js"></script>
+<script type="text/javascript" src="/resources/public/js/custom/elements.js"></script>
+<script type="text/javascript" src="/resources/public/js/custom/angular.js"></script>
+<script type="text/javascript" src="/resources/public/js/custom/angular-cookies.min.js"></script>
+<script type="text/javascript" src="/resources/public/js/angular-file-upload.js"></script>
+
+<script src="/resources/public/js/bootstrap.min.js"></script> 
+<script type="text/javascript" src="/resources/public/js/approve-beneficiary.js"></script>
+
+<!-- datepicker -->
+<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
+
+<!-- Add header.js to get user access permissions -->
+<script type="text/javascript" src="/resources/public/js/header.js"></script>
+
+</head>
+
+<body class="withvernav" ng-controller="vendorForApprovalCtrl" id="approveVendorApp">
+
+<div class="bodywrapper">
+
+	<div id="msgTimeOut" ng-if= "successMsg != ''" >
+		<p class="bg_success">
+			<i class="glyphicon glyphicon-ok"></i> <span><b>SUCCESS!</b></span><br>
+				{{successMsg}}
+		</p>
+		<script>
+			setTimeout(function() {
+				error = '';
+				$('#msgTimeOut').hide();
+			}, 10000);
+		</script>
+	</div>
+	
+	<div id="msgTimeOut" ng-if="error != ''" style="display:none;">
+		<p class="bg_error">
+			<i class="glyphicon glyphicon-remove"></i> <span><b>ERROR!</b></span><br>
+				{{error}}
+		</p>
+		<script>			
+			setTimeout(function() {
+				error = '';
+					$('#msgTimeOut').hide();
+			}, 10000);
+		</script>
+	</div>
+
+<div ng-include="'topheader.html'"></div>
+<script>
+	setTimeout( function() {
+ 		$('#vendor').addClass('current')
+	} ,3000);
+</script>
+
+    <div class="vernav2 iconmenu" ng-controller="UserRoleCntrl">
+       <ul>
+        	<li><a href="#formsub" class="editor">Vendor </a>
+            	<span class="arrow"></span>
+            	<ul id="formsub">
+         		    <li ng-if="((vm.userRoleList.roleDesciption.indexOf('Admin') >= 0) || (vm.userRoleList.roleDesciption.indexOf('Vendor List') >= 0))" ><a href="vendorInfo.html">Vendor List</a></li>
+					<li ng-if="((vm.userRoleList.roleDesciption.indexOf('Admin') >= 0) || (vm.userRoleList.roleDesciption.indexOf('Vendor Approve') >= 0))" class="current"><a href="approve-beneficiary.html">Approve</a></li>
+                </ul>
+            </li>
+            <li ng-if="((vm.userRoleList.roleDesciption.indexOf('Admin') >= 0) || (vm.userRoleList.roleDesciption.indexOf('Employee') >= 0))" ><a href="employee.html" >Employee</a></li>
+        </ul>
+        <a class="togglemenu"></a>
+        <br /><br />
+    </div><!--leftmenu-->	
+    
+        
+    <div class="centercontent">
+    
+        <div class="pageheader">
+           
+            <div class="pageheader_edit">
+                <h1 class="pagetitle">Approve Vendor</h1>
+            </div>
+            <div class="clearphone"></div> 
+            <div class="search pull_right">
+                <form action="#" method="post">
+                    <input type="text" name="keyword" id="keyword" value="Search" />
+                    <button class="submitbutton"></button>
+                </form>
+            </div>           
+        </div><!--pageheader-->
+        <div class="clearfix"></div>
+        
+
+	<div class="col-md-12">
+	
+		<!-- Nav tabs -->
+	    <ul class="nav nav-tabs" role="tablist">
+	    	<li role="presentation" class="active"><a href="#approve" aria-controls="home" role="tab" data-toggle="tab">Approve</a></li>
+	        <li role="presentation"><a href="#approvalHistory" aria-controls="profile" role="tab" data-toggle="tab" ng-click="apprVendorHistory()">Approval History</a></li>
+		</ul>
+	
+	    <!-- Tab panes -->
+	    <div class="tab-content">
+	    	<div role="tabpanel" class="tab-pane active" id="approve">
+	    		<form name="form" id="registor" class="form-horizontal">
+	        		<div class="main_search">
+	            		<div class="col-md-3 search_by">
+	                		<label for=""><b>Search by Date: </b></label><br>
+	                    	From <input type="text" id="datePickFrom" ng-model="searchVendor.dateFrom" name="searchVendor.dateFrom" /> &nbsp; &nbsp; To: &nbsp; <input type="text" id="datePickTo" ng-model="searchVendor.dateTo" name="searchVendor.dateTo" />
+	                												  
+	                	</div>
+	
+						<div class="col-md-3 search_by">
+	                		<div class="form-group">
+	                    		<label for=""><b>Search by Name :</b></label><br>
+	                        	<div class="col-md-12 pl-0">
+	                        		<input type="text" class="form-control" ng-model="searchVendor.supplierName" name="supplierName" id="supplierName" placeholder="Name"  />
+	                        	</div>
+	                    	</div>
+						</div>
+	
+	                	<div class="col-md-1 search_by">
+		                	<div class="form-group">
+		                    	<!-- <lable for=""><b>Search by Amount :</b></lable><br> -->
+		                       <!--  From <input type="text" ng-model="searchVendor.amountFrom" name="amountFrom" id="amountFrom" class="hasamount"> &nbsp; &nbsp; To: &nbsp;<input type="text" ng-model="searchVendor.amountTo" name="amountTo" id="amountTo" class="hasamount"> -->
+		                        <button class="btn btn-primary mt-20" type="button" ng-click="searchVendorForApproval(searchVendor)">Search</button>
+		                        
+		                    </div>
+						</div>
+					</div>
+				</form>
+				
+	            <table class="table table-hover">
+	            	<thead class="table-head">
+	                	<tr>
+	                    	<th>Name</th>
+	                        <th>Account No.</th>
+	                        <th>IFSC</th>
+	                        <th>Primary Email</th>
+	                        <th>Payment Method</th>
+	                        <th>Phone No. </th>
+	                        <th> &nbsp;</th>
+							<th> &nbsp;</th>
+						</tr>
+					</thead>
+	
+	                <tbody ng-repeat ="venObj in vendorData"> 
+	                	<tr>
+	                    	<td>
+	                        	<div class="select_select pull-left dropdown">
+	                        		<button class="btn btn-default dropdown-toggle select_btn" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+	                                	<i class="fa fa-chevron-circle-down" aria-hidden="true" class="arrow_select"></i>
+									</button>
+									<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+	                                	<li ng-click="getVendorDetail(venObj)" data-toggle="modal" data-target="#myModalView1"> <span>View </span> </li>
+										<li ng-click="getAproverLog(venObj)" data-toggle="modal" data-target="#myModalApprovallog">Approval Log </li>
+	                                    <li ng-click="auditTrailView(venObj)" data-toggle="modal" data-target="#myModalLog">Audit Log</li>
+	                                    <li ng-click="getAproverLog(venObj)" data-toggle="modal" data-target="#myModalCommentView">Comment</li>
+	                                    <li ng-click="dsblVendor(venObj)" data-toggle="modal" data-target="#myModalDelete">Disable </li>
+									</ul>
+								</div>
+	                            <span class="mt-2 pull-left"><a href="" data-toggle="modal" data-target="#myModalView1" ng-click="getVendorDetail(venObj)" ng-bind="venObj.suplierName"></a></span>
+							</td>
+	                        <td ng-bind="venObj.accountNo"></td>
+	                        <td ng-bind="venObj.ifscCode"></td>
+	                        <td ng-bind="venObj.primEmailId"></td> 
+	                        <td ng-bind="venObj.paymentMethod"></td>
+	                        <td ng-bind="venObj.phnNo"></td>
+	                            
+	                        <td> 
+	                        	<button class="btn btn-success btn-xs" data-toggle="modal" data-target="#myModalCommentAppr" ng-click="apprVendor(venObj)">Approve</button> &nbsp;
+	                            <button class="btn btn-danger btn-xs" data-toggle="modal" data-target="#myModalCommentDecl" ng-click="regectVendor(venObj)">Decline</button>
+							</td>
+						</tr>
+					</tbody>
+	                
+				</table>
+			</div>
+	        <div role="tabpanel" class="tab-pane" id="approvalHistory">
+				<div class="main_search">
+	            	<div class="col-md-3 search_by">
+	                	<label for="" ><b>Search by Date: </b></label><br>
+	                    From <input type="text" id="historyDatePickFrom" ng-model="searchVendorHistory.dateFrom" name="searchVendorHistory.dateFrom" /> &nbsp; &nbsp; To: &nbsp; <input type="text" id="historyDatePickTo" ng-model="searchVendorHistory.dateTo" name="searchVendorHistory.dateTo" />
+	                </div>
+	
+	                <div class="col-md-3 search_by pl-0 pr-0">
+	                    <div class="form-group">
+	                        <label for=""><b>Search by Name :</b></label><br>
+	                        <div class="col-md-12 pl-0">
+	                            <input type="text" class="form-control" ng-model="searchVendorHistory.supplierName" name="supplierName" id="supplierName" placeholder="Name"  />
+	                        </div>
+	                    </div>
+	                </div>
+	
+	                <div class="col-md-1 search_by pl-0">
+	                    <div class="form-group">
+	                       <!--  <lable for=""><b>Search by Amount :</b></lable><br>
+	                        From <input type="text" id="" class="hasamount"> &nbsp; &nbsp; To: &nbsp;<input type="text" id="" class="hasamount"> -->
+	                        <button class="btn btn-primary mt-20" type="button" ng-click="searchVendorForApprovalHistory(searchVendorHistory)">Search</button>
+	                    </div>
+	                </div>
+				</div>
+	            <table class="table table-hover">
+	            	<thead class="table-head">
+	                	<tr>
+	                    	<th>Name</th>
+	                        <th>Account No.</th>
+	                        <th>IFSC</th>
+	                        <th>Primary Email</th>
+	                        <th>Payment Method</th>
+	                        <th>Phone No. </th>
+						</tr>
+					</thead>
+	
+	                 <tbody ng-repeat ="venHistoryObj in vendorHistoryData"> 
+	                 	<tr>
+	                    	<td>
+	                        	<div class="select_select pull-left dropdown">
+	                            	<button class="btn btn-default dropdown-toggle select_btn" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+	                                	<i class="fa fa-chevron-circle-down" aria-hidden="true" class="arrow_select"></i>
+	                                </button>
+									<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+	                                	<li ng-click="getVendorDetail(venHistoryObj)" data-toggle="modal" data-target="#myModalView1"> <span>View </span> </li>
+	                                    <li ng-click="getAproverLog(venHistoryObj)" data-toggle="modal" data-target="#myModalApprovallog">Approval Log</li>
+	                                    <li ng-click="auditTrailView(venHistoryObj)" data-toggle="modal" data-target="#myModalLog">Audit Log</li>
+	                                    <li ng-click="dsblVendor(venHistoryObj)" data-toggle="modal" data-target="#myModalDelete">Disable </li>
+									</ul>
+								</div>
+	                            <span class="mt-2 pull-left"><a href="" data-toggle="modal" data-target="#myModalView1" ng-click="getVendorDetail(venHistoryObj)" ng-bind="venHistoryObj.suplierName"></a></span>
+							</td>
+	                            
+	                        <td ng-bind="venHistoryObj.accountNo"></td>
+	                        <td ng-bind="venHistoryObj.ifscCode"></td>
+	                        <td ng-bind="venHistoryObj.primEmailId"></td> 
+	                        <td ng-bind="venHistoryObj.paymentMethod"></td>
+	                        <td ng-bind="venHistoryObj.phnNo"></td>
+						</tr>
+					</tbody>
+					
+				</table>
+			</div>
+	            
+		</div>
+	
+	</div>
+
+
+        <div class="col-md-12"> 
+            <!-- add user -->
+            <div class="modal fade" tabindex="-1" role="dialog" id="myModal">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header loginboxinner">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title"><i class="fa fa-plus"></i> Add New Employee</h4>
+                  </div>
+                  <div class="modal-body">
+                    <form class="form-horizontal">
+                      <div class="form-group">
+                        <label for="" class="col-sm-4 control-label">First Name<span class="mandatory">*</span> </label>
+                        <div class="col-sm-8">
+                          <input type="email" class="form-control" id="" placeholder="">
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="" class="col-sm-4 control-label">Last Name<span class="mandatory">*</span></label>
+                        <div class="col-sm-8">
+                          <input type="type" class="form-control" id="" placeholder="">
+                        </div>
+                      </div>
+
+                      <div class="form-group">
+                        <label for="" class="col-sm-4 control-label">Account No.<span class="mandatory">*</span></label>
+                        <div class="col-sm-8">
+                          <input type="type" class="form-control" id="" placeholder="">
+                        </div>
+                      </div>
+
+                      <div class="form-group">
+                        <label for="" class="col-sm-4 control-label">City<span class="mandatory">*</span></label>
+                        <div class="col-sm-8">
+                          <input type="type" class="form-control" id="" placeholder="">
+                        </div>
+                      </div>
+
+                      <div class="form-group">
+                            <label for="" class="col-sm-4 control-label">Phone No.<span class="mandatory">*</span></label>
+                            <div class="col-sm-8">
+                              <input type="email" class="form-control" id="" placeholder="">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="" class="col-sm-4 control-label">IFSC Code<span class="mandatory">*</span></label>
+                            <div class="col-sm-8">
+                              <input type="email" class="form-control" id="" placeholder="">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="" class="col-sm-4 control-label">Bank name<span class="mandatory">*</span></label>
+                            <div class="col-sm-8">
+                              <input type="email" class="form-control" id="" placeholder="">
+                            </div>
+                        </div>
+                       
+                        <div class="form-group">
+                            <label for="" class="col-sm-4 control-label">Branch<span class="mandatory">*</span></label>
+                            <div class="col-sm-8">
+                              <input type="email" class="form-control" id="" placeholder="">
+                            </div>
+                        </div>
+
+                        
+                        
+                      
+                    </form>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary">Add</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- add user end -->
+
+
+            <!-- edit user -->
+            <div class="modal fade" tabindex="-1" role="dialog" id="myModalEdit">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title"><i class="fa fa-edit"></i> Edit Vendor</h4>
+                  </div>
+                  <div class="modal-body">
+                    <form class="form-horizontal">
+                      <div class="form-group">
+                        <label for="" class="col-sm-4 control-label">First Name </label>
+                        <div class="col-sm-8">
+                          <input type="email" class="form-control" id="" placeholder="Prefilled">
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="" class="col-sm-4 control-label">Last Name</label>
+                        <div class="col-sm-8">
+                          <input type="type" class="form-control" id="" placeholder="Prefilled">
+                        </div>
+                      </div>
+
+                        <div class="form-group">
+                            <label for="" class="col-sm-4 control-label">Email ID </label>
+                            <div class="col-sm-8">
+                              <input type="email" class="form-control" id="" placeholder="Prefilled">
+                            </div>
+                        </div>
+
+                       
+                        <div class="form-group">
+                            <label for="" class="col-sm-4 control-label">Contact No.</label>
+                            <div class="col-sm-8">
+                              <input type="email" class="form-control" id="" placeholder="Prefilled">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="" class="col-sm-4 control-label">Name of Organization</label>
+                            <div class="col-sm-8">
+                              <input type="email" class="form-control" id="" placeholder="Prefilled">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="" class="col-sm-4 control-label">Role</label>
+                            <div class="col-sm-8">
+                              <select class="form-control">
+                                  <option>Invoice Maker</option>
+                                  <option>2</option>
+                                  <option>3</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="" class="col-sm-4 control-label"></label>
+                            <div class="col-sm-7">
+                              <select class="form-control">
+                                  <option>Payment Approver</option>
+                                  <option>2</option>
+                                  <option>3</option>
+                                </select>
+                            </div>
+
+                            <div class="col-sm-1 p0">
+                              <a href="#" class="btn btn3 btn_black radius50"><i class="fa fa-plus"></i></a>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label for="" class="col-sm-4 control-label">Employee No.</label>
+                            <div class="col-sm-8">
+                              <input type="email" class="form-control" id="" placeholder="Prefilled">
+                            </div>
+                        </div>
+
+                         <div class="form-group">
+                            <label for="" class="col-sm-4 control-label">Address</label>
+                            <div class="col-sm-8">
+                              <textarea class="form-control" rows="3"></textarea>
+                            </div>
+                        </div>
+                      
+                    </form>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary">Add</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+        
+
+	<!-- trace -->
+	<div class="modal fade" id="myModalDelete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    	<div class="modal-dialog ">
+        	<div class="modal-content">
+            	<div class="modal-body">
+					<h3 class="text-center">Are you sure you want to disable? </h3>
+				</div>
+                <div class="modal-footer">
+                	<button type="button" class="btn btn-default" ng-click = "disableVendor(venObjDetail)" >Yes</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">No</button>
+				</div>
+			</div>
+		</div>
+	</div>
+    <!-- trace close-->
+
+	<!-- approve comment start 1 -->
+	<div class="modal fade" id="myModalCommentAppr" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    	<div class="modal-dialog ">
+        	<form class="form-horizontal" name="form" id="addEmployee" ng-submit="approveVendor(vendorObj)">
+            	<div class="modal-content">
+                	<div class="modal-header loginboxinner">
+                    	<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    	<h4 class="modal-title"><i class="fa fa-edit"></i> Comment</h4>
+					</div>
+                  	<div class="modal-body">
+                    	<div class="form-group">
+                    		<label for="">Write a comment</label>
+                        	<textarea class="form-control" rows="3" ng-model="vendorObj.comment" required></textarea>
+						</div>
+					</div>
+		            <div class="modal-footer">
+		            	<button type="button" class="btn btn-default" data-dismiss="modal">Skip</button>
+		                <button type="submit" class="btn btn-primary">Submit</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+    <!-- approve comment 1 close-->
+            
+            <!-- decline comment start 1 -->
+			<div class="modal fade" id="myModalCommentDecl" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            	<div class="modal-dialog ">
+              		<form class="form-horizontal" name="form" id="addEmployee" ng-submit="declineVendor(vendorObj)">              		
+                		<div class="modal-content">
+                 			<div class="modal-header loginboxinner">
+                    			<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    			<h4 class="modal-title"><i class="fa fa-edit"></i> Comment</h4>
+                  			</div>
+                  			<div class="modal-body">
+                        		<div class="form-group">
+                            		<label for="">Write a comment</label>
+                            		<textarea class="form-control" rows="3" ng-model="vendorObj.comment" required></textarea>
+                        		</div>
+                  			</div>
+	                  		<div class="modal-footer">
+	                    		<button type="button" class="btn btn-default" data-dismiss="modal">Skip</button>
+	                    		<button type="submit" class="btn btn-primary">Submit</button>
+	                  		</div>
+                		</div>
+					</form>
+				</div>
+            </div>
+            <!-- decline comment 1 close-->
+
+	<!-- comment view start 1 -->
+    <div class="modal fade" id="myModalCommentView" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    	<div class="modal-dialog ">
+        	<div class="modal-content">
+            	<div class="modal-header loginboxinner">
+                	<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title"><i class="fa fa-eye"></i> Comment</h4>
+                </div>
+				<div class="modal-body">
+                	<div class="form-group" ng-repeat="aprLogObj in approverLog">
+                    	<p ng-bind="aprLogObj.comment"></p>
+					</div>
+				</div>
+				<div class="modal-footer">
+            		<button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+				</div>
+			</div>
+		</div>
+	</div>
+    <!-- comment view1 close-->
+
+
+            <!-- view user 1-->
+            <div class="modal fade" tabindex="-1" role="dialog" id="myModalView1">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header loginboxinner">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title"><i class="fa fa-eye"></i> View</h4>
+                  </div>
+                  <div class="modal-body">
+                    <form class="form-horizontal">
+                      
+                        <div class="form-group">
+                        <label for="" class="col-sm-4 control-label"> Name :</label>
+                        <div class="col-sm-8 pt-7" ng-bind="venDetail.firstName"></div>
+                      </div>
+                      <hr class="viewhr">
+                      <div class="form-group">
+                        <label for="" class="col-sm-4 control-label">Email ID :</label>
+                        <div class="col-sm-8 pt-7" ng-bind="venDetail.email"></div>
+                      </div>
+                      <hr class="viewhr">
+                      <div class="form-group">
+                        <label for="" class="col-sm-4 control-label">Supplier Name :</label>
+                        <div class="col-sm-8 pt-7" ng-bind="venDetail.suplierName"></div>
+                      </div>
+                      <hr class="viewhr">
+                      <div class="form-group">
+                        <label for="" class="col-sm-4 control-label">Supplier No :</label>
+                        <div class="col-sm-8 pt-7" ng-bind="venDetail.suplierNo"></div>
+                      </div>
+
+                      <hr class="viewhr">
+
+                        <div class="form-group">
+                            <label for="" class="col-sm-4 control-label">Payment Name :</label>
+                            <div class="col-sm-8 pt-7" ng-bind="venDetail.paymentName"></div>
+                        </div>
+                        <hr class="viewhr">
+                       
+                        <div class="form-group">
+                            <label for="" class="col-sm-4 control-label">PAN Number :</label>
+                            <div class="col-sm-8 pt-7" ng-bind="venDetail.panNumber"></div>
+                        </div>
+                        <hr class="viewhr">
+
+                        <div class="form-group">
+                            <label for="" class="col-sm-4 control-label">Vendor Type :</label>
+                            <div class="col-sm-8 pt-7" ng-bind="venDetail.vendorType"></div>
+                        </div>
+                        <hr class="viewhr">
+
+                        <div class="form-group">
+                            <label for="" class="col-sm-4 control-label">Company Type :</label>
+                            
+                            <!-- <div class="col-sm-8 pt-7" ng-if="venDetail.companyType == 5">Manufacturer</div>
+                            <div class="col-sm-8 pt-7" ng-if="venDetail.companyType == 7">Suplier</div>
+                            <div class="col-sm-8 pt-7" ng-if="venDetail.companyType == 8">Seller</div>
+                            <div class="col-sm-8 pt-7" ng-if="venDetail.companyType == 10">Retailor</div>
+                            <div class="col-sm-8 pt-7" ng-if="venDetail.companyType == 15">Distributor</div> -->
+                            
+                            <div class="col-sm-8 pt-7" ng-bind="venDetail.companyType"></div>
+                        </div>
+                        <hr class="viewhr">
+
+                        <div class="form-group">
+                            <label for="" class="col-sm-4 control-label">Payment Method :</label>
+                            <div class="col-sm-8 pt-7" ng-bind="venDetail.paymentMethod"></div>
+                        </div>
+                        <hr class="viewhr">
+
+                        <div class="form-group">
+                            <label for="" class="col-sm-4 control-label">Payment Terms :</label>
+                            <div class="col-sm-8 pt-7" ng-bind="venDetail.paymentTerm"></div>
+                        </div>
+                        <hr class="viewhr">
+                        <div class="form-group">
+                            <label for="" class="col-sm-4 control-label">Bank Name :</label>
+                            <div class="col-sm-8 pt-7" ng-bind="venDetail.bankName"></div>
+                        </div>
+                        <hr class="viewhr">
+                        <div class="form-group">
+                            <label for="" class="col-sm-4 control-label">Branch Name:</label>
+                            <div class="col-sm-8 pt-7" ng-bind="venDetail.branchAddress"></div>
+                        </div>
+                        <hr class="viewhr">
+                        <div class="form-group">
+                            <label for="" class="col-sm-4 control-label">Account No.:</label>
+                            <div class="col-sm-8 pt-7" ng-bind="venDetail.accountNo"></div>
+                        </div>
+                        <hr class="viewhr">
+
+                        <div class="form-group">
+                            <label for="" class="col-sm-4 control-label">Account Name.:</label>
+                            <div class="col-sm-8 pt-7" ng-bind="venDetail.accName"></div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="" class="col-sm-4 control-label">Currency:</label>
+                            <div class="col-sm-8 pt-7" ng-bind="venDetail.currency"></div>
+                        </div>
+                        <hr class="viewhr">
+                        <div class="form-group">
+                            <label for="" class="col-sm-4 control-label">MID :</label>
+                            <div class="col-sm-8 pt-7" ng-bind="venDetail.MID"></div>
+                        </div>
+                        <hr class="viewhr">
+                        <div class="form-group">
+                            <label for="" class="col-sm-4 control-label">IFSC :</label>
+                            <div class="col-sm-8 pt-7" ng-bind="venDetail.ifscCode"></div>
+                        </div>
+                        <hr class="viewhr">
+                        <div class="form-group">
+                            <label for="" class="col-sm-4 control-label">Address :</label>
+                            <div class="col-sm-8 pt-7" ng-bind="venDetail.addressName"></div>
+                        </div>
+                    </form>
+                    <table class="table table-hover">
+                        <thead class="table-head">
+                            <tr>
+                                <th>Date</th>
+                                <th>Action </th>
+                                <th>Action By</th>
+                            </tr>
+                        </thead>
+
+                        <tbody ng-repeat = "auditLogOb in auditLogDetail"> 
+                            <tr>
+                                <td ng-bind="auditLogOb.creationDateTime"></td>
+                    			<td ng-bind="auditLogOb.actionType"></td>
+                    			<td ng-bind="auditLogOb.createdBy"></td>  
+                            </tr>
+                        </tbody>
+                        
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- view user end -->
+
+        </div>       
+        <br clear="all" />
+        
+	</div><!-- centercontent -->
+</div><!--bodywrapper-->
+
+
+
+<!-- audit log -->
+<div class="modal fade" tabindex="-1" role="dialog" id="myModalLog">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+      		<div class="modal-header">
+        		<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        		<h4 class="modal-title"><i class="fa fa-edit"></i> Audit Log</h4>
+      		</div>
+      		<div class="modal-body">
+        		<form class="form-horizontal">
+            		<table class="table table-hover">
+            		
+                		<thead class="table-head">
+                    		<tr>
+		                        <th>Operation Type</th>
+		                        <th>Action Type</th>
+		                        <th>Field Type</th>
+		                        <th>Old Value</th>
+		                        <th>New Value</th>
+		                        <th>Creation Date/time</th>
+		                        <th>Created By</th>
+                    		</tr>
+                		</thead>
+
+                		<tbody ng-repeat = "auditLogOb in auditLogDetail"> 
+                    		<tr>
+		                        <td ng-bind="auditLogOb.operationType"></td>
+		                        <td ng-bind="auditLogOb.actionType"></td>
+		                        <td ng-bind="auditLogOb.fieldType"></td>
+		                        <td ng-bind="auditLogOb.oldValue"></td>
+		                        <td ng-bind="auditLogOb.newValue"></td>
+		                        <td ng-bind="auditLogOb.creationDateTime"></td>
+		                        <td ng-bind="auditLogOb.createdBy"></td>
+                    		</tr>
+                		</tbody>
+                		
+            		</table>
+        		</form>
+      		</div>
+    	</div>
+  	</div>
+</div>
+
+
+
+
+	<!-- approval log -->
+	<div class="modal fade" tabindex="-1" role="dialog" id="myModalApprovallog">
+  		<div class="modal-dialog">
+    		<div class="modal-content">
+      			<div class="modal-header">
+        			<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        			<h4 class="modal-title"><i class="fa fa-edit"></i> Approval Log </h4>
+      			</div>
+      			<div class="modal-body">
+            		<table class="table table-hover">
+                		<thead class="table-head">
+                    		<tr>
+		                        <th>Date</th>
+		                        <th>Approver Name</th>
+		                        <th>Approval Status</th>
+		                        <th>Comment</th>
+                    		</tr>
+                		</thead>
+
+                		<tbody ng-repeat="aprLogObj in approverLog"> 
+                    		<tr>
+		                        <td ng-bind="aprLogObj.createdDate"></td>
+		                        <td ng-bind="aprLogObj.createdByName"></td>
+		                        <td ng-bind="aprLogObj.status"></td>
+		                        <td ng-bind="aprLogObj.comment"></td>                            
+                    		</tr>
+                		</tbody>
+                
+            		</table>
+      			</div>
+    		</div>
+  		</div>
+	</div>
+
+
+
+
+
+
+
+
+
+
+
+<script src="js/bootstrap-button-to-input-file.js"></script>
+<script>
+var filestyler = new buttontoinputFile();
+</script>
+
+<script>
+$(document).ready(function() {
+	$("#datePickFrom").datepicker();
+	$("#datePickTo").datepicker();
+	$("#historyDatePickFrom").datepicker();
+	$("#historyDatePickTo").datepicker();
+});
+</script>
+
+<script>
+    $(document).on("shown.bs.dropdown", ".dropdown", function () {
+    // calculate the required sizes, spaces
+    var $ul = $(this).children(".dropdown-menu");
+    var $button = $(this).children(".dropdown-toggle");
+    var ulOffset = $ul.offset();
+    // how much space would be left on the top if the dropdown opened that direction
+    var spaceUp = (ulOffset.top - $button.height() - $ul.height()) - $(window).scrollTop();
+    // how much space is left at the bottom
+    var spaceDown = $(window).scrollTop() + $(window).height() - (ulOffset.top + $ul.height());
+    // switch to dropup only if there is no space at the bottom AND there is space at the top, or there isn't either but it would be still better fit
+    if (spaceDown < 0 && (spaceUp >= 0 || spaceUp > spaceDown))
+      $(this).addClass("dropup");
+}).on("hidden.bs.dropdown", ".dropdown", function() {
+    // always reset after close
+    $(this).removeClass("dropup");
+});
+</script>
+
+</body>
+
+</html>

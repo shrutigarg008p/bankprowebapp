@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html ng-app="myPaymentApp">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Payment Approve </title>
+<link rel="stylesheet" href="/resources/public/css/style.default.css" type="text/css" />
+<link rel="stylesheet" href="/resources/public/css/main.css" type="text/css" />
+
+<link href="/resources/public/css/bootstrap.min.css" rel="stylesheet">
+<link href="/resources/public/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="/resources/public/css/font-awesome.css">
+
+
+<script type="text/javascript" src="/resources/public/js/plugins/jquery-1.11.3.min.js"></script>
+<script src="/resources/public/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/resources/public/js/plugins/jquery-1.7.min.js"></script>
+<script type="text/javascript" src="/resources/public/js/plugins/jquery-ui-1.8.16.custom.min.js"></script>
+<script type="text/javascript" src="/resources/public/js/plugins/jquery.cookie.js"></script>
+<script type="text/javascript" src="/resources/public/js/plugins/jquery.uniform.min.js"></script>
+
+<!-- <script type="text/javascript" src="/resources/public/js/plugins/jquery.flot.min.js"></script>
+<script type="text/javascript" src="/resources/public/js/custom/dashboard.js"></script>
+<script type="text/javascript" src="/resources/public/js/plugins/jquery.flot.resize.min.js"></script> -->
+
+<script type="text/javascript" src="/resources/public/js/plugins/jquery.slimscroll.js"></script>
+<script type="text/javascript" src="/resources/public/js/plugins/colorpicker.js"></script>
+<script type="text/javascript" src="/resources/public/js/custom/general.js"></script>
+<script type="text/javascript" src="/resources/public/js/custom/elements.js"></script>
+
+<script type="text/javascript" src="/resources/public/js/custom/angular.js"></script>
+<script type="text/javascript" src="/resources/public/js/payment.js"></script>
+<script type="text/javascript" src="/resources/public/js/angular-file-upload.js"></script>
+<!-- Add header.js to get user access permissions -->
+<script type="text/javascript" src="/resources/public/js/header.js"></script>
+
+
+
+</head>
+
+<body ng-controller="paymentApprovalCTRL" class="withvernav">
+
+	<div class="bodywrapper">
+		<div ng-include="'topheader.html'"></div>
+		<script>
+			setTimeout(function() {
+				$('#payment-create').addClass('current')
+			}, 3000);
+		</script>
+	
+	<!--header-->
+
+	<div class="vernav2 iconmenu">
+		<ul>
+        	<li><a href="payment-create.html" class="editor"> Payment Create </a></li>
+            <li class="current"><a href="payment-approve-pay.html" class="">Payment Approve</a></li>
+        </ul>
+		<a class="togglemenu"></a> <br />
+		<br />
+	</div>
+	<!--leftmenu-->
+
+	<div class="centercontent">
+
+		<div class="pageheader">
+
+			<div class="pageheader_edit">
+				<h1 class="pagetitle">Payment Approve</h1>
+			</div>
+			<div class="clearphone"></div>
+			<div class="search pull_right">
+				<form action="#" method="post">
+					<input type="text" name="keyword" id="keyword" value="Search" />
+					<button class="submitbutton"></button>
+				</form>
+			</div>
+
+
+		</div>
+		<!--pageheader-->
+		<div class="clearfix"></div>
+
+
+		<div class="col-md-12">
+
+			<!-- Nav tabs -->
+			<ul class="nav nav-tabs" role="tablist">
+				<li role="presentation" class="active"><a href="#approve"
+					aria-controls="home" role="tab" data-toggle="tab">Approve</a></li>
+				<li role="presentation"><a href="#approvalHistory" ng-click= "viewApprovalHostory()"
+					aria-controls="profile" role="tab" data-toggle="tab">Approval
+						History</a></li>
+			</ul>
+
+			<!-- Tab panes -->
+			<div class="tab-content">
+				<div role="tabpanel" class="tab-pane active" id="approve">
+					<table class="table table-hover">
+						<thead class="table-head">
+							<tr>
+								<th>Name</th>
+								<th>Type</th>
+								<th>Total Amount</th>
+								<th>Invoice No.</th>
+								<th>Payment Amount</th>
+								<th>Payment Date</th>
+								<th>&nbsp;</th>
+							</tr>
+						</thead>
+
+						<tbody>
+							<tr ng-repeat="pendingPayObj in pendingPayApprovalList">
+								<td>
+									<div class="select_select pull-left">
+										<button class="btn btn-default dropdown-toggle select_btn"
+											type="button" id="dropdownMenu1" data-toggle="dropdown"
+											aria-haspopup="true" aria-expanded="true">
+											<i class="fa fa-chevron-circle-down" aria-hidden="true"
+												class="arrow_select"></i>
+										</button>
+										<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+											<li ng-click = "viewPaymentDetail(pendingPayObj)" data-toggle="modal"
+												data-target="#myModalView1"><span>View</span></li>
+											<li ng-click="auditTrailView(pendingPayObj.paymentId, 'paymentDetail')" data-toggle="modal"
+												data-target="#myModalLog">Audit Log</li>
+											<li onclick=openpopup(3) data-toggle="modal"
+												data-target="#myModalDelete">Disable</li>
+										</ul>
+									</div> <span class="mt-2 pull-left"><a href="" data-toggle="modal" ng-click="getVendorInfo(pendingPayObj.vendorId)"
+									  data-target="#myModalView2">{{pendingPayObj.vendorName}}</a></span>
+									<div class="clearfix"></div>
+								</td>
+								<td ng-bind="pendingPayObj.type" ></td>
+								<td ng-bind="pendingPayObj.paymentAmount"></td>
+								<td ng-bind="pendingPayObj.invoiceNo"></td>
+								<td ng-bind="pendingPayObj.paymentAmt"></td>
+								<td ng-bind="pendingPayObj.paymentDate"></td>
+								<td>
+									<button class="btn btn-success btn-xs" data-toggle="modal" ng-click="approvePendingPayment(pendingPayObj.paymentId)"
+										data-target="#myModalComment">Approve</button> &nbsp;
+									<button class="btn btn-danger btn-xs" data-toggle="modal" ng-click="declinedPendingPayment(pendingPayObj.paymentId)"
+										data-target="#myModalComment">Decline</button>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div role="tabpanel" class="tab-pane" id="approvalHistory">
+
+					<table class="table table-hover">
+						<thead class="table-head">
+							<tr>
+								<th>Beneficiary Name</th>
+								<th>Type</th>
+								<th>Invoice Amount</th>
+								<th>Amount Paid</th>
+								<th>Amount Remaining</th>
+								<th>Invoice No.</th>
+								<th>Process Date</th>
+								<th>Status</th>
+							</tr>
+						</thead>
+
+						<tbody>
+							<tr ng-repeat="payObj in payList">
+								<td>
+									<div class="select_select pull-left">
+										<button class="btn btn-default dropdown-toggle select_btn"
+											type="button" id="dropdownMenu1" data-toggle="dropdown"	aria-haspopup="true" aria-expanded="true">
+											<i class="fa fa-chevron-circle-down" aria-hidden="true"	class="arrow_select"></i>
+										</button>
+										<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+											<li ng-click = "viewPaymentDetail(payObj)"
+												data-toggle="modal" data-target="#myModalView1"><span>View	</span></li>
+											<li data-toggle="modal" ng-click="getApprovalLogInfo(payObj.paymentId)" data-target="#myModalApprovallog">Approval Log</li>												
+											<li ng-click="auditTrailView(payObj.paymentId, 'paymentDetail')"
+												data-toggle="modal" data-target="#myModalLog">Audit	Log</li>
+										</ul>
+									</div> <span class="mt-2 pull-left"><a href=""	data-toggle="modal" data-target="#myModalView2"
+											ng-click="getVendorInfo(payObj.vendorId)" ng-bind="payObj.vendorName"></a></span>
+								</td>
+								<td ng-bind="payObj.type"></td>
+								<td ng-bind="payObj.invoiceAmount"></td>
+								<td ng-bind="payObj.paymentAmount"></td>
+								<td ng-bind="(payObj.invoiceAmount - payObj.paymentAmount) < 0 ? 
+								           (payObj.invoiceAmount - payObj.paymentAmount) * -1 : (payObj.invoiceAmount - payObj.paymentAmount)"></td>
+								<td ng-bind="payObj.invoiceNo"></td>
+								<td ng-bind="payObj.paymentProcessDate"></td>
+								<td	ng-bind="payObj.approvalStatus==0?'Pending':payObj.approvalStatus==1?'Approved':
+								            payObj.approvalStatus==2?'InProgress..':'Declined'"></td>
+							</tr>							
+						</tbody>
+					</table>
+				</div>
+
+			</div>
+
+		</div>
+
+
+		<div class="col-md-12">
+			
+			<!-- trace -->
+			<div class="modal fade" id="myModalDelete" tabindex="-1"
+				role="dialog" aria-labelledby="myModalLabel">
+				<div class="modal-dialog ">
+					<div class="modal-content">
+
+						<div class="modal-body">
+							<h3 class="text-center">Are you sure you want to disable ?</h3>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default"
+								data-dismiss="modal">Cancel</button>
+							<button type="button" class="btn btn-primary">Disable</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- trace close-->
+
+		</div>
+		<br clear="all" />
+
+	</div>
+	<!-- centercontent -->
+	
+
+	<!--bodywrapper-->
+
+
+
+
+	<!-- view user 1-->
+	<div class="modal fade" tabindex="-1" role="dialog" id="myModalView1">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header loginboxinner">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title">
+						<i class="fa fa-eye"></i> View
+					</h4>
+				</div>
+				<div class="modal-body">
+					<form class="form-horizontal">
+						<div class="form-group">
+							<label for="" class="col-sm-4 control-label">Beneficiary Name :</label>
+							<div class="col-sm-8 pt-7">{{pay.vendorName}}</div>
+						</div>
+						<hr class="viewhr">
+						<div class="form-group">
+							<label for="" class="col-sm-4 control-label">Invoice No. :</label>
+							<div class="col-sm-8 pt-7">{{pay.invoiceNo}}</div>
+						</div>
+
+						<hr class="viewhr">
+
+						<div class="form-group">
+							<label for="" class="col-sm-4 control-label">Due Date :</label>
+							<div class="col-sm-8 pt-7">{{pay.dueDate}}</div>
+						</div>
+						<hr class="viewhr">
+
+						<div class="form-group">
+							<label for="" class="col-sm-4 control-label">invoice Amount :</label>
+							<div class="col-sm-8 pt-7">{{pay.invoiceAmount}}</div>
+						</div>
+						<hr class="viewhr">
+
+						<div class="form-group">
+							<label for="" class="col-sm-4 control-label">Payment Amount :</label>
+							<div class="col-sm-8 pt-7">{{pay.paymentAmount}}</div>
+						</div>
+						<hr class="viewhr">
+
+
+						<div class="form-group">
+							<label for="" class="col-sm-4 control-label">Process Date
+								:</label>
+							<div class="col-sm-8 pt-7">{{pay.paymentProcessDate}}</div>
+						</div>
+						<hr class="viewhr">
+
+						<div class="form-group">
+							<label for="" class="col-sm-4 control-label">Payment Date
+								:</label>
+							<div class="col-sm-8 pt-7">{{pay.paymentDate}}</div>
+						</div>
+						<hr class="viewhr">
+					</form>
+					<table class="table table-hover">
+						<thead class="table-head">
+							<tr>
+								<th>Date</th>
+								<th>Action</th>
+								<th>Action By</th>
+							</tr>
+						</thead>
+
+							<tbody>
+								<tr ng-repeat="auditObj in auditData">
+									<td	ng-bind="(auditObj.creationDateTime == null) ? '-----' : auditObj.creationDateTime"></td>
+									<td	ng-bind="(auditObj.actionType == null) ? '-----' : auditObj.actionType"></td>
+									<td	ng-bind="(auditObj.createdBy == null) ? '-----' : auditObj.createdBy"></td>
+								</tr>
+
+							</tbody>
+						</table>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- view user end -->
+
+
+
+	<!-- audit log -->
+	<div class="modal fade" tabindex="-1" role="dialog" id="myModalLog">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title">
+						<i class="fa fa-edit"></i> Audit Log
+					</h4>
+				</div>
+				<div class="modal-body">
+					<form class="form-horizontal">
+							<table class="table table-hover">
+								<thead class="table-head">
+									<tr>
+										<th>Operation Type</th>
+										<th>Action Type</th>
+										<th>Field Type</th>
+										<th>Old Value</th>
+										<th>New Value</th>
+										<th>Creation Date/time</th>
+										<th>Created By</th>
+									</tr>
+								</thead>
+								<tbody>
+								<tbody>
+									<tr ng-repeat="auditObj in auditData">
+										<td ng-bind="(auditObj.operationType == null) ? '-----' : auditObj.operationType"></td>
+										<td	ng-bind="(auditObj.actionType == null) ? '-----' : auditObj.actionType"></td>
+										<td	ng-bind="(auditObj.fieldType == null) ? '-----' : auditObj.fieldType"></td>
+										<td	ng-bind="(auditObj.oldValue == null) ? '-----' : auditObj.oldValue"></td>
+										<td	ng-bind="(auditObj.newValue == null) ? '-----' : auditObj.newValue"></td>
+										<td	ng-bind="(auditObj.creationDateTime == null) ? '-----' : auditObj.creationDateTime"></td>
+										<td	ng-bind="(auditObj.createdBy == null) ? '-----' : auditObj.createdBy"></td>
+
+									</tr>
+								</tbody>
+							</table>
+					 </form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+	<!-- approval log -->
+	<div class="modal fade" tabindex="-1" role="dialog"
+		id="myModalApprovallog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title">
+						<i class="fa fa-edit"></i> Approval Log
+					</h4>
+				</div>
+				<div class="modal-body">
+					<form class="form-horizontal">
+						<table class="table table-hover">
+							<thead class="table-head">
+								<tr>
+									<th>Date</th>
+									<th>Approver Name</th>
+									<th>Approval Status</th>
+									<th>Comment</th>
+								</tr>
+							</thead>
+
+							<tbody>
+								<tr ng-repeat="appLog in appLogList">
+									<td ng-bind = "appLog.payAppCreatedDate"></td>
+									<td ng-bind = "appLog.payApprovalName"></td>
+									<td	ng-bind="appLog.payAppStatus==0?'Pending':appLog.payAppStatus==1?'Approved':
+								            appLog.payAppStatus==2?'InProgress..':'Declined'"></td>
+									<td ng-bind = "appLog.payAppcomment"></td>
+								</tr>								
+							</tbody>
+						</table>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	
+	<!-- view vendor info -->
+	
+	<div class="modal fade" tabindex="-1" role="dialog" id="myModalView2">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header loginboxinner">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"><i class="fa fa-eye"></i> View</h4>
+              </div>
+              <div class="modal-body">
+                <form class="form-horizontal">
+                  
+                    <div class="form-group">
+                    <label for="" class="col-md-4 col-sm-4 col-xs-4 control-label"> Name :</label>
+                    <div class="col-sm-8 pt-7">
+                     {{ven.firstName}}
+                    </div>
+                  </div>
+                  <hr class="viewhr">
+                  <div class="form-group">
+                    <label for="" class="col-md-4 col-sm-4 col-xs-4 control-label">Email ID :</label>
+                    <div class="col-sm-8 pt-7">
+                      {{ven.email}}
+                    </div>
+                  </div>
+                  <hr class="viewhr">
+                  <div class="form-group">
+                    <label for="" class="col-md-4 col-sm-4 col-xs-4 control-label">Supplier Name :</label>
+                    <div ng-bind="ven.suplierName" class="col-sm-8 pt-7">
+                    </div>
+                  </div>
+                  <hr class="viewhr">
+                  <div class="form-group">
+                    <label for="" class="col-md-4 col-sm-4 col-xs-4 control-label">Supplier No :</label>
+                    <div class="col-sm-8 pt-7">
+                      {{ven.suplierNo}}
+                    </div>
+                  </div>
+
+                  <hr class="viewhr">
+
+                    <div class="form-group">
+                        <label for="" class="col-md-4 col-sm-4 col-xs-4 control-label">Payment Name :</label>
+                        <div class="col-sm-8 pt-7">
+                            {{ven.paymentName}}
+                        </div>
+                    </div>
+                    <hr class="viewhr">
+                   
+                    <div class="form-group">
+                        <label for="" class="col-md-4 col-sm-4 col-xs-4 control-label">PAN Number :</label>
+                        <div class="col-sm-8 pt-7">
+                        {{ven.panNumber}}
+                        </div>
+                    </div>
+                    <hr class="viewhr">
+
+                    <div class="form-group">
+                        <label for="" class="col-md-4 col-sm-4 col-xs-4 control-label">Vendor Type :</label>
+                        <div class="col-sm-8 pt-7">
+                         {{ven.vendorType}}
+                        </div>
+                    </div>
+                    <hr class="viewhr">
+
+                    <div class="form-group">
+                        <label for="" class="col-md-4 col-sm-4 col-xs-4 control-label">Company Type :</label>
+                        <div class="col-sm-8 pt-7">
+                          {{ven.companyType}}
+                        </div>
+                    </div>
+                    <hr class="viewhr">
+
+                    <div class="form-group">
+                        <label for="" class="col-md-4 col-sm-4 col-xs-4 control-label">Payment Method :</label>
+                        <div class="col-sm-8 pt-7">
+                          {{ven.paymentMethod}}
+                        </div>
+                    </div>
+                    <hr class="viewhr">
+
+                    <div class="form-group">
+                        <label for="" class="col-md-4 col-sm-4 col-xs-4 control-label">Payment Terms :</label>
+                        <div class="col-sm-8 pt-7">
+                          {{ven.paymentTerm}}
+                        </div>
+                    </div>
+                    <hr class="viewhr">
+                    <div class="form-group">
+                        <label for="" class="col-md-4 col-sm-4 col-xs-4 control-label">Bank Name :</label>
+                        <div class="col-sm-8 pt-7">
+                          {{ven.bankName}}
+                        </div>
+                    </div>
+                    <hr class="viewhr">
+                    <div class="form-group">
+                        <label for="" class="col-md-4 col-sm-4 col-xs-4 control-label">Branch Name:</label>
+                        <div class="col-sm-8 pt-7">
+                         {{ven.branchAddress}}
+                        </div>
+                    </div>
+                    <hr class="viewhr">
+                    <div class="form-group">
+                        <label for="" class="col-md-4 col-sm-4 col-xs-4 control-label">Account No.:</label>
+                        <div class="col-sm-8 pt-7">
+                          {{ven.accountNo}}
+                        </div>
+                    </div>
+                    <hr class="viewhr">
+                    <div class="form-group">
+                        <label for="" class="col-md-4 col-sm-4 col-xs-4 control-label">Currency:</label>
+                        <div class="col-sm-8 pt-7">
+                          {{ven.currency}}
+                        </div>
+                    </div>
+                    <hr class="viewhr">
+                    <div class="form-group">
+                        <label for="" class="col-md-4 col-sm-4 col-xs-4 control-label">IFSC :</label>
+                        <div class="col-sm-8 pt-7">
+                          {{ven.ifscCode}}
+                        </div>
+                    </div>
+                    <hr class="viewhr">
+                    <div class="form-group">
+                        <label for="" class="col-md-4 col-sm-4 col-xs-4 control-label">Address :</label>
+                        <div class="col-sm-8 pt-7">
+                          {{ven.addressLine1}}
+                        </div>
+                    </div>
+                </form>
+                <div class= "container-fluid">
+                <table class="table table-hover pull-left">
+                    <thead class="table-head">
+                        <tr>
+                            <th>Date</th>
+                            <th>Action </th>
+                            <th>Action By</th>
+                        </tr>
+                    </thead>
+
+                    <tbody> 
+                        <tr ng-repeat="auditObj in auditData">
+                           <td ng-bind="(auditObj.creationDateTime == null) ? '-----' : auditObj.creationDateTime"></td>
+                           <td ng-bind="(auditObj.actionType == null) ? '-----' : auditObj.actionType"></td>
+                           <td ng-bind="(auditObj.createdBy == null) ? '-----' : auditObj.createdBy"></td>                           
+                        </tr>
+
+                    </tbody>
+                </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+	
+	
+	
+	
+	
+	
+	<!-- end of view vendor info -->
+	
+	
+	<!-- comment start 1 -->
+		<div class="modal fade" id="myModalComment" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+			<div class="modal-dialog ">
+				<div class="modal-content">
+					<div class="modal-header loginboxinner">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<h4 class="modal-title">
+							<i class="fa fa-edit"></i> Comment
+						</h4>
+					</div>
+					<h5><div ng-show= "commenterror" class = "alert alert-danger">{{commenterror}}</div></h5>
+					<div class="modal-body">
+						<form>
+							<div class="form-group">
+								<label for="">Wright a comment</label>
+								<textarea ng-model="comment" class="form-control" rows="3"></textarea>
+							</div>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default"  data-dismiss="modal">Skip</button>
+						<button type="button" ng-if="approveDeclinedFlag == true"  ng-click ="submitApprovalPayment(approvalIdForFianlSubmit,comment)" class="btn btn-primary">Submit</button>
+						<button type="button" ng-if="approveDeclinedFlag == false" ng-click ="submitDeclinedPayment(approvalIdForFianlSubmit,comment)" class="btn btn-primary">Submit</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- comment 1 close-->
+	
+	
+	
+</div>
+</body>
+
+</html>

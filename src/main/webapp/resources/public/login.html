@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Login Page </title>
+
+<link rel="stylesheet" href="/resources/public/css/style.default.css" type="text/css" />
+<link rel="stylesheet" type="text/css" href="/resources/public/css/main.css">
+
+<link href="/resources/public/css/bootstrap.min.css" rel="stylesheet">
+<link href="/resources/public/css/font-awesome.css" rel="stylesheet">
+
+
+
+<script type="text/javascript" src="/resources/public/js/plugins/jquery-1.7.min.js"></script>
+<script type="text/javascript" src="/resources/public/js/plugins/jquery-ui-1.8.16.custom.min.js"></script>
+<script src="/resources/public/js/bootstrap.min.js"></script>
+<script src="/resources/public/js/validator.js"></script>
+<script type="text/javascript" src="/resources/public/js/plugins/jquery.cookie.js"></script>
+<script type="text/javascript" src="/resources/public/js/plugins/jquery.uniform.min.js"></script>
+<script type="text/javascript" src="/resources/public/js/custom/general.js"></script>
+<script type="text/javascript" src="/resources/public/js/custom/index.js"></script>
+
+
+</head>
+
+<body class="loginpage" id="loginApp">
+ <main ng-controller="BaseFormCtrl">
+	<div class="loginbox">
+		<div class="loginboxinner">
+
+			<div class="logo">
+				<h1>
+					PAYMENT VISTA
+				</h1>
+
+			</div>
+			<!--logo-->
+
+			<br clear="all" /> <br />            
+
+			<form ng-submit="onLogin()" name="form" class="pure-form login-form" ng-controller="LoginCtrl" 
+			id="login"  data-toggle="validator">
+			<tt-error-messages extra-styles="access-screen"></tt-error-messages>
+
+				<div class="fields form-group">
+					<div class="usernameinner input-group">
+						<input type="text" ng-focus="focus('username')" name="username" ng-model="vm.username" id="username" 
+						 placeholder="Username" required>
+					</div>
+				</div>
+
+				<div class="password">
+					<div class="passwordinner">
+						<input type="password" ng-focus="focus('password')"  ng-model="vm.password"
+                               name="password" placeholder="Password" required>
+                    </div>
+				</div>
+				<div class="keep mb-10">
+					<input type="checkbox" /> Keep me logged in
+				</div>
+				<button type="submit">Sign In</button>
+
+				<div class="register_x">
+					<a href="register.html" class="mr-20">Register </a> <a href="forgot.html">Forgot	Password?</a>
+				</div>
+			</form>
+
+		</div>
+	</div>
+	</main>
+	<script type="text/javascript" data-main="/resources/public/js/run-loggin-app"
+            src="/resources/bower_components/requirejs/require.js"></script>
+</body>
+
+
+
+<!--  
+<body class="pure-skin-theme" id="loginApp">
+
+    <header class="page-header pure-g">
+        <div class="pure-u-lg-1-2 pure-u-1">
+            <a class="pure-menu-heading" href="#">
+                <img class="logo" src="/resources/img/logo.png">
+            </a>
+            <span class="header-element page-title">Calorie Tracker</span>
+        </div>
+    </header>
+
+    <main ng-controller="BaseFormCtrl">
+
+        <tt-error-messages extra-styles="access-screen"></tt-error-messages>
+
+        <div class="login-container">
+            <form ng-submit="onLogin()" name="form" class="pure-form login-form" novalidate ng-controller="LoginCtrl">
+                <fieldset class="pure-group">
+                    <legend>Log In</legend>
+                    <div class="form-field">
+                        <input type="text" ng-focus="focus('username')"  ng-blur="blur('username')" ng-model="vm.username"
+                               name="username" class="pure-input-1" placeholder="Username" required ng-minlength="6">
+
+                        <div class="error-messages" ng-show="isMessagesVisible('username')" ng-messages="form.username.$error" ng-cloak>
+                            <div ng-message="required">The username is mandatory</div>
+                            <div ng-message="minlength">must have minimum 6 characters</div>
+                        </div>
+                    </div>
+                    <div class="last-form-field">
+                        <input type="password" ng-focus="focus('password')"  ng-blur="blur('password')" ng-model="vm.password"
+                               name="password" class="pure-input-1" placeholder="Password" required ng-minlength="6"
+                               pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}">
+                        <div class="error-messages" ng-show="isMessagesVisible('password')" ng-messages="form.password.$error" ng-cloak>
+                            <div ng-message="required">The password is mandatory</div>
+                            <div ng-message="minlength">must have minimum 6 characters</div>
+                            <div ng-message="pattern">At least one number and uppercase</div>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <button type="submit" class="pure-button pure-input-1 pure-button-primary">Log In</button>
+                <a class="new-user-link" href="/resources/public/new-user.html">New user?</a>
+
+            </form>
+        </div>
+
+    </main>
+
+    <script type="text/javascript" data-main="/resources/public/js/run-loggin-app"
+            src="/resources/bower_components/requirejs/require.js"></script>
+
+
+</body>
+-->
+</html>

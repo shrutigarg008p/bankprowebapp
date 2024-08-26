@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html ng-app="">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Edit Profile </title>
+<link rel="stylesheet" href="/resources/public/css/style.default.css" type="text/css" />
+
+
+<link href="/resources/public/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="/resources/public/css/main.css" type="text/css" />
+<link href="/resources/public/css/font-awesome.min.css" rel="stylesheet">
+<script type="text/javascript" src="/resources/public/js/plugins/jquery-1.11.3.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://fontawesome.io/assets/font-awesome/css/font-awesome.css">
+<link rel="stylesheet" type="text/css" href="/resources/public/css/plugins/bootstrap-select.min.css">
+<script type="text/javascript" src="/resources/public/js/plugins/jquery-1.12.1.min.js"></script>
+<script type="text/javascript" src="/resources/public/js/custom/angular.js"></script>
+<!-- <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script> -->
+<script type="text/javascript" src="/resources/public/js/jquery-1.11.3.min.js"></script>
+
+<script type="text/javascript" src="/resources/public/js/plugins/jquery-1.7.min.js"></script>
+<script type="text/javascript" src="/resources/public/js/plugins/jquery-ui-1.8.16.custom.min.js"></script>
+<script type="text/javascript" src="/resources/public/js/plugins/jquery.cookie.js"></script>
+<script type="text/javascript" src="/resources/public/js/plugins/colorpicker.js"></script>
+<script type="text/javascript" src="/resources/public/js/plugins/jquery.jgrowl.js"></script>
+<script type="text/javascript" src="/resources/public/js/plugins/jquery.alerts.js"></script>
+<script type="text/javascript" src="/resources/public/js/custom/general.js"></script>
+<script type="text/javascript" src="/resources/public/js/custom/elements.js"></script>
+
+<script type="text/javascript" src="/resources/public/js/plugins/colorpicker.js"></script>
+
+<script src="/resources/public/js/custom/bootstrap-select.min.js"></script>
+
+<script src="/resources/public/js/bootstrap.min.js"></script> 
+
+<style>
+    body.withvernav {
+        background :none !important;
+    }
+</style>
+
+
+
+<!--[if lte IE 8]><script language="javascript" type="text/javascript" src="js/plugins/excanvas.min.js"></script><![endif]-->
+<!--[if IE 9]>
+    <link rel="stylesheet" media="screen" href="css/style.ie9.css"/>
+<![endif]-->
+<!--[if IE 8]>
+    <link rel="stylesheet" media="screen" href="css/style.ie8.css"/>
+<![endif]-->
+<!--[if lt IE 9]>
+	<script src="http://css3-mediaqueries-js.googlecode.com/svn/trunk/css3-mediaqueries.js"></script>
+<![endif]-->
+
+
+
+</head>
+
+<body class="withvernav">
+
+<div class="bodywrapper">
+
+    
+<div ng-include="'topheader.html'"></div>
+<script>
+	setTimeout( function() {
+ 		$('#user').addClass('current')
+	} ,3000);
+</script>
+    
+        
+    <div class="centercontent ml-0">
+    
+        <div class="pageheader">
+            <h1 class="pagetitle">Edit Profile</h1>
+        </div><!--pageheader-->
+
+        
+        <div class="col-md-6 col-sm-6 col-xs-12"> 
+            <form class="form-horizontal">
+                <div class="form-group">
+                    <label for="" class="col-sm-3 control-label">First Name</label>
+                    <div class="col-sm-6">
+                    <input type="" class="form-control" id="" placeholder="Prefilled">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="" class="col-sm-3 control-label">Last Name</label>
+                    <div class="col-sm-6">
+                    <input type="" class="form-control" id="" placeholder="Prefilled">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="" class="col-sm-3 control-label">Phone No.</label>
+                    <div class="col-sm-6">
+                    <input type="" class="form-control" id="" placeholder="Prefilled">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="" class="col-sm-3 control-label">Email Id</label>
+                    <div class="col-sm-6">
+                    <input type="" class="form-control" id="" placeholder="Prefilled" disabled>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="" class="col-sm-3 control-label">Organization Name</label>
+                    <div class="col-sm-6">
+                    <input type="" class="form-control" id="" placeholder="Prefilled">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="" class="col-sm-3 control-label"></label>
+                    <div class="col-sm-6">
+                    <button type="button" class="btn btn-primary">Submit</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <br clear="all" />
+        
+	</div><!-- centercontent -->
+
+
+    
+    
+</div><!--bodywrapper-->
+
+
+
+
+<!-- add user -->
+        <div class="modal fade" tabindex="-1" role="dialog" id="myModal">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header loginboxinner">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"><i class="fa fa-plus"></i> Add New User</h4>
+              </div>
+              <div class="modal-body">
+                <form class="form-horizontal">
+                  <div class="form-group">
+                    <label for="" class="col-sm-4 control-label">First Name<span class="mandatory">*</span> </label>
+                    <div class="col-sm-6">
+                      <input type="email" class="form-control" id="" placeholder="">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="" class="col-sm-4 control-label">Last Name<span class="mandatory">*</span></label>
+                    <div class="col-sm-6">
+                      <input type="type" class="form-control" id="" placeholder="">
+                    </div>
+                  </div>
+
+                    <div class="form-group">
+                        <label for="" class="col-sm-4 control-label">Email ID<span class="mandatory">*</span></label>
+                        <div class="col-sm-6">
+                          <input type="email" class="form-control" id="" placeholder="">
+                        </div>
+                    </div>
+
+                   
+                    <div class="form-group">
+                        <label for="" class="col-sm-4 control-label">Contact No.<span class="mandatory">*</span></label>
+                        <div class="col-sm-6">
+                          <input type="email" class="form-control" id="" placeholder="">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="" class="col-sm-4 control-label">Name of Organization<span class="mandatory">*</span></label>
+                        <div class="col-sm-6">
+                          <input type="email" class="form-control" id="" placeholder="">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="" class="col-sm-4 control-label">Role<span class="mandatory">*</span></label>
+                        <div class="col-sm-6">
+                            <select class="selectpicker w100" multiple>
+                                <option>Invoice Maker</option>
+                                <option>Invoice Approver</option>
+                                <option>Payment Maker</option>
+                                <option>Payment Approver</option>
+                            </select>
+                        </div>
+                    </div>
+
+                            
+
+                    <!-- <div class="form-group">
+                        <label for="" class="col-sm-4 control-label"></label>
+                        <div class="col-sm-5">
+                          <select class="form-control">
+                              <option>Payment Approver</option>
+                              <option>2</option>
+                              <option>3</option>
+                            </select>
+                        </div>
+
+                        <div class="col-sm-1 p0">
+                          <a href="#" ><i class="fa fa-plus-square-o plus_size"></i></a>
+                        </div>
+                    </div> -->
+
+
+                    <div class="form-group">
+                        <label for="" class="col-sm-4 control-label">Employee No.<span class="mandatory">*</span></label>
+                        <div class="col-sm-6">
+                          <input type="email" class="form-control" id="" placeholder="">
+                        </div>
+                    </div>
+
+                     <div class="form-group">
+                        <label for="" class="col-sm-4 control-label">Address<span class="mandatory">*</span></label>
+                        <div class="col-sm-6">
+                          <textarea class="form-control" rows="3"></textarea>
+                        </div>
+                    </div>
+                  
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary">Add</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- add user end -->
+
+
+
+        <!-- view user -->
+        <div class="modal fade" tabindex="-1" role="dialog" id="myModalView">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header loginboxinner">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"><i class="fa fa-eye"></i> User</h4>
+              </div>
+              <div class="modal-body">
+                <form class="form-horizontal">
+                  <div class="form-group">
+                    <label for="" class="col-sm-4 control-label">First Name :</label>
+                    <div class="col-sm-8 pt-7">
+                      Mark
+                    </div>
+                  </div>
+                  <hr class="viewhr">
+                  <div class="form-group">
+                    <label for="" class="col-sm-4 control-label">Last Name :</label>
+                    <div class="col-sm-8 pt-7">
+                      Joi
+                    </div>
+                  </div>
+
+                  <hr class="viewhr">
+
+                    <div class="form-group">
+                        <label for="" class="col-sm-4 control-label">Email ID :</label>
+                        <div class="col-sm-8 pt-7">
+                            mark@mdo.com
+                        </div>
+                    </div>
+                    <hr class="viewhr">
+                   
+                    <div class="form-group">
+                        <label for="" class="col-sm-4 control-label">Contact No. :</label>
+                        <div class="col-sm-8 pt-7">
+                         8855454512
+                        </div>
+                    </div>
+                    <hr class="viewhr">
+
+                    <div class="form-group">
+                        <label for="" class="col-sm-4 control-label">Name of Organization :</label>
+                        <div class="col-sm-8 pt-7">
+                          indo water
+                        </div>
+                    </div>
+                    <hr class="viewhr">
+
+                    <div class="form-group">
+                        <label for="" class="col-sm-4 control-label">Role :</label>
+                        <div class="col-sm-8 pt-7">
+                          Invoice Approver
+                        </div>
+                    </div>
+                    <hr class="viewhr">
+
+                    <div class="form-group">
+                        <label for="" class="col-sm-4 control-label">Address :</label>
+                        <div class="col-sm-8 pt-7">
+                          21 B, Second Floor South Delhi, 110021
+                        </div>
+                    </div>
+
+                    <table class="table table-hover">
+                        <thead class="table-head">
+                            <tr>
+                                <th>Date</th>
+                                <th>Action </th>
+                                <th>Action By</th>
+                            </tr>
+                        </thead>
+
+                        <tbody> 
+                            <tr>
+                                <td>25.07.2016</td>
+                                <td>Approve</td>
+                                <td>Manoj Kumar</td>                            
+                            </tr>
+
+                            <tr>
+                                <td>24.07.2016</td>
+                                <td>Payment</td>
+                                <td>45,000</td>
+                            </tr>
+
+                        </tbody>
+                    </table>        
+                  
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- view user end -->
+
+        <!-- view user -->
+        <div class="modal fade" tabindex="-1" role="dialog" id="myModalView2">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header loginboxinner">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"><i class="fa fa-eye"></i> User</h4>
+              </div>
+              <div class="modal-body">
+                <form class="form-horizontal">
+                  <div class="form-group">
+                    <label for="" class="col-sm-4 control-label">First Name :</label>
+                    <div class="col-sm-8 pt-7">
+                      Jacob
+                    </div>
+                  </div>
+                  <hr class="viewhr">
+                  <div class="form-group">
+                    <label for="" class="col-sm-4 control-label">Last Name :</label>
+                    <div class="col-sm-8 pt-7">
+                      Joi
+                    </div>
+                  </div>
+
+                  <hr class="viewhr">
+
+                    <div class="form-group">
+                        <label for="" class="col-sm-4 control-label">Email ID :</label>
+                        <div class="col-sm-8 pt-7">
+                            mark@mdo.com
+                        </div>
+                    </div>
+                    <hr class="viewhr">
+                   
+                    <div class="form-group">
+                        <label for="" class="col-sm-4 control-label">Contact No. :</label>
+                        <div class="col-sm-8 pt-7">
+                         8855454512
+                        </div>
+                    </div>
+                    <hr class="viewhr">
+
+                    <div class="form-group">
+                        <label for="" class="col-sm-4 control-label">Name of Organization :</label>
+                        <div class="col-sm-8 pt-7">
+                          indo water
+                        </div>
+                    </div>
+                    <hr class="viewhr">
+
+                    <div class="form-group">
+                        <label for="" class="col-sm-4 control-label">Role :</label>
+                        <div class="col-sm-8 pt-7">
+                          Admin
+                        </div>
+                    </div>
+                    <hr class="viewhr">
+
+                    
+
+                    <div class="form-group">
+                        <label for="" class="col-sm-4 control-label">Employee No. :</label>
+                        <div class="col-sm-8 pt-7">
+                          20
+                        </div>
+                    </div>
+                    <hr class="viewhr">
+
+                    <div class="form-group">
+                        <label for="" class="col-sm-4 control-label">Address :</label>
+                        <div class="col-sm-8 pt-7">
+                          21 B, Second Floor South Delhi, 110021
+                        </div>
+                    </div>
+
+                    <table class="table table-hover">
+                        <thead class="table-head">
+                            <tr>
+                                <th>Date</th>
+                                <th>Action </th>
+                                <th>Action By</th>
+                            </tr>
+                        </thead>
+
+                        <tbody> 
+                            <tr>
+                                <td>25.07.2016</td>
+                                <td>Approve</td>
+                                <td>Manoj Kumar</td>                            
+                            </tr>
+
+                            <tr>
+                                <td>24.07.2016</td>
+                                <td>Payment</td>
+                                <td>45,000</td>
+                            </tr>
+
+                        </tbody>
+                    </table>        
+                  
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- view user end -->
+
+
+        <!-- edit user -->
+        <div class="modal fade" tabindex="-1" role="dialog" id="myModalEdit">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"><i class="fa fa-edit"></i> Edit User</h4>
+              </div>
+              <div class="modal-body">
+                <form class="form-horizontal">
+                  <div class="form-group">
+                    <label for="" class="col-sm-4 control-label">First Name </label>
+                    <div class="col-sm-8">
+                      <input type="email" class="form-control" id="" placeholder="Prefilled">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="" class="col-sm-4 control-label">Last Name</label>
+                    <div class="col-sm-8">
+                      <input type="type" class="form-control" id="" placeholder="Prefilled">
+                    </div>
+                  </div>
+
+                    <div class="form-group">
+                        <label for="" class="col-sm-4 control-label">Email ID </label>
+                        <div class="col-sm-8">
+                          <input type="email" class="form-control" id="" placeholder="Prefilled">
+                        </div>
+                    </div>
+
+                   
+                    <div class="form-group">
+                        <label for="" class="col-sm-4 control-label">Contact No.</label>
+                        <div class="col-sm-8">
+                          <input type="email" class="form-control" id="" placeholder="Prefilled">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="" class="col-sm-4 control-label">Name of Organization</label>
+                        <div class="col-sm-8">
+                          <input type="email" class="form-control" id="" placeholder="Prefilled">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="" class="col-sm-4 control-label">Role</label>
+                        <div class="col-sm-8">
+                          <select class="form-control">
+                              <option>Invoice Maker</option>
+                              <option>2</option>
+                              <option>3</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="" class="col-sm-4 control-label"></label>
+                        <div class="col-sm-7">
+                          <select class="form-control">
+                              <option>Payment Approver</option>
+                              <option>2</option>
+                              <option>3</option>
+                            </select>
+                        </div>
+
+                        <div class="col-sm-1 p0">
+                          <a href="#" class="btn btn3 btn_black radius50"><i class="fa fa-plus"></i></a>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="" class="col-sm-4 control-label">Employee No.</label>
+                        <div class="col-sm-8">
+                          <input type="email" class="form-control" id="" placeholder="Prefilled">
+                        </div>
+                    </div>
+
+                     <div class="form-group">
+                        <label for="" class="col-sm-4 control-label">Address</label>
+                        <div class="col-sm-8">
+                          <textarea class="form-control" rows="3"></textarea>
+                        </div>
+                    </div>
+                  
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary">Add</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+
+        <!-- trace -->
+        <div class="modal fade" id="myModalDelete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+          <div class="modal-dialog ">
+            <div class="modal-content">
+             
+              <div class="modal-body">
+                <h3 class="text-center">Are you sure you want to disable user? </h3>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default">Yes</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">No</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- trace close-->
+
+<!-- audit log -->
+<div class="modal fade" tabindex="-1" role="dialog" id="myModalLog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title"><i class="fa fa-edit"></i> Audit Log</h4>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal">
+            <table class="table table-hover">
+                <thead class="table-head">
+                    <tr>
+                        <th>Operation Type</th>
+                        <th>Action Type</th>
+                        <th>Field Type</th>
+                        <th>Old Value</th>
+                        <th>New Value</th>
+                        <th>Creation Date/time</th>
+                        <th>Created By</th>
+                    </tr>
+                </thead>
+
+                <tbody> 
+                    <tr>
+                        <td>Login</td>
+                        <td>Creation</td>
+                        <td>Field Type</td>
+                        <td>20,0000</td>
+                        <td>New Value</td>
+                        <td>22.05.2016, 12:10 PM</td>
+                        <td>Ajay Singh</td>
+
+                    </tr>
+
+                   <tr>
+                        <td>Invoice</td>
+                        <td>Login</td>
+                        <td>Field Type</td>
+                        <td>100000</td>
+                        <td>New Value</td>
+                        <td>22.05.2016, 12:10 PM</td>
+                        <td>Seema Sharma</td>                          
+                    </tr>
+                    <tr>
+                        <td>Payment</td>
+                        <td>logout</td>
+                        <td>Field Type</td>
+                        <td>25,000</td>
+                        <td>New Value</td>
+                        <td>22.05.2016, 12:10 PM</td>
+                        <td>Surendra Singh</td>                          
+                    </tr>
+                </tbody>
+            </table>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+ <!-- view user -->
+        <div class="modal fade" tabindex="-1" role="dialog" id="myModalViewUser">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header loginboxinner">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"><i class="fa fa-eye"></i> View</h4>
+              </div>
+              <div class="modal-body">
+                <form class="form-horizontal">
+                  
+                    <div class="form-group">
+                    <label for="" class="col-sm-4 control-label"> Name :</label>
+                    <div class="col-sm-8 pt-7">
+                      Mark
+                    </div>
+                  </div>
+                  <hr class="viewhr">
+                  <div class="form-group">
+                    <label for="" class="col-sm-4 control-label">Email ID :</label>
+                    <div class="col-sm-8 pt-7">
+                      mark010@gmail.com
+                    </div>
+                  </div>
+                  <hr class="viewhr">
+                  <div class="form-group">
+                    <label for="" class="col-sm-4 control-label">Supplier Name :</label>
+                    <div class="col-sm-8 pt-7">
+                      Mohit Singh
+                    </div>
+                  </div>
+                  <hr class="viewhr">
+                  <div class="form-group">
+                    <label for="" class="col-sm-4 control-label">Supplier No :</label>
+                    <div class="col-sm-8 pt-7">
+                      9898656523
+                    </div>
+                  </div>
+
+                  <hr class="viewhr">
+
+                    <div class="form-group">
+                        <label for="" class="col-sm-4 control-label">Payment Name :</label>
+                        <div class="col-sm-8 pt-7">
+                            Name
+                        </div>
+                    </div>
+                    <hr class="viewhr">
+                   
+                    <div class="form-group">
+                        <label for="" class="col-sm-4 control-label">PAN Number :</label>
+                        <div class="col-sm-8 pt-7">
+                         UTN225454512
+                        </div>
+                    </div>
+                    <hr class="viewhr">
+
+                    <div class="form-group">
+                        <label for="" class="col-sm-4 control-label">Vendor Type :</label>
+                        <div class="col-sm-8 pt-7">
+                         Vendor
+                        </div>
+                    </div>
+                    <hr class="viewhr">
+
+                    <div class="form-group">
+                        <label for="" class="col-sm-4 control-label">Company Type :</label>
+                        <div class="col-sm-8 pt-7">
+                          indo water
+                        </div>
+                    </div>
+                    <hr class="viewhr">
+
+                    <div class="form-group">
+                        <label for="" class="col-sm-4 control-label">Company Type :</label>
+                        <div class="col-sm-8 pt-7">
+                          NEFT
+                        </div>
+                    </div>
+                    <hr class="viewhr">
+
+                    <div class="form-group">
+                        <label for="" class="col-sm-4 control-label">Payment Terms :</label>
+                        <div class="col-sm-8 pt-7">
+                          Terms
+                        </div>
+                    </div>
+                    <hr class="viewhr">
+                    <div class="form-group">
+                        <label for="" class="col-sm-4 control-label">Bank Name :</label>
+                        <div class="col-sm-8 pt-7">
+                          SBI
+                        </div>
+                    </div>
+                    <hr class="viewhr">
+                    <div class="form-group">
+                        <label for="" class="col-sm-4 control-label">Branch Name:</label>
+                        <div class="col-sm-8 pt-7">
+                          Noida sec-22
+                        </div>
+                    </div>
+                    <hr class="viewhr">
+                    <div class="form-group">
+                        <label for="" class="col-sm-4 control-label">Account No.:</label>
+                        <div class="col-sm-8 pt-7">
+                          325156415131
+                        </div>
+                    </div>
+                    <hr class="viewhr">
+
+                    <div class="form-group">
+                        <label for="" class="col-sm-4 control-label">Account No.:</label>
+                        <div class="col-sm-8 pt-7">
+                          325156415131
+                        </div>
+                    </div>
+                    <!-- <div class="form-group">
+                        <label for="" class="col-sm-4 control-label">Account Name:</label>
+                        <div class="col-sm-8 pt-7">
+                          325156415131
+                        </div>
+                    </div> -->
+                    <div class="form-group">
+                        <label for="" class="col-sm-4 control-label">Currency:</label>
+                        <div class="col-sm-8 pt-7">
+                          Rupees
+                        </div>
+                    </div>
+                    <hr class="viewhr">
+                    <div class="form-group">
+                        <label for="" class="col-sm-4 control-label">MID :</label>
+                        <div class="col-sm-8 pt-7">
+                          5645412
+                        </div>
+                    </div>
+                    <hr class="viewhr">
+                    <div class="form-group">
+                        <label for="" class="col-sm-4 control-label">IFSC :</label>
+                        <div class="col-sm-8 pt-7">
+                          SBI1210
+                        </div>
+                    </div>
+                    <hr class="viewhr">
+                    <div class="form-group">
+                        <label for="" class="col-sm-4 control-label">Address :</label>
+                        <div class="col-sm-8 pt-7">
+                          22 2nd Floor, New Delhi 110041
+                        </div>
+                    </div>
+                </form>
+                <table class="table table-hover">
+                    <thead class="table-head">
+                        <tr>
+                            <th>Date</th>
+                            <th>Action </th>
+                            <th>Action By</th>
+                        </tr>
+                    </thead>
+
+                    <tbody> 
+                        <tr>
+                            <td>25.07.2016</td>
+                            <td>Approve</td>
+                            <td>Manoj Kumar</td>                            
+                        </tr>
+
+                        <tr>
+                            <td>24.07.2016</td>
+                            <td>Payment</td>
+                            <td>45,000</td>
+                        </tr>
+
+                    </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- view user end -->
+
+<!-- approval log -->
+<div class="modal fade" tabindex="-1" role="dialog" id="myModalApprovallog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title"><i class="fa fa-edit"></i> Approval Log </h4>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal">
+            <table class="table table-hover">
+                <thead class="table-head">
+                    <tr>
+                        <th>Date</th>
+                        <th>Approver Name</th>
+                        <th>Approval Status</th>
+                        <th>Comment</th>
+                    </tr>
+                </thead>
+
+                <tbody> 
+                    <tr>
+                        <td>22.05.2016, 12:10 PM</td>
+                        <td>Surendra Singh</td>
+                        <td>Approve</td>
+                        <td>Comment goes here</td>                            
+                    </tr>
+
+                    <tr>
+                        <td>21.05.2016, 12:10 PM</td>
+                        <td>Bhanu Pratap</td>
+                        <td>Approve</td>
+                        <td>Comment goes here</td>                            
+                    </tr>
+
+                    <tr>
+                        <td>19.05.2016, 12:10 PM</td>
+                        <td>Ajay Sharma</td>
+                        <td>Approve</td>
+                        <td>Comment goes here</td>                            
+                    </tr>
+                </tbody>
+            </table>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary">Add</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+    // w3IncludeHTML();
+
+    function openpopup(value){
+        // alert(value);
+        if(value==""){
+            alert('Please Choose Action');
+        }
+
+        if(value==1){
+            $('#myModalEdt').trigger('click');
+        }
+         if(value==2){
+            $('#myModalDel').trigger('click');
+        }
+    }
+</script>
+
+
+</body>
+
+</html>

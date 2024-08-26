@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Settings </title>
+<link rel="stylesheet" href="css/style.default.css" type="text/css" />
+<link rel="stylesheet" href="css/main.css" type="text/css" />
+
+<link href="css/bootstrap.min.css" rel="stylesheet">
+<link href="css/font-awesome.min.css" rel="stylesheet">
+
+
+<script src="https://code.jquery.com/jquery-1.12.1.min.js"></script>
+<link rel="stylesheet" type="text/css" href="http://fontawesome.io/assets/font-awesome/css/font-awesome.css">
+<script type="text/javascript" src="js/plugins/jquery-1.7.min.js"></script>
+<script type="text/javascript" src="js/plugins/jquery-ui-1.8.16.custom.min.js"></script>
+<script type="text/javascript" src="js/plugins/jquery.cookie.js"></script>
+<script type="text/javascript" src="js/plugins/jquery.uniform.min.js"></script>
+<script type="text/javascript" src="js/plugins/jquery.flot.min.js"></script>
+<script type="text/javascript" src="js/plugins/jquery.flot.resize.min.js"></script>
+<script type="text/javascript" src="js/plugins/jquery.slimscroll.js"></script>
+<script type="text/javascript" src="js/custom/general.js"></script>
+<script type="text/javascript" src="js/custom/dashboard.js"></script>
+
+<script src="js/bootstrap.min.js"></script> 
+
+<!--[if lte IE 8]><script language="javascript" type="text/javascript" src="js/plugins/excanvas.min.js"></script><![endif]-->
+<!--[if IE 9]>
+    <link rel="stylesheet" media="screen" href="css/style.ie9.css"/>
+<![endif]-->
+<!--[if IE 8]>
+    <link rel="stylesheet" media="screen" href="css/style.ie8.css"/>
+<![endif]-->
+<!--[if lt IE 9]>
+	<script src="http://css3-mediaqueries-js.googlecode.com/svn/trunk/css3-mediaqueries.js"></script>
+<![endif]-->
+</head>
+
+<body class="withvernav">
+
+<div class="bodywrapper">
+    <div class="topheader">
+        <div class="left">
+            <h1 class="logo"> Payment Vista</span></h1>
+           <!--  <span class="slogan">admin template</span> -->
+            
+            
+            
+            <br clear="all" />
+            
+        </div><!--left-->
+        
+        <div class="right">
+            <div class="search">
+               <!--  <form action="#" method="post">
+                    <input type="text" name="keyword" id="keyword" value="Enter keyword(s)" />
+                    <button class="submitbutton"></button>
+                </form> -->
+            </div> 
+
+        	<div class="notification">
+                <a class="count" href="ajax/notifications.html"><span>9</span></a>
+        	</div>
+            <div class="userinfo">
+            	
+                <span>Juan Dela Cruz</span>
+            </div><!--userinfo-->
+            
+            <div class="userinfodrop">
+            	<div class="avatar">
+                	<a href="#"><img src="images/thumbs/avatarbig.png" alt="" /></a>
+                    <div class="changetheme">
+                    	Change theme: <br />
+                    	<a class="default"></a>
+                        <a class="blueline"></a>
+                        <a class="greenline"></a>
+                        <a class="contrast"></a>
+                        <a class="custombg"></a>
+                    </div>
+                </div><!--avatar-->
+                <div class="userdata">
+                	<h4>Juan Dela Cruz</h4>
+                    <span class="email">youremail@yourdomain.com</span>
+                    <ul>
+                    	<li><a href="editprofile.html">Edit Profile</a></li>
+                        <li><a href="account-setting.html">Account Settings</a></li>
+                        <li><a href="new-password.html"> Change password </a></li>
+                        <!-- <li><a href="help.html">Help</a></li> -->
+                        <li><a href="index.html">Sign Out</a></li>
+                    </ul>
+                </div><!--userdata-->
+            </div><!--userinfodrop-->
+        </div><!--right-->
+    </div><!--topheader-->
+    
+    
+    <div class="header">
+    	<ul class="headermenu">
+        	<li><a href="dashboard.html"><i class="fa fa-tachometer icon_me"></i>Dashboard</a></li>
+            <li ><a href="user.html"><i class="fa fa-user icon_me"></i>User</a></li>
+            <li><a href="vendor.html"><i class="fa fa-users icon_me"></i>Beneficiary</a></li>
+            <li><a href="invoice-list.html"><i class="fa fa-file-text icon_me"></i>Invoices</a></li>
+            <li><a href="payment-create.html"><i class="fa fa-credit-card icon_me"></i>Payment</a></li>
+            <li><a href="import-history.html"><i class="fa fa-bar-chart icon_me"></i>Reports</a></li>
+            <li class="current"><a href="setting.html"><i class="fa fa-cog icon_me"></i>Settings</a></li>
+        </ul>
+        
+    </div><!--header-->
+    
+    <div class="vernav2 iconmenu">
+    	<ul>
+        	<li><a href="setting.html" class="editor">Edit Registration Details </a></li>
+            <li><a href="edit-add-bank.html" class="editor">Bank Detail</a></li>
+            <li class="current"><a href="set-default.html" class="editor">Set Approvers</a></li>
+            <li><a href="role-access.html" class="editor">Role Access</a></li>
+            <li><a href="payment-terms.html" class="editor">Payment Terms</a></li>
+        </ul>
+        <a class="togglemenu"></a>
+        <br /><br />
+    </div><!--leftmenu-->
+        
+    <div class="centercontent">
+    
+        <div class="pageheader">
+           
+            <div class="pageheader_edit">
+                <h1 class="pagetitle">Set Approvers</h1>
+            </div>           
+        </div><!--pageheader-->
+        <div class="clearfix"></div>
+        
+        
+
+        <div class="col-md-12">
+            <div class="row">
+
+
+                <!-- vendor approval-->
+
+                <div class="col-md-4 col-xs-12">
+                    <div class="col-md-12 approval_box">
+                        <form>
+                            <div class="form-group">
+                                <div class="contenttitle2 contenttitle22">
+                                    <h3 class="mt-0">Select Default Vendor Approval</h3>
+                                </div>
+
+                                <div class="checkbox">
+                                    <label class="p0">
+                                      <input type="checkbox" name="mycheckbox1" id="mycheckbox1" value="0"> Vendor Approval Mandatory
+                                    </label>
+                                </div>
+                                <div class="hide_x" id="mycheckboxdiv1" style="display: none;">
+                                    <div class="mb-10">
+                                        <select class="form-control">
+                                          <option>Aman Mehra</option>
+                                          <option>Kamal Kapoor</option>
+                                        </select>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-10 pr-0">
+                                            <select class="form-control">
+                                                <option>Aman Mehra</option>
+                                                <option>Kamal Kapoor</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-sm-2">
+                                            <button>X</button>
+                                        </div>
+                                    </div>
+
+                                    <div class=" addname-add">
+                                        <button type="button" class="btn btn-primary col-md-4  pull-left"> <i class="fa fa-plus"></i> Add</button>
+                                        <button type="submit" class="btn btn-success pull-right">Submit</button>
+                                    </div>
+                              </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- vendor approval end-->
+
+                <!-- invoice approval -->
+
+                <div class="col-md-4 col-xs-12">
+                    <div class="col-md-12 approval_box">
+                        <form>
+                            <div class="form-group">
+                                <div class="contenttitle2 contenttitle22">
+                                    <h3 class="mt-0">Select Default Invoice Approval</h3>
+                                </div>
+
+                                <div class="checkbox">
+                                    <label class="p0">
+                                      <input type="checkbox" name="mycheckbox2" id="mycheckbox2" value="0"> Invoice Approval Mandatory
+                                    </label>
+                                </div>
+                                <div class="hide_x" id="mycheckboxdiv2" style="display: none;">
+                                    <div class="mb-10">
+                                        <select class="form-control">
+                                          <option>Aman Mehra</option>
+                                          <option>Kamal Kapoor</option>
+                                        </select>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-10 pr-0">
+                                            <select class="form-control">
+                                                <option>Aman Mehra</option>
+                                                <option>Kamal Kapoor</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-sm-2">
+                                            <button>X</button>
+                                        </div>
+                                    </div>
+
+                                    <div class=" addname-add">
+                                        <button type="button" class="btn btn-primary col-md-4  pull-left"> <i class="fa fa-plus"></i> Add</button>
+                                        <button type="submit" class="btn btn-success pull-right">Submit</button>
+                                    </div>
+                              </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+
+                <!-- invoice approval end-->
+
+                <!-- payment approval -->
+
+                <div class="col-md-4 col-xs-12">
+                    <div class="col-md-12 approval_box">
+                        <form>
+                            <div class="form-group">
+                                <div class="contenttitle2 contenttitle22">
+                                    <h3 class="mt-0">Select Default Payment Approval</h3>
+                                </div>
+
+                                <div class="checkbox">
+                                    <label class="p0">
+                                      <input type="checkbox" name="mycheckbox3" id="mycheckbox3" value="0"> Payment Approval Mandatory
+                                    </label>
+                                </div>
+                                <div class="hide_x" id="mycheckboxdiv3" style="display: none;">
+                                    <div class="mb-10">
+                                        <select class="form-control">
+                                          <option>Aman Mehra</option>
+                                          <option>Kamal Kapoor</option>
+                                        </select>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-10 pr-0">
+                                            <select class="form-control">
+                                                <option>Aman Mehra</option>
+                                                <option>Kamal Kapoor</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-sm-2">
+                                            <button>X</button>
+                                        </div>
+                                    </div>
+
+                                    <div class=" addname-add">
+                                        <button type="button" class="btn btn-primary col-md-4  pull-left"> <i class="fa fa-plus"></i> Add</button>
+                                        <button type="submit" class="btn btn-success pull-right">Submit</button>
+                                    </div>
+                              </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+
+                <!-- payment approval end-->
+
+               
+            </div>
+        </div>
+
+
+
+        
+        
+
+
+       
+        <br clear="all" />
+        
+	</div><!-- centercontent -->
+
+
+    <br><br><br><br><br>
+    
+</div><!--bodywrapper-->
+
+<script src="js/bootstrap-button-to-input-file.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#mycheckbox1').change(function() {
+            $('#mycheckboxdiv1').toggle();
+        });
+
+        $('#mycheckbox2').change(function() {
+            $('#mycheckboxdiv2').toggle();
+        });
+
+        $('#mycheckbox3').change(function() {
+            $('#mycheckboxdiv3').toggle();
+        });
+    });
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,612 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html ng-app="myApp">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Vendor Info</title>
+<link rel="stylesheet" href="/resources/public/css/style.default.css" type="text/css" />
+<link rel="stylesheet" type="text/css"	href="/resources/public/css/main.css">
+<link href="/resources/public/css/bootstrap.min.css" rel="stylesheet">
+<link href="/resources/public/css/font-awesome.css" rel="stylesheet">
+	 
+	 <script type="text/javascript" src="/resources/public/js/plugins/jquery-1.11.3.min.js"></script>
+	 <script type="text/javascript" src="/resources/public/js/plugins/jquery-1.7.min.js"></script>
+	  <script src="/resources/public/js/bootstrap.min.js"></script>
+	 <script type="text/javascript"	src="/resources/public/js/plugins/jquery-ui-1.8.16.custom.min.js"></script>
+	 <script type="text/javascript"	src="/resources/public/js/plugins/jquery.cookie.js"></script>
+	 <script type="text/javascript" src="/resources/public/js/plugins/jquery.slimscroll.js"></script>
+	 <script type="text/javascript" src="/resources/public/js/plugins/colorpicker.js"></script>
+	 <script type="text/javascript"	src="/resources/public/js/custom/general.js"></script>
+	 <script type="text/javascript" src="/resources/public/js/custom/elements.js"></script>
+
+<script type="text/javascript" src="/resources/public/js/custom/angular.js"></script>
+<script type="text/javascript" src="/resources/public/js/custom/angular-cookies.min.js"></script>
+<script type="text/javascript" src="/resources/public/js/angular-file-upload.js"></script>
+<script type="text/javascript" src="/resources/public/js/vendorInfo.js"></script>
+
+<!-- Add header.js to get user access permissions -->
+<script type="text/javascript" src="/resources/public/js/header.js"></script>
+	
+</head>
+
+<body class="withvernav" ng-controller="getVendorInfoCntrl" id="createVendorApp">
+<div id="msgTimeOut" ng-if= "successMsg != ''" >
+		<p class="bg_success">
+			<i class="glyphicon glyphicon-ok"></i> <span><b>SUCCESS!</b></span><br>
+				{{successMsg}}
+		</p>
+		<script>
+			setTimeout(function() {
+				$('#msgTimeOut').hide();
+			}, 10000);
+		</script>
+	</div>
+	
+	<div id="msgTimeOut" ng-if="error != ''">
+		<p class="bg_error">
+			<i class="glyphicon glyphicon-remove"></i> <span><b>ERROR!</b></span><br>
+				{{error}}
+		</p>
+		<script>			
+			setTimeout(function() {
+					$('#msgTimeOut').hide();
+			}, 10000);
+		</script>
+	</div>
+<div ng-controller="newVendorCntrl" class="bodywrapper">
+<div ng-include="'topheader.html'"></div>
+<script>
+	setTimeout( function() {
+ 		$('#vendor').addClass('current')
+	} ,3000);
+</script>
+
+	<div class="vernav2 iconmenu" ng-controller="UserRoleCntrl">
+	
+    	<ul>
+        	<li class="current"><a href="#formsub" class="editor">Vendor </a>
+            	<span class="arrow"></span>
+            	<ul id="formsub">
+                    <li ng-if="((vm.userRoleList.roleDesciption.indexOf('Admin') >= 0) || (vm.userRoleList.roleDesciption.indexOf('Vendor List') >= 0))" class="current"><a href="vendorInfo.html">Vendor List</a></li>
+               		<li ng-if="((vm.userRoleList.roleDesciption.indexOf('Admin') >= 0) || (vm.userRoleList.roleDesciption.indexOf('Vendor Approve') >= 0))"><a href="approve-beneficiary.html">Approve</a></li>
+                </ul>
+            </li>
+            <li ng-if="((vm.userRoleList.roleDesciption.indexOf('Admin') >= 0) || (vm.userRoleList.roleDesciption.indexOf('Employee') >= 0))"><a href="employee.html" class="">Employee</a></li>
+        </ul>
+        <a class="togglemenu"></a>
+        <br /><br />
+    </div><!--leftmenu-->
+        
+    <div class="centercontent">
+    
+        <div class="pageheader">
+           
+            <div class="pageheader_edit">
+                <h1 class="pagetitle">Vendor List</h1>
+            </div>
+            <div class="clearphone"></div> 
+            <div class="search pull_right">
+                <form action="#" method="post">
+                    <input type="text" name="keyword" id="keyword" value="Search" />
+                    <button class="submitbutton"></button>
+                </form>
+            </div>
+
+           
+        </div><!--pageheader-->
+        <div class="clearfix"></div>
+
+			<div enctype=”multipart/form-data” ng-controller="FileUploadCtrl" class="col-md-12 batch_upload">
+            <div class="row">
+                <div class="col-md-3 col-xs-12 pr-0">
+                    <label for=""><h5><b>Batch Upload </b></h5></label></br>
+                    <input type="file"	ng-click="setAttributeForFileUpload('batchUpload')"
+													id="Debit" nv-file-select="" uploader="uploader">
+                </div>
+                <div class="col-md-6 col-xs-12">
+                    <h5 class="mb-15"><b> Download format </b></h5>
+                    <a href="/resources/public/csv/VendorImportSample.csv" class="btn btn-default"> <i class="fa fa-download"></i> Download </a>
+                    <button class="btn btn-primary ml-10" type="button" ng-click = "uploadBatchFile()">Submit</button>
+
+                </div>
+            </div>
+        </div>
+       <div class="col-md-12 add_new">
+           
+           <a href="add-vendor.html" class="btn btn_black pull-right mb-15"> <i class="fa fa-plus-circle"></i> Add New Vendor</a>
+           
+       </div>
+       <div class="col-md-12"> 
+        
+
+
+        <!-- add new vendor select -->
+        <div class="modal fade" tabindex="-1" role="dialog" id="demo-1">
+          <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+              <div class="modal-header loginboxinner">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Select Method</h4>
+              </div>
+              <div class="modal-body">
+                <form class="form-horizontal">
+                    <div class="row text-center">
+                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#demo-2" data-dismiss="modal">Batch Upload</button>
+                        <a href="add-vendor.html" class="btn btn-default">Web Form</a>
+                    </div>
+                </form>
+              </div>
+              <div class="modal-footer">
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- add user end -->
+
+        <!-- add new vendor select -->
+        <div class="modal fade" tabindex="-1" role="dialog" id="demo-2">
+          <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+              <div class="modal-header loginboxinner">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Upload Here</h4>
+              </div>
+              <div class="modal-body">
+                <form class="form-horizontal">
+                    <div class="row">
+                        <div class="col-md-12 col-xs-12">
+                            <label for=""><h5><b>Batch Upload </b></h5></label>
+                            <button type="button" class="bfs btn btn-default" data-style="fileStyle-r">
+                            <span class="fa fa-folder-open" aria-hidden="true"></span> Choose File</button>
+                        </div>
+                    </div>
+                  
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary">Upload</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- add user end -->
+        
+        
+
+        <!-- trace -->
+        <div class="modal fade" id="myModalDelete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+          <div class="modal-dialog ">
+            <div class="modal-content">
+             
+              <div class="modal-body">
+                <h3 class="text-center">Are you sure you want to disable? </h3>
+              </div>
+              <div class="modal-footer">
+                <button type="button" data-dismiss="modal" ng-click = "disableVendorInfo(ven)" class="btn btn-default">Yes</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">No</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- trace close-->
+
+		<form name="form" id="searchVendor" class="form-horizontal">    
+        <div class="main_search">
+            <div class="col-md-3 col-sm-4 col-xs-12 search_by">
+                <div class="form-group m0">
+                    <label for=""><b>Search by Supplier Name :</b></label><br>
+                    <div class="col-md-12 pl-0">
+                        <input type="text" ng-focus="focus('suplierName')" ng-model="search.suplierName" 
+	                    							name="suplierName" id="suplierName" placeholder="Suplier Name" class="form-control" required />
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8 col-sm-8 col-xs-12 search_by p0-m pl-0">
+                <div class="">
+                    <div class="col-md-4 col-sm-7">
+                        <div class="form-group mt-15 mt-0-m">
+                            <div class="checkbox search_in">
+                                <label class="p0-m">
+                                    <input type="checkbox" name="showInactive" id="showInactive" value="" 
+                                           ng-model="search.showInactive" ng-init="search.showInactive = 'false'"> <b>Show Inactive Vendors </b>
+                                </label>
+                            </div>
+                        </div>    
+                    </div>
+
+                    <div class="col-md-8 col-sm-3 col-xs-12 pl-0 pl-10-tab">
+                        <button class="btn btn-primary mt-23 w100-m" type="button" ng-click="searchVendors(search)">Search</button>    
+                        <button class="btn btn-primary mt-23 w100-m" type="button" ng-click="viewDataForVendor()">Reset Search</button> 
+                    </div>
+                </div>
+            </div>
+        </div>
+        </form>
+
+        <!-- view Vendor -->
+        <div class="modal fade" tabindex="-1" role="dialog" id="myModalView">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header loginboxinner">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"><i class="fa fa-eye"></i> View</h4>
+              </div>
+              <div class="modal-body">
+                <form class="form-horizontal">
+                  
+                    <div class="form-group">
+                    <label for="" class="col-md-4 col-sm-4 col-xs-4 control-label"> Name :</label>
+                    <div class="col-sm-8 pt-7">
+                     {{ven.firstName}}
+                    </div>
+                  </div>
+                  <hr class="viewhr">
+                  <div class="form-group">
+                    <label for="" class="col-md-4 col-sm-4 col-xs-4 control-label">Email ID :</label>
+                    <div class="col-sm-8 pt-7">
+                      {{ven.email}}
+                    </div>
+                  </div>
+                  <hr class="viewhr">
+                  <div class="form-group">
+                    <label for="" class="col-md-4 col-sm-4 col-xs-4 control-label">Supplier Name :</label>
+                    <div class="col-sm-8 pt-7">
+                      {{ven.suplierName}}
+                    </div>
+                  </div>
+                  <hr class="viewhr">
+                  <div class="form-group">
+                    <label for="" class="col-md-4 col-sm-4 col-xs-4 control-label">Supplier No :</label>
+                    <div class="col-sm-8 pt-7">
+                      {{ven.suplierNo}}
+                    </div>
+                  </div>
+
+                  <hr class="viewhr">
+
+                    <div class="form-group">
+                        <label for="" class="col-md-4 col-sm-4 col-xs-4 control-label">Payment Name :</label>
+                        <div class="col-sm-8 pt-7">
+                            {{ven.paymentName}}
+                        </div>
+                    </div>
+                    <hr class="viewhr">
+                   
+                    <div class="form-group">
+                        <label for="" class="col-md-4 col-sm-4 col-xs-4 control-label">PAN Number :</label>
+                        <div class="col-sm-8 pt-7">
+                        {{ven.panNumber}}
+                        </div>
+                    </div>
+                    <hr class="viewhr">
+
+                    <div class="form-group">
+                        <label for="" class="col-md-4 col-sm-4 col-xs-4 control-label">Vendor Type :</label>
+                        <div class="col-sm-8 pt-7">
+                         {{ven.vendorType}}
+                        </div>
+                    </div>
+                    <hr class="viewhr">
+
+                    <div class="form-group">
+                        <label for="" class="col-md-4 col-sm-4 col-xs-4 control-label">Company Type :</label>
+                        <div class="col-sm-8 pt-7">
+                          {{ven.companyType}}
+                        </div>
+                    </div>
+                    <hr class="viewhr">
+
+                    <div class="form-group">
+                        <label for="" class="col-md-4 col-sm-4 col-xs-4 control-label">Payment Method :</label>
+                        <div class="col-sm-8 pt-7">
+                          {{ven.paymentMethod}}
+                        </div>
+                    </div>
+                    <hr class="viewhr">
+
+                    <div class="form-group">
+                        <label for="" class="col-md-4 col-sm-4 col-xs-4 control-label">Payment Terms :</label>
+                        <div class="col-sm-8 pt-7">
+                          {{ven.paymentTerm}}
+                        </div>
+                    </div>
+                    <hr class="viewhr">
+                    <div class="form-group">
+                        <label for="" class="col-md-4 col-sm-4 col-xs-4 control-label">Bank Name :</label>
+                        <div class="col-sm-8 pt-7">
+                          {{ven.bankName}}
+                        </div>
+                    </div>
+                    <hr class="viewhr">
+                    <div class="form-group">
+                        <label for="" class="col-md-4 col-sm-4 col-xs-4 control-label">Branch Name:</label>
+                        <div class="col-sm-8 pt-7">
+                         {{ven.branchAddress}}
+                        </div>
+                    </div>
+                    <hr class="viewhr">
+                    <div class="form-group">
+                        <label for="" class="col-md-4 col-sm-4 col-xs-4 control-label">Account No.:</label>
+                        <div class="col-sm-8 pt-7">
+                          {{ven.accountNo}}
+                        </div>
+                    </div>
+                    <hr class="viewhr">
+                    <div class="form-group">
+                        <label for="" class="col-md-4 col-sm-4 col-xs-4 control-label">Currency:</label>
+                        <div class="col-sm-8 pt-7">
+                          {{ven.currency}}
+                        </div>
+                    </div>
+<!--                     <hr class="viewhr">
+                    <div class="form-group">
+                        <label for="" class="col-md-4 col-sm-4 col-xs-4 control-label">MID :</label>
+                        <div class="col-sm-8 pt-7">
+                          {{ven.firstName}}
+                        </div>
+                    </div> -->
+                    <hr class="viewhr">
+                    <div class="form-group">
+                        <label for="" class="col-md-4 col-sm-4 col-xs-4 control-label">IFSC :</label>
+                        <div class="col-sm-8 pt-7">
+                          {{ven.ifscCode}}
+                        </div>
+                    </div>
+                    <hr class="viewhr">
+                    <div class="form-group">
+                        <label for="" class="col-md-4 col-sm-4 col-xs-4 control-label">Address :</label>
+                        <div class="col-sm-8 pt-7">
+                          {{ven.addressLine1}}
+                        </div>
+                    </div>
+                </form>
+                <div class= "container-fluid">
+                <table class="table table-hover pull-left">
+                    <thead class="table-head">
+                        <tr>
+                            <th>Date</th>
+                            <th>Action </th>
+                            <th>Action By</th>
+                        </tr>
+                    </thead>
+
+                    <tbody> 
+                        <tr ng-repeat="auditObj in auditData">
+                           <td ng-bind="(auditObj.creationDateTime == null) ? '-----' : auditObj.creationDateTime"></td>
+                           <td	ng-bind="(auditObj.actionType == null) ? '-----' : auditObj.actionType"></td>
+                           <td	ng-bind="(auditObj.createdBy == null) ? '-----' : auditObj.createdBy"></td>                           
+                        </tr>
+
+                    </tbody>
+                </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- audit log -->
+<div class="modal fade" tabindex="-1" role="dialog" id="myModalLog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title"><i class="fa fa-edit"></i> Audit Log</h4>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal">
+            <table class="table table-hover">
+                <thead class="table-head">
+                    <tr>
+                        <th>Operation Type</th>
+                        <th>Action Type</th>
+                        <th>Field Type</th>
+                        <th>Old Value</th>
+                        <th>New Value</th>
+                        <th>Creation Date/time</th>
+                        <th>Created By</th>
+                    </tr>
+                </thead>
+
+							<tbody>
+								<tr ng-repeat="auditObj in auditData">
+									<td	ng-bind="(auditObj.operationType == null) ? '-----' : auditObj.operationType"></td>
+									<td	ng-bind="(auditObj.actionType == null) ? '-----' : auditObj.actionType"></td>
+									<td	ng-bind="(auditObj.fieldType == null) ? '-----' : auditObj.fieldType"></td>
+									<td	ng-bind="(auditObj.oldValue == null) ? '-----' : auditObj.oldValue"></td>
+									<td ng-bind="(auditObj.newValue == null) ? '-----' : auditObj.newValue"></td>
+									<td ng-bind="(auditObj.creationDateTime == null) ? '-----' : auditObj.creationDateTime"></td>
+									<td	ng-bind="(auditObj.createdBy == null) ? '-----' : auditObj.createdBy"></td>
+
+								</tr>
+							</tbody>
+						</table>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+        
+        
+        <!-- view user end -->
+        <table class="table table-hover pull-left">
+            <thead class="table-head">
+                <tr>
+                    <th>Name</th>
+                    <th>Suplier No.</th>
+                    <th>Account No.</th>
+                    <th>City</th>
+                    <th>Primary Email</th>
+                    <th>Payment Method</th>
+                    <th>Status </th>
+                    <th>Phone No. </th>
+                    <th>&nbsp;</th>
+                </tr>
+            </thead>
+
+            <tbody> 
+                <tr ng-repeat ="venObj in vendorData">
+                    <td>
+                        <div class="select_select pull-left dropdown">
+                            <button class="btn btn-default dropdown-toggle select_btn" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                            <i class="fa fa-chevron-circle-down" aria-hidden="true" class="arrow_select"></i>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                <li ng-click="viewAndEditVendorDetail(venObj)" data-toggle="modal" data-target="#myModalView"> <span>View </span> </li>
+                                <!-- <li ng-click="viewAndEditVendorDetail(venObj)"><a href="add-vendor.html"> Edit </a></li> -->
+                                <li ng-click="editVendor(venObj)"> Edit </li>
+                                <li ng-click="auditTrailView(venObj)" data-toggle="modal" data-target="#myModalLog">Audit Log</li>
+                                <li ng-click="fetchVendorApproval(venObj.vendID)"  data-toggle="modal" data-target="#myModalApprovallog">Approval Log</li>
+                                <li ng-click="disableVendorAuth(venObj)" ng-if="venObj.verifiedStatus == true"  data-toggle="modal" data-target="#myModalDelete">Disable </li>
+                            </ul>
+                        </div>
+                        <span class="mt-2 pull-left"><a href="" ng-click="viewAndEditVendorDetail(venObj)" data-toggle="modal" data-target="#myModalView">{{venObj.suplierName}} </a></span>
+                        <div class="clearfix"></div>
+                    </td>
+                    <td ng-bind="venObj.suplierNo"></td>
+                    <td ng-bind="venObj.accountNo"></td>
+                    <td ng-bind="venObj.citiName"></td>
+                    <td ng-bind="venObj.primEmailId"></td>
+                    <td ng-bind="venObj.paymentMethod"></td> 
+                    <td ng-bind="(venObj.verifiedStatus == true) ? 'Active':'Inactive'"></td>
+                    <td ng-bind="venObj.phnNo"></td>
+                    <td> &nbsp;</td>
+                </tr>               
+            </tbody>
+        </table>
+        </div>
+       
+        <br clear="all" />
+        
+	</div><!-- centercontent -->    
+</div><!--bodywrapper-->
+
+
+
+
+<!-- error table -->
+<div class="modal fade" tabindex="-1" role="dialog" id="myModalSubmiterror">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title"><i class="fa fa-edit"></i> Batch Upload</h4>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal">
+            <table class="table table-hover">
+            <thead class="table-head">
+                <tr>
+                    <th>No.</th>
+                    <th>Field Name</th>
+                    <th>Value</th>
+                    <th>Error Message</th>
+                </tr>
+            </thead>
+
+            <tbody> 
+                <tr>
+                    <td>4</td>
+                    <td>Vendor</td>
+                    <td>&nbsp;</td>
+                    <td><span class="text-danger"> No Vendor Name</span></td>
+                </tr>
+               
+                <tr>
+                    <td>7</td>
+                    <td>Vendor</td>
+                    <td>XYZ $ Name</td>
+                    <td><span class="text-danger"> No special character</span></td>
+                </tr>
+                
+            </tbody>
+
+        </table>
+         Please correct these fields.
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- approval log -->
+<div class="modal fade" tabindex="-1" role="dialog" id="myModalApprovallog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title"><i class="fa fa-edit"></i> Approval Log </h4>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal">
+            <table class="table table-hover">
+                <thead class="table-head">
+                    <tr>
+                        <th>Date</th>
+                        <th>Approver Name</th>
+                        <th>Approval Status</th>
+                        <th>Comment</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                	<tr ng-repeat="appLog in vendAppList">
+									<td ng-bind = "appLog.createdDate"></td>
+									<td ng-bind = "appLog.createdByName"></td>
+									<td	ng-bind="appLog.status==0?'Pending':appLog.status==1?'Approved':
+								            appLog.status==2?'InProgress..':'Declined'"></td>
+									<td ng-bind = "appLog.comment"></td>
+					</tr> 
+                </tbody>
+            </table>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+
+     function openpopup(value){
+        // alert(value);
+        if(value==""){
+            alert('Please Choose Action');
+        }
+
+        if(value==1){
+            $('#myModalEdt').trigger('click');
+        }
+         if(value==2){
+            $('#myModalDel').trigger('click');
+        }
+    }
+</script>
+
+<!-- droopdown -->
+<script>
+    $(document).on("shown.bs.dropdown", ".dropdown", function () {
+    // calculate the required sizes, spaces
+    var $ul = $(this).children(".dropdown-menu");
+    var $button = $(this).children(".dropdown-toggle");
+    var ulOffset = $ul.offset();
+    // how much space would be left on the top if the dropdown opened that direction
+    var spaceUp = (ulOffset.top - $button.height() - $ul.height()) - $(window).scrollTop();
+    // how much space is left at the bottom
+    var spaceDown = $(window).scrollTop() + $(window).height() - (ulOffset.top + $ul.height());
+    // switch to dropup only if there is no space at the bottom AND there is space at the top, or there isn't either but it would be still better fit
+    if (spaceDown < 0 && (spaceUp >= 0 || spaceUp > spaceDown))
+      $(this).addClass("dropup");
+}).on("hidden.bs.dropdown", ".dropdown", function() {
+    // always reset after close
+    $(this).removeClass("dropup");
+});
+</script>
+
+<!-- <script type="text/javascript"
+		data-main="/resources/public/js/run-vendorInfo"	src="/resources/bower_components/requirejs/require.js"></script>  -->
+
+</body>
+</html>

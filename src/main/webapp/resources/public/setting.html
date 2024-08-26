@@ -1,0 +1,376 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html ng-app="editRegApp">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>PaymentVista</title>
+<link rel="stylesheet" href="/resources/public/css/style.default.css" type="text/css" />
+<link rel="stylesheet" type="text/css" href="/resources/public/css/main.css">
+<link href="/resources/public/css/bootstrap.min.css" rel="stylesheet">
+<link href="/resources/public/css/font-awesome.css" rel="stylesheet">
+			<script type="text/javascript"	src="/resources/public/js/plugins/jquery-1.11.3.min.js"></script>
+			<script type="text/javascript"	src="/resources/public/js/plugins/jquery-1.7.min.js"></script>
+			<script type="text/javascript"  src="/resources/public/js/plugins/jquery-ui-1.8.16.custom.min.js"></script>
+			<script type="text/javascript"	src="/resources/public/js/plugins/jquery.cookie.js"></script>
+			<script type="text/javascript"	src="/resources/public/js/plugins/jquery.uniform.min.js"></script>
+			<script type="text/javascript"	src="/resources/public/js/plugins/jquery.slimscroll.js"></script>
+			<!-- <script type="text/javascript"	src="/resources/public/js/custom/general.js"></script>
+			<script type="text/javascript"	src="/resources/public/js/custom/index.js"></script> -->
+			<script src="/resources/public/js/bootstrap.min.js"></script>
+			
+<script type="text/javascript" src="/resources/public/js/custom/angular.js"></script>
+<script type="text/javascript" src="/resources/public/js/angular-file-upload.js"></script>
+<script type="text/javascript" src="/resources/public/js/editRegistration.js"></script>
+
+<!-- Add header.js to get user access permissions -->
+<script type="text/javascript" src="/resources/public/js/header.js"></script>
+
+<script type="text/javascript" src="/resources/public/js/paymentTerm.js"></script>
+
+</head>
+
+<body class="withvernav"  id="editRegistrationApp" ng-controller="editRegistrationCtrll">
+
+	<div id="msgTimeOut" style="display: block;" ng-if="successMsg != ''">
+		<p class="bg_success">
+			<i class="glyphicon glyphicon-ok"></i> <span><b>SUCCESS!</b></span><br>
+				{{successMsg}} 
+		</p>
+		<script>
+			setTimeout(function() {
+				$('#msgTimeOut').hide();
+
+			}, 10000);
+		</script>
+	</div>
+
+	<div id="msgTimeOut" style="display: block;" ng-if="error != ''">
+		<p class="bg_error">
+			<i class="glyphicon glyphicon-remove"></i> <span><b>ERROR!</b></span><br>
+				{{error}} 
+		</p>
+		<script>
+			setTimeout(function() {
+				error = '';
+				$('#msgTimeOut').hide();
+			}, 10000);
+		</script>
+	</div>
+
+	<div class="bodywrapper" >
+	
+<div ng-include="'topheader.html'"></div>
+<script>
+	setTimeout( function() {
+ 		$('#setting').addClass('current')
+	} ,3000);
+</script>
+	
+	
+		<div class="vernav2 iconmenu" ng-controller="UserRoleCntrl">
+			<ul>
+				<li ng-if="(vm.userRoleList.roleDesciption.indexOf('Admin') >= 0) || (vm.userRoleList.roleDesciption.indexOf('Edit Registration Details') >= 0)" class="current"><a href="setting.html" class="editor">Edit Registration Details </a></li>
+				<li ng-if="(vm.userRoleList.roleDesciption.indexOf('Admin') >= 0) || (vm.userRoleList.roleDesciption.indexOf('Bank Detail') >= 0)"><a href="edit-add-bank.html" class="editor">Bank Detail</a></li>
+				<li ng-if="(vm.userRoleList.roleDesciption.indexOf('Admin') >= 0) || (vm.userRoleList.roleDesciption.indexOf('Set Approvers') >= 0)"><a href="set-default.html" class="editor">Set Approvers</a></li>
+				<li ng-if="(vm.userRoleList.roleDesciption.indexOf('Admin') >= 0) || (vm.userRoleList.roleDesciption.indexOf('Role Access') >= 0)"><a href="role-access.html" class="editor">Role Access</a></li>
+				<li ng-if="(vm.userRoleList.roleDesciption.indexOf('Admin') >= 0) || (vm.userRoleList.roleDesciption.indexOf('Payment Terms') >= 0)" ><a href="payment-terms.html" class="editor">Payment	Terms</a></li>
+			</ul>
+			<a class="togglemenu"></a> <br /> <br />
+		</div>
+		<!--leftmenu-->
+
+		<div class="centercontent">
+
+			<div class="pageheader">
+
+				<div class="pageheader_edit">
+					<h1 class="pagetitle">Edit Registration Details</h1>
+				</div>
+
+
+
+			</div>
+			<!--pageheader-->
+			<div class="clearfix"></div>
+
+			<form class="form-horizontal" ng-controller="updateRegistrationCntl" name="form" ng-submit="updateRegistration()">
+			<div class=""  ng-controller="FileUploadCtrl">
+				<div class="contenttitle2 ml-15">
+					<h3 class="mt-0">Please Fill These Fields</h3>
+				</div>
+				<div class="clearfix"></div>
+					<div class="form-group col-sm-6">
+						<label for="" class="col-sm-5 control-label">Country</label>
+						<div class="col-sm-7">
+							<select ng-model="vn.countryID" class="form-control">
+								<option>Select Country</option>
+								<option ng-repeat ="cntryObj in countriesData" value="{{cntryObj.countryID}}">{{cntryObj.countryName}}</option>
+							</select>
+						</div>
+					</div>
+					<div class="clearfix"></div>
+
+					<div class="form-group col-sm-6">
+						<label for="" class="col-sm-5 control-label">Legal Entity
+							Name</label>
+						<div class="col-sm-7">
+							<input type="text" ng-focus="focus('legalEntityName')" ng-model="vn.legalEntityName" 
+							maxlength=144 name="legalEntityName"	class="form-control" id="legalEntityName">
+						</div>
+					</div>
+
+					<div class="form-group col-sm-6">
+						<label for="" class="col-sm-5 control-label">Organization Name</label>
+						<div class="col-sm-7">
+							<input type="text" ng-focus="focus('organization')" ng-model="vn.organization" 
+							maxlength=145 name="organization"	class="form-control" id="organization" required>
+						</div>
+					</div>
+
+					<div class="form-group col-sm-6">
+						<label for="" class="col-sm-5 control-label">CIN</label>
+						<div class="col-sm-7">
+							<input type="text" ng-focus="focus('cin')" ng-model="vn.cin" maxlength=10
+							name="cin"	class="form-control pin_w" id="cinNo">
+						</div>
+					</div>
+
+					<div class="form-group col-sm-6">
+						<label for="" class="col-sm-5 control-label">PAN Code</label>
+						<div class="col-sm-7">
+							<input type="text" ng-focus="focus('panNo')" ng-model="vn.panNo" maxlength=12
+							name="panNo" class="form-control pin_w" id="panNo">
+						</div>
+					</div>
+
+					<div class="clearfix"></div>
+					<div class="contenttitle2 ml-15">
+						<h3 class="mt-0">Address</h3>
+					</div>
+					<div class="clearfix"></div>
+					<div class="form-group col-sm-6">
+						<label for="" class="col-sm-5 control-label">Address Line 1</label>
+						<div class="col-sm-7">
+							<textarea class="form-control" rows="1" ng-focus="focus('addressLine1')" ng-model="vn.addressLine1" 
+							maxlength=200 name="addressLine1" id="addressLine1"></textarea>
+						</div>
+					</div>
+
+					<div class="form-group col-sm-6">
+						<label for="" class="col-sm-5 control-label">Address Line 2</label>
+						<div class="col-sm-7">
+							<textarea class="form-control" rows="1" ng-focus="focus('addressLine2')" ng-model="vn.addressLine2" 
+							maxlength=200 name="addressLine2" id="addressLine2"></textarea>
+						</div>
+					</div>
+
+					<div class="form-group col-sm-6">
+						<label for="" class="col-sm-5 control-label">Address Line 3</label>
+						<div class="col-sm-7">
+							<textarea class="form-control" rows="1" ng-focus="focus('addressLine3')" ng-model="vn.addressLine3" 
+							maxlength=200 name="addressLine3" id="addressLine3"></textarea>
+						</div>
+					</div>
+
+					<div class="form-group col-sm-6">
+						<label for="" class="col-sm-5 control-label">City</label>
+						<div class="col-sm-7">
+							<input type="text" class="form-control" id="citiName" maxlength = 45
+										ng-model="vn.citiName" ng-foucs="focus('citiName')" name="citiName"/>
+						</div>
+					</div>
+
+					<div class="form-group col-sm-6">
+						<label for="" class="col-sm-5 control-label">State</label>
+						<div class="col-sm-7">
+							<select ng-model="vn.stateNameID" class="form-control" style="width: 165px;">
+										<option value="">-- Select state --</option>
+										<option ng-repeat="stateObj in stateList" value="{{stateObj.stateId}}">{{stateObj.stateName}}</option>
+							</select> 
+						</div>
+					</div>
+
+					<div class="form-group col-sm-6">
+						<label for="" class="col-sm-5 control-label">Pin Code</label>
+						<div class="col-sm-7">
+							<input type="text" tt-cell-field tt-numeric-field ng-focus="focus('pinCode')" ng-model="vn.pinCode" 
+							maxlength=6 minlength = 6 name="pinCode"	class="form-control pin_w" id="pinCode">
+						</div>
+					</div>
+
+					<div class="form-group col-sm-6">
+						<label for="" class="col-sm-5 control-label">URL</label>
+						<div class="col-sm-7">
+							<input type="text" ng-focus="focus('url')" ng-model="vn.url" 
+							maxlength=155 name="url"	class="form-control" id="urlll">
+						</div>
+					</div>
+
+
+
+					<div class="form-group col-sm-6">
+						<label for="" class="col-sm-5 control-label">Phone Number</label>
+						<div class="col-sm-7">
+							<input type="text" tt-cell-field tt-numeric-field ng-focus="focus('contactNo')" ng-model="vn.contactNo" 
+							maxlength=10 minlength=10 name="contactNo" class="form-control pan_w" id="contactNo">
+						</div>
+					</div>
+
+					<div class="form-group col-sm-6">
+						<label for="" class="col-sm-5 control-label">Email Id</label>
+						<div class="col-sm-7">
+							<input type="email" ng-focus="focus('email')" ng-model="vn.email" 
+							name="email" class="form-control" id="email" disabled>
+						</div>
+					</div>
+
+					<div class="form-group col-sm-6">
+						<label for="" class="col-sm-5 control-label">Inbox Email
+							Id</label>
+						<div class="col-sm-7">
+							<input type="email" ng-focus="focus('inboxEmailID')" ng-model="vn.inboxEmailID" 
+							name="inboxEmailID"	class="form-control" id="inboxEmailID" disabled>
+						</div>
+					</div>
+
+					<div class="clearfix"></div>
+					<div class="contenttitle2 ml-15">
+						<h3>Other Info</h3>
+					</div>
+					<div class="clearfix"></div>
+
+
+					<div class="form-group col-sm-6">
+						<label for="" class="col-sm-5 control-label">Industry </label>
+						<div class="col-sm-7">
+							<input type="text" ng-focus="focus('industry')" ng-model="vn.industry" 
+							name="industry"	class="form-control" id="industry">
+						</div>
+					</div>
+
+					<div class="form-group col-sm-6">
+						<label for="" class="col-sm-5 control-label">No. of	Employee</label>
+						<div class="col-sm-7">
+							<input type="text" ng-focus="focus('employCount')" ng-model="vn.employCount" 
+							tt-cell-field tt-numeric-field name="employCount"	class="form-control pan_w" id="employCount">
+						</div>
+					</div>
+
+					<div class="form-group col-sm-6">
+						<label for="" class="col-sm-5 control-label">Type of Entity</label>
+						<div class="col-sm-7">
+							<input type="text" ng-focus="focus('entityType')" ng-model="vn.entityType" 
+							name="entityType" class="form-control" id="entityType">
+						</div>
+					</div>
+
+
+
+					<div class="clearfix"></div>
+					<div class="contenttitle2 ml-15">
+						<h3>
+							Add Document <span class="small">(Supported file formats -
+								JPG, PNG, PDF)</span>
+						</h3>
+					</div>
+					<div class="clearfix"></div>
+
+
+
+					<div class="form-group col-sm-6" enctype=”multipart/form-data”>
+						<label for="" class="col-sm-4 control-label">Address Proof</label>
+						<input type="file" id="addrwessSelected" nv-file-select="" ng-click="setAttribute('address')" uploader="uploader">
+					</div>
+
+					<div class="form-group col-sm-6" enctype=”multipart/form-data” >
+						<label for="" class="col-sm-4 control-label">PAN</label>
+						<input type="file" id="panSelected" nv-file-select="" ng-click="setAttribute('panCard')" uploader="uploader">
+					</div>
+
+
+						<div class="col-md-12">
+							<div id="orgPanCardDoc-{{vn.orgID}}" ng-if="vn.panCardDoc != '' && vn.panCardDoc != null" class="list_add pull-left w100">
+								<div class="col-md-5 col-sm-2 col-xs-5">Pan Card</div>
+								<a target="_blank"
+									href="https://paymentvista.com:8443/resources/public/tmpFiles/{{vn.panCardDoc}}">
+									<div class="col-md-5 col-sm-2 col-xs-5">{{vn.panCardDoc}}</div>
+								</a>
+								<div class="col-md-2 col-sm-2 col-xs-2">
+									<button type="button" ng-click= "deleteColumnValueOfDocOfOrg('orgPanCardDoc',vn.orgID)"
+										title="Remove this row">X</button>
+								</div>
+							</div>
+
+							<div id="orgAddressProofDoc-{{vn.orgID}}" ng-if="vn.addressProofDoc != '' && vn.addressProofDoc != null"
+							   class="list_add pull-left w100">
+								<div class="col-md-5 col-sm-5 col-xs-5">Address Card</div>
+								<div class="col-md-5 col-sm-5 col-xs-5">
+									<a target="_blank"
+										href="https://paymentvista.com:8443/resources/public/tmpFiles/{{vn.addressProofDoc}}">{{vn.addressProofDoc}}</a>
+								</div>
+								<div class="col-md-2 col-sm-2 col-xs-2">
+									<button type="button" ng-click= "deleteColumnValueOfDocOfOrg('orgAddressProofDoc',vn.orgID)"
+										title="Remove this row">X</button>
+								</div>
+							</div>
+						</div>
+
+
+
+					<div class="col-md-12 setting_pad">
+						<div class="col-sm-12 col-xs-12 otherdoc_set">
+							<label for="" class="control-label text-left"><b>Add Files</b></label>
+							<div class="clearfix"></div>
+							<div class="col-md-5 pl-0">
+								<input type="text" name="manuallyGivenFileName"
+									class="form-control mb-10-m mb-10" ng-model="addFiles.manuallyGivenFileName"	placeholder="Enter File Name">
+							</div>
+							<div class="form-group col-sm-6" enctype=”multipart/form-data”>
+								<input type="file" id="fileSelected" ng-click="setAttribute('manualFileSelected')" nv-file-select="" uploader="uploader">
+							</div>
+							<!-- <input type="button" class="stdbtn btn_black btn-xs addbtn mb-10-m" ng-click="addManualFile(addFiles)"
+							 name="addDom" value="Add" id="addDom"> -->
+							<button type="button" ng-click="addManualFile(addFiles)" class="btn btn-sm btn-default">Add</button>
+								<div class="row">
+									<div class="col-md-12">
+										<div id="doc-view-{{docView.docInfoId}}" ng-repeat="docView in DocViewObjList" class="row list_add">
+											<div class="col-md-5 col-sm-2 col-xs-5">{{docView.manuallyGivenFileName}}</div>
+											<a target="_blank"
+												href="https://paymentvista.com:8443/resources/public/tmpFiles/{{docView.fileName}}">
+												<div class="col-md-5 col-sm-2 col-xs-5"	>{{docView.fileName}}</div>
+											</a>
+											<div class="col-md-2 col-sm-2 col-xs-2">
+												<button type="button" ng-click="deleteDocInfo(docView.docInfoId)"
+													title="Remove this row">X</button>
+											</div>
+										</div>									
+									</div>
+
+								</div>
+						</div>
+					</div>
+					<div class="clearfix"></div>
+					<hr class="show_none">
+						<div class="col-md-12 text-right">
+							<button type="submit" id="bhupi" class="btn btn-primary w100-m mt-10-m"	style="margin-right: 44px;">Submit</button>
+						</div>
+						<div class="clearfix"></div>
+				</form>
+
+			</div>
+
+
+
+			<br clear="all" />
+
+		</div>
+		<!-- centercontent -->
+
+
+		<br><br><br><br><br>
+	</div>
+
+</body>
+
+</html>

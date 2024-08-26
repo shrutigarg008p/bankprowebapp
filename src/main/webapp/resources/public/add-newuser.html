@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html ng-app="userRegApp">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>User</title>
+<link rel="stylesheet" href="/resources/public/css/style.default.css" type="text/css" />
+<link rel="stylesheet" type="text/css"	href="/resources/public/css/main.css">
+<link rel="stylesheet" type="text/css" href="/resources/public/css/plugins/bootstrap-select.min.css">
+<link href="/resources/public/css/bootstrap.min.css" rel="stylesheet">
+<link href="/resources/public/css/font-awesome.min.css"	rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="/resources/public/css/font-awesome.css">
+	
+	<script type="text/javascript" src="/resources/public/js/plugins/jquery-1.11.3.min.js"></script>
+	<script src="/resources/public/js/bootstrap.min.js"></script>
+	<script type="text/javascript"	src="/resources/public/js/plugins/jquery-1.7.min.js"></script>
+	
+	<script type="text/javascript"	src="/resources/public/js/plugins/jquery-ui-1.8.16.custom.min.js"></script>
+	<script type="text/javascript"	src="/resources/public/js/plugins/jquery.cookie.js"></script>
+	<script type="text/javascript" src="/resources/public/js/plugins/colorpicker.js"></script>
+	<script type="text/javascript" src="/resources/public/js/plugins/jquery.jgrowl.js"></script>
+	<script type="text/javascript" src="/resources/public/js/plugins/jquery.alerts.js"></script>
+	<script type="text/javascript"	src="/resources/public/js/custom/general.js"></script>
+	<script type="text/javascript" src="/resources/public/js/custom/elements.js"></script>
+	<script src="/resources/public/js/custom/bootstrap-select.min.js"></script>
+
+<script type="text/javascript" src="/resources/public/js/custom/angular.js"></script>
+<script type="text/javascript" src="/resources/public/js/registor.js"></script>
+<!-- Add header.js to get user access permissions -->
+<script type="text/javascript" src="/resources/public/js/header.js"></script>	
+	
+	
+<style>
+    body.withvernav {
+        background :none !important;
+    }
+</style>
+
+</head>
+
+<body class="withvernav"  id="createUserApp" ng-controller="NewRegistorCtrl">
+<div id="msgTimeOut" ng-if= "successMsg != ''" >
+		<p class="bg_success">
+			<i class="glyphicon glyphicon-ok"></i> <span><b>SUCCESS!</b></span><br>
+				{{successMsg}}
+		</p>
+		<script>			
+		setTimeout(function() {
+			$('#msgTimeOut').hide();
+		}, 10000);
+		</script>
+	</div>
+	
+	<div id="msgTimeOut" ng-if="error != ''">
+		<p class="bg_error">
+			<i class="glyphicon glyphicon-remove"></i> <span><b>ERROR!</b></span><br>
+				{{error}}
+		</p>
+		<script>			
+			setTimeout(function() {
+					$('#msgTimeOut').hide();
+			}, 10000);
+		</script>
+	</div>
+
+<div class="bodywrapper">
+<div ng-include="'topheader.html'"></div>
+<script>
+	setTimeout( function() {
+ 		$('#user').addClass('current')
+	} ,3000);
+</script>
+
+
+	<!-- <div class="vernav2 iconmenu">
+    	<ul>
+        	<li><a href="#formsub" class="editor">View</a></li>
+        </ul>
+        <a class="togglemenu"></a>
+        <br /><br />
+    </div> -->
+        
+<div class="centercontent ml-0">
+	<div class="pageheader" ng-controller="UserRoleCntrl">
+    	<h1 class="pagetitle">User</h1>   
+	</div><!--pageheader-->
+
+        
+	<div  class="col-md-12" > 
+    	<button class="stdbtn btn_black pull-right mb-10" data-toggle="modal" ng-click="getValueFromRole()"
+    	 data-target="#myModal"><i class="fa fa-plus-circle"></i> Add New User</button>
+        <form name="form" id="registor" class="form-horizontal">
+        	<div class="main_search_user col-md-6">
+            	<div class="col-md-5 col-sm-4 col-xs-12 search_by">
+                    <div class="form-group">
+                        <label for=""><b>Search by Name :</b></label><br>
+                        <div class="col-md-12 pl-0">
+                        	<input type="text" ng-focus="focus('firstName')" ng-model="usr.firstName" 
+	                    							name="firstName" id="firstname" placeholder="Name" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-7 col-sm-8 col-xs-12 search_by p0-m">
+                    <div class="">
+                        <div class="col-md-6 col-sm-7">
+                            <div class="form-group mt-15 mt-0-m">
+                                <div class="checkbox search_in">
+                                    <label class="p0-m">
+                                        <input type="checkbox" name="showInactive" id="showInactive" value="" 
+                                                   ng-model="usr.showInactive" ng-init="usr.showInactive = 'false'"> <b>Show Inactive Users </b>
+                                    </label>
+                                </div>
+                            </div>    
+                        </div>
+
+                        <div class="col-md-6 col-sm-6 col-xs-12 pl-0 pl-10-tab">
+                            <button class="btn btn-primary mt-23 w100-m" type="botton" ng-click="searchUsers(usr)">Search</button>
+                            <button class="btn btn-primary mt-23 w100-m" type="botton" ng-click="refreshSearch()">Reset</button>    
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+		</form>
+
+
+            <table class="table table-hover pull-left" >
+                <thead class="table-head">
+                <tr>
+                    <th>Name</th>
+                    <th>Role</th>
+                    <th>Email ID</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody > 
+                    <tr ng-repeat="usrOb in vm.userList">
+                        <td>
+                            <div class="select_select pull-left dropdown">
+                                <button class="btn btn-default dropdown-toggle select_btn" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                <i class="fa fa-chevron-circle-down" aria-hidden="true" class="arrow_select"></i>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                    <li ng-click="getUserDetail(usrOb)" data-toggle="modal" data-target="#myModalView"> <span >View </span> </li>
+                                    <li ng-click="getUserDetailWithRole(usrOb)" data-toggle="modal" data-target="#myModalEdit">Edit User</li>
+                                    <!-- <li data-toggle="getUserDetail(usrOb)" data-toggle="modal" data-target="#myModalLog">Audit Log</li> -->
+                                    <li ng-click="getUserDetail(usrOb)" data-toggle="modal" data-target="#myModalLog">Audit Log</li>
+                                    <li ng-click="dsblUser(usrOb)" ng-if="usrOb.userStatus == 'Active' ?true : false" data-toggle="modal" data-target="#myModalDelete">Disable User</li>
+                                    <li ng-click="dsblUser(usrOb)" ng-if="usrOb.userStatus == 'Active' ?false : true" data-toggle="modal" data-target="#myModalDelete">Activate User</li>
+                                </ul>
+                            </div>
+                            <span class="mt-2 pull-left"><a href="" data-toggle="modal" data-target="#myModalView" ng-click="getUserDetail(usrOb)"><span ng-bind="usrOb.firstName + ' ' + usrOb.lastName"></span></a></span>
+                            <div class="clearfix"></div>
+                        </td>
+                        <td ng-bind="usrOb.providedRoleList" ></td>
+                        <td ng-bind="usrOb.email"></td>
+                        <td ng-bind="usrOb.userStatus"></td>
+                        <td>&nbsp;</td>
+                    </tr>
+                  
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <br clear="all" />
+        
+	</div><!-- centercontent -->
+  
+	<!-- add user -->
+	<div class="modal fade" tabindex="-1" role="dialog" id="myModal">
+		<form name="form" id="registor" class="form-horizontal"  ng-submit="addNewUser()">
+			<input type="hidden" name="orgId" ng-model="usr.orgId" >
+	    	<div class="modal-dialog">
+	        	<div class="modal-content">
+	            	<div class="modal-header loginboxinner">
+	                	<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	                	<h4 class="modal-title"><i class="fa fa-plus"></i> Add New User</h4>
+	              	</div>
+	              	<div class="modal-body">
+	                	<!-- <form class="form-horizontal"> -->
+	                	
+	                	<!-- Error and Success Message -->
+	                	<!-- <tt-error-messages></tt-error-messages>
+	                	<div ng-if="showMessage" ng-show="showMessage" class="info-messages"
+							ng-style="{'opacity': vm.infoMessages.length > 0 ? 2 : 0, 'z-index': vm.infoMessages.length > 0 ? 10 : -10}">
+							<img class="info-icon" src="/resources/img/info-icon.png">
+							<div class="messages-group">
+								<div ng-repeat="info in vm.infoMessages">{{info.description}}</div>
+							</div>
+						</div> -->
+	                	
+	                  		<div class="form-group">
+	                    		<label for="" class="col-sm-4 control-label">First Name<span class="mandatory">*</span> </label>
+	                    		<div class="col-sm-6">
+	                    			<input type="text" ng-focus="focus('firstName')" ng-model="usr.firstName" 
+	                    							name="firstName" id="firstname" placeholder="First Name" class="form-control" required />
+	                    		</div>
+	                  		</div>
+	                  		<div class="form-group">
+	                    		<label for="" class="col-sm-4 control-label">Last Name<span class="mandatory">*</span></label>
+	                    		<div class="col-sm-6">
+	                      			<input type="text" ng-focus="focus('lastName')" placeholder="Last Name" 
+													ng-model="usr.lastName" name="lastName" id="lastname"  class="form-control" required />
+	                    		</div>
+	                  		</div>
+	                    	<div class="form-group">
+	                        	<label for="" class="col-sm-4 control-label">Email ID<span class="mandatory">*</span></label>
+	                        	<div class="col-sm-6">
+	                          		<input type="email" ng-focus="focus('email')" placeholder="Email Id" 
+													ng-model="usr.email" name="email" id="email"  class="form-control" required />
+	                        	</div>
+	                    	</div>                  
+	                    	<div class="form-group">
+	                        	<label for="" class="col-sm-4 control-label">Contact No.<span class="mandatory">*</span></label>
+	                        	<div class="col-sm-6">
+	                          		<input type="text" ng-focus="focus('phoneNo')" ng-model="usr.phoneNo" maxlength =10 minlength=10
+													placeholder="Contact No." name="phoneNo" id="phoneNo"  class="form-control" required />
+	                        	</div>
+	                    	</div>
+	                    	<div class="form-group">
+	                        	<label for="" class="col-sm-4 control-label">Name of Organization <span class="mandatory">*</span></label>
+	                        	<div class="col-sm-6">
+	                          		<input type="text" ng-focus="focus('orgName')" ng-model="usr.orgName" 
+	                          					  name="orgName" id="orgName"  class="form-control" readonly />
+	                        	</div>
+	                    	</div>
+	                    	<div class="form-group">
+	                        	<label for="" class="col-sm-4 control-label">Role<span class="mandatory">*</span></label>
+	                        	<div class="col-sm-6">
+	                        		<select class="w100" ng-model="usr.selectedValues" multiple>
+										<option ng-repeat="roleObj in userRole" value="{{roleObj.roleID}}">{{roleObj.roleName}}</option>
+									</select>
+	                        	</div>
+	                    	</div>
+	                   		<div class="form-group">
+	                        	<label for="" class="col-sm-4 control-label">Employee No.<span class="mandatory">*</span></label>
+	                        	<div class="col-sm-6">
+	                          		<input type="text" ng-focus="focus('employeeNo')" ng-model="usr.employeeNo"  
+													name="employeeNo" id="employeeNo" class="form-control" required />
+	                        	</div>
+	                    	</div>
+	                     	<div class="form-group">
+	                        	<label for="" class="col-sm-4 control-label">Address<span class="mandatory">*</span></label>
+	                        	<div class="col-sm-6">
+	                          		<textarea class="form-control" rows="3" ng-focus="focus('address')"
+													ng-model="usr.address" name="address" id="address"></textarea>
+	                        	</div>
+	                    	</div>
+	                    	
+	                <!-- </form> -->
+				</div>
+	           	<div class="modal-footer">
+	            	<button type="button" class="btn btn-default" ng-click="resetAllAtribute()" data-dismiss="modal">Cancel</button>
+					<button type="submit" class="btn btn-primary">Add</button>
+	            </div>
+				</div>
+			</div>
+		</form>
+	</div>
+    <!-- add user end -->
+	<!-- view user -->
+	<div class="modal fade" tabindex="-1" role="dialog" id="myModalView">
+    	<div class="modal-dialog">
+        	<div class="modal-content">
+            	<div class="modal-header loginboxinner">
+                	<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                	<h4 class="modal-title"><i class="fa fa-eye"></i> User</h4>
+              	</div>
+              	<div class="modal-body">
+                	<div class="form-group">
+                    	<label for="" class="col-sm-4 control-label">First Name :</label>
+                    	<div class="col-sm-8 pt-7" ng-bind="userDetail.firstName"> </div>
+                  	</div>
+                  	<hr class="viewhr">
+                  	<div class="form-group">
+                    	<label for="" class="col-sm-4 control-label">Last Name :</label>
+                    	<div class="col-sm-8 pt-7" ng-bind="userDetail.lastName"></div>
+                  	</div>
+						<hr class="viewhr">
+						<div class="form-group">
+                        	<label for="" class="col-sm-4 control-label">Email ID :</label>
+                        	<div class="col-sm-8 pt-7" ng-bind="userDetail.email"></div>
+                    	</div>
+                    	<hr class="viewhr">
+                   		<div class="form-group">
+                        	<label for="" class="col-sm-4 control-label">Contact No. :</label>
+                        	<div class="col-sm-8 pt-7" ng-bind="userDetail.contactNo"></div>
+                    	</div>
+                    	<hr class="viewhr">
+	                    <div class="form-group">
+    	                    <label for="" class="col-sm-4 control-label">Role :</label>
+        	                <div class="col-sm-8 pt-7" ng-bind="userDetail.providedRoleList.join(' , ');">
+        	                	 <!-- <span ng-bind="userDetail.providedRoleList.join(' , ');"></span> -->
+                        	</div>
+                        	<!-- <th ng-repeat="(key, value) in userPermissions" ng-bind="key"></th> -->
+                        	
+                    	</div>
+                    	
+						<table class="table table-hover">
+                        	<thead class="table-head">
+                            	<tr>
+                                	<th>Date</th>
+                                	<th>Action </th>
+                                	<th>Action By</th>
+                            	</tr>
+                        	</thead>
+							<tbody ng-repeat="auditLogOb in auditLogDetail"> 
+                            	<tr>
+                                	<td ng-bind="auditLogOb.creationDateTime"></td>
+                                	<td ng-bind="auditLogOb.actionType"></td>
+                                	<td ng-bind="auditLogOb.createdBy"></td>                            
+                            	</tr>
+                        	</tbody>
+                    	</table> 
+                    	       
+              	</div>
+            </div>
+		</div>
+	</div>
+    <!-- view user end -->
+        
+	<!-- edit user -->
+    <div class="modal fade" tabindex="-1" role="dialog" id="myModalEdit">
+          <div class="modal-dialog">
+            <form name="form" id="registor" class="form-horizontal" ng-submit="updateUserDetail()">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"><i class="fa fa-edit"></i> Edit User </h4>
+              </div>
+              <div class="modal-body">
+              
+                  <div class="form-group">
+                    <label for="" class="col-sm-4 control-label">First Name </label>
+                    <div class="col-sm-6">
+                      <input type="text" class="form-control" id="firstname" ng-focus="focus('firstName')"  
+                      				name="firstname" ng-model="userDetail.firstName" placeholder="First Name">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="" class="col-sm-4 control-label">Last Name</label>
+                    <div class="col-sm-6">
+                          <input type="text" class="form-control" name="lastName" id="lastName" ng-focus="focus('lastName')" ng-model="userDetail.lastName" placeholder="Last Name">
+                    </div>
+                  </div>
+
+                    <div class="form-group">
+                        <label for="" class="col-sm-4 control-label">Email ID </label>
+                        <div class="col-sm-6">
+	                        <input type="email" class="form-control" name="email" id="email" ng-focus="focus('email')" ng-model="userDetail.email" placeholder="Email id"  disabled>
+                        </div>
+                    </div>
+
+                   
+                    <div class="form-group">
+                        <label for="" class="col-sm-4 control-label">Contact No.</label>
+                        <div class="col-sm-6">
+                        	<input type="text" class="form-control" name="contactNo" id="contactNo" ng-focus="focus('contactNo')" ng-model="userDetail.contactNo" placeholder="Contact Number">
+                        </div>
+                    </div>
+
+                    <!-- <div class="form-group">
+                        <label for="" class="col-sm-4 control-label">Name of Organization</label>
+                        <div class="col-sm-6">
+                        	<input type="text" class="form-control" name="organization" id="organization" ng-focus="focus('organization')" ng-model="userDetail.organization" placeholder="Name of Organization" readonly>
+                        </div>
+                    </div> -->
+
+					<div class="form-group">
+							<label for="" class="col-sm-4 control-label">Role</label>
+							<div class="col-sm-6">
+								<select class="w100" ng-model="userDetail.roleList" multiple>
+									<option ng-repeat="roleObj in userRole"
+									ng-selected="userDetail.roleList.indexOf(roleObj.roleID) !== -1"  value="{{roleObj.roleID}}">{{roleObj.roleName}}</option>
+								</select>
+								
+							</div>
+					</div>
+
+                    <div class="form-group">
+                        <label for="" class="col-sm-4 control-label">Employee No.</label>
+                        <div class="col-sm-6">
+                        	<input type="text" class="form-control" name="employeeNo" id="employeeNo" ng-focus="focus('employeeNo')" ng-model="userDetail.employeeNo" placeholder="Employee Number">
+                        </div>
+                    </div>
+
+                     <!-- <div class="form-group">
+                        <label for="" class="col-sm-4 control-label">Address</label>
+                        <div class="col-sm-6">
+                          <textarea class="form-control" rows="3" class="form-control" ng-focus="focus('addressLine1')"
+													ng-model="userDetail.addressLine1" name="addressLine1" id="addressLine1"  placeholder="Address"></textarea>
+                        </div>
+                    </div> -->
+                  
+               <!--  </form> -->
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary">Update</button>
+                
+                
+              </div>
+            </div>
+            </form>
+          </div>
+        </div>
+    <!-- trace -->
+	<div class="modal fade" id="myModalDelete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    	<div class="modal-dialog ">
+        	<form name="form" id="registor" class="form-horizontal" >
+            	<div class="modal-content">      
+            	<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button> 	
+              		<div ng-if="userOb.userStatus == 'Active' ?true : false" class="modal-body">
+                		<h3 class="text-center">Are you sure you want to InActivate user? </h3>
+              		</div>
+              		<div ng-if="userOb.userStatus == 'Active' ?false : true" class="modal-body">
+                		<h3 class="text-center">Are you sure you want to Activate user? </h3>
+              		</div>
+              		<div class="modal-footer">
+		                <button type="button" class="btn btn-default" ng-click="disableUser(userOb, userOb.userStatus)" >Yes</button>
+		                <button type="button" class="btn btn-primary" data-dismiss="modal">No</button>
+              		</div>
+            	</div>
+			</form>
+		</div>
+	</div>
+    <!-- trace close-->
+	<!-- audit log -->
+<div class="modal fade" id="myModalLog" tabindex="-1" role="dialog" >
+	<div class="modal-dialog modal-lg">
+    	<div class="modal-content">
+      		<div class="modal-header">
+        		<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        		<h4 class="modal-title"><i class="fa fa-edit"></i> Audit Log</h4>
+      		</div>
+      		<div class="modal-body">
+        
+	            <table class="table table-hover">
+	                <thead class="table-head">
+	                    <tr>
+	                        <th>Operation Type</th>
+	                        <th>Action Type</th>
+	                        <th>Field Type</th>
+	                        <th>Old Value</th>
+	                        <th>New Value</th>
+	                        <th>Creation Date/time</th>
+	                        <th>Created By</th>
+	                    </tr>
+	                </thead>
+	
+	                <tbody ng-repeat="auditLogOb in auditLogDetail"> 
+	                    <tr>
+	                        <td ng-bind="auditLogOb.operationType"></td>
+	                        <td ng-bind="auditLogOb.actionType"></td>
+	                        <td ng-bind="auditLogOb.fieldType"></td>
+	                        <td ng-bind="auditLogOb.oldValue"></td>
+	                        <td ng-bind="auditLogOb.newValue"></td>
+	                        <td ng-bind="auditLogOb.creationDateTime"></td>
+	                        <td ng-bind="auditLogOb.createdBy"></td>
+	                    </tr>
+	                </tbody>
+	                
+				</table>
+       
+			</div>
+		</div>
+	</div>
+</div>
+    
+
+
+<script>
+    // w3IncludeHTML();
+
+    function openpopup(value){
+        // alert(value);
+        if(value==""){
+            alert('Please Choose Action');
+        }
+
+        if(value==1){
+            $('#myModalEdt').trigger('click');
+        }
+         if(value==2){
+            $('#myModalDel').trigger('click');
+        }
+    }
+</script>
+
+<!-- dropdown-->
+<script>
+    $(document).on("shown.bs.dropdown", ".dropdown", function () {
+    // calculate the required sizes, spaces
+    var $ul = $(this).children(".dropdown-menu");
+    var $button = $(this).children(".dropdown-toggle");
+    var ulOffset = $ul.offset();
+    // how much space would be left on the top if the dropdown opened that direction
+    var spaceUp = (ulOffset.top - $button.height() - $ul.height()) - $(window).scrollTop();
+    // how much space is left at the bottom
+    var spaceDown = $(window).scrollTop() + $(window).height() - (ulOffset.top + $ul.height());
+    // switch to dropup only if there is no space at the bottom AND there is space at the top, or there isn't either but it would be still better fit
+    if (spaceDown < 0 && (spaceUp >= 0 || spaceUp > spaceDown))
+      $(this).addClass("dropup");
+}).on("hidden.bs.dropdown", ".dropdown", function() {
+    // always reset after close
+    $(this).removeClass("dropup");
+});
+</script>
+
+<!-- <script type="text/javascript" data-main="/resources/public/js/run-userRegistor"
+        src="/resources/bower_components/requirejs/require.js"></script> -->
+
+</body>
+
+</html>

@@ -1,0 +1,1618 @@
+<!DOCTYPE html>
+<html ng-app="myPaymentApp">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Payment</title>
+<link rel="stylesheet" href="/resources/public/css/style.default.css" type="text/css" />
+<link rel="stylesheet" href="/resources/public/css//main.css" type="text/css" />
+
+<link href="/resources/public/css/bootstrap.min.css" rel="stylesheet">
+<link href="/resources/public/css/font-awesome.min.css" rel="stylesheet">
+
+<link rel="stylesheet" type="text/css" href="/resources/public/css/font-awesome.css">
+<script type="text/javascript" src="/resources/public/js/plugins/jquery-1.12.1.min.js"></script>
+<script src="/resources/public/js/bootstrap.min.js"></script> 
+ <script type="text/javascript" src="/resources/public/js/plugins/jquery-1.7.min.js"></script> 
+<script type="text/javascript" src="/resources/public/js/plugins/jquery-ui-1.8.16.custom.min.js"></script>
+<script type="text/javascript" src="/resources/public/js/plugins/jquery.cookie.js"></script>
+<script type="text/javascript" src="/resources/public/js/plugins/jquery.uniform.min.js"></script>
+
+<script type="text/javascript" src="/resources/public/js/plugins/jquery.slimscroll.js"></script>
+<script type="text/javascript" src="/resources/public/js/plugins/colorpicker.js"></script>
+<!-- <script type="text/javascript" src="/resources/public/js/custom/general.js"></script> -->
+<script type="text/javascript" src="/resources/public/js/custom/elements.js"></script>
+
+<script type="text/javascript" src="/resources/public/js/custom/angular.js"></script>
+<script type="text/javascript" src="/resources/public/js/custom/angular-cookies.min.js"></script>
+<script type="text/javascript" src="/resources/public/js/angular-file-upload.js"></script>
+<script type="text/javascript" src="/resources/public/js/payment.js"></script>
+<script type="text/javascript" src="/resources/public/js/header.js"></script>
+<!-- datepicker -->
+<script src="/resources/public/js/plugins/jquery-ui.min.js"></script>
+
+</head>
+
+<body class="withvernav" ng-controller="PaymentCreateCtrl">
+  <div class="bodywrapper" ng-controller="FileUploadCtrl">
+		<div id="msgTimeOut"  style="display:block;" ng-if= "successMsg != ''">
+			<p class="bg_success">
+				<i class="glyphicon glyphicon-ok"></i> <span><b>SUCCESS!</b></span><br>
+				{{successMsg}}
+			</p>
+			<script>			
+				setTimeout(function() {
+					$('#msgTimeOut').hide();
+					
+				}, 10000);
+		  </script>
+		</div>
+	
+		<div id="msgTimeOut"  style="display:block;" ng-if="error != ''">
+			<p class="bg_error">
+				<i class="glyphicon glyphicon-remove"></i> <span><b>ERROR!</b></span><br>
+				{{error}}
+			</p>
+			<script>			
+				setTimeout(function() {
+					error = '';
+					$('#msgTimeOut').hide();
+				}, 10000);
+		  </script>
+		</div>
+
+		<div ng-include="'topheader.html'"></div>
+		<script>
+			setTimeout(function() {
+				$('#payment-create').addClass('current')
+			}, 3000);
+		</script>
+
+		<div class="vernav2 iconmenu">
+			<ul>
+				<li class="current"><a href="payment-create.html"
+					class="editor"> Payment Create </a></li>
+				<li><a href="payment-approve-pay.html" class="">Payment	Approve</a></li>
+			</ul>
+			<a class="togglemenu"></a> <br /> <br />
+		</div>
+		<!--leftmenu-->
+
+		<div class="centercontent">
+			
+			<div class="pageheader">
+
+				<div class="pageheader_edit">
+					<h1 class="pagetitle">Payment Create</h1>
+				</div>
+				<div class="clearphone"></div>
+				<div class="search pull_right">
+				</div>
+
+
+			</div>
+			<!--pageheader-->
+			<div class="clearfix"></div>
+			<!-- <h5><div ng-if= "error != ''" class = "alert alert-danger">{{error}}</div></h5>
+			<h5><div ng-if= "successMsg != ''" class="alert alert-success">{{successMsg}}</div></h5> -->
+			<div class="col-md-12 payment_container">
+
+				<!-- Nav tabs -->
+				<ul class="nav nav-tabs" role="tablist">
+					<li role="presentation" class="active"><a href="#payment1" ng-click = "resetSearchCondittion()"
+						aria-controls="home" role="tab" data-toggle="tab">Create Payment</a></li>
+					<li role="presentation"><a href="#payment5" ng-click = "paymentReleaseTriger()"
+						aria-controls="profile" role="tab" data-toggle="tab">Payment Release</a></li>
+					<li role="presentation"><a href="#payment4" ng-click = "getHistoryPaymentData()"
+						aria-controls="profile" role="tab" data-toggle="tab">Payment History</a></li>
+				</ul>
+
+				<!-- Tab panes -->
+				<div class="tab-content">
+					<div role="tabpanel" class="tab-pane active" id="payment1">
+						<form novalidate>
+							<div class="">
+
+								<div class="col-md-12 batch_upload">
+									<div class="row p0 mb-10">
+										<div class="col-md-3 col-xs-12 pl-0">
+											<h5 class="mb-15">
+												<b> Create Payment Form Web Form</b>
+											</h5>
+											<a href="#" class="btn btn-default" data-toggle="modal"	data-target="#myModalPayment" 
+											      ng-click="getApprovedVendor()">
+												<i class="fa fa-edit"></i> Create
+											</a>
+										</div>
+										<div class="col-md-3 col-sm-7 col-xs-12 pl-m0">
+											<label for="">
+											<h5>
+													<b> Create Payment Via Batch Upload </b>
+											</h5></label>
+											<input type="file" id="fileSelectedd" ng-click="setAttributeForFileUpload('batchUpload')"
+														nv-file-select="" uploader="uploader" class="w100">
+										</div>
+										<div class="col-md-2 col-xs-12 pl-m0">
+											<h5 class="mb-15">
+												<b> Download format </b>
+											</h5>
+											<a href="/resources/public/csv/PaymentImportSample.csv"
+												class="btn btn-default"> <i class="fa fa-download"></i> Download
+											</a>
+										</div>
+										<div class="col-md-2 col-xs-12 pl-m0 pl-0">
+											<h5 class="mb-15">
+												<b> &nbsp; </b>
+											</h5>
+											<button class="btn btn-primary ml-10" type="submit" ng-click="batchFileUpload()"
+											data-toggle="modal" data-target="#myModalSubmiterror">Submit</button>
+										</div>
+										
+										
+									</div>
+								</div>
+								
+								<!-- create payment search option!!!!!!!!!!!!!!!! -->
+								
+								<div class="main_search">
+									<div class="col-md-3 search_by pr-0">
+										<label for=""><b>Search By Due Date:</b></label><br> From
+										<input id="fromDateOfSearch" readonly=true ng-model="searchPay.fromDate"  type="text">&nbsp; &nbsp; To:
+										&nbsp;<input id="toDateOfSearch" readonly=true ng-model="searchPay.toDate" type="text">
+									</div>
+
+									<div class="col-md-2 search_by p0-m">
+										<div class="form-group">
+											<label for=""><b>Search By Name :</b></label><br>
+											<div class="pl-0">
+												<input type="text" ng-model="searchPay.searchByName" class="form-control" id="" placeholder="">
+											</div>
+										</div>
+									</div>
+									<div class="col-md-3 search_by p0-m">
+										<div class="form-group">
+											<label for=""><b>Search By Approval Status :</b></label><br>
+											<div class="col-md-10 p0-m p0">
+												<select ng-model="searchPay.approvalStatus" class="form-control form_select w100 mb-10">
+													<option value="0">Select Status</option>
+													<option value="1">Approved</option>
+													<option value="4">Declined</option>
+												</select>
+											</div>
+										</div>
+									</div>
+
+									<div class="col-md-4 search_by p0-m">
+
+										<div class="form-group">
+											<lable for=""> <b>Search By Invoice Amount :</b></lable>
+											<br> From <input type="number" min="1" ng-model="searchPay.fromAmt" id="" class="hasamount">
+											&nbsp; &nbsp; To: &nbsp;<input type="number" min="1" id=""ng-model="searchPay.toAmt" class="hasamount">
+											<button class="btn btn-primary w100-m" 
+											                ng-click="getSearchesForPayment('createPayment')"	type="submit">Search</button>
+										</div>
+									</div>
+								</div>
+								<table class="table table-hover pull-left">
+									<thead class="table-head">
+										<tr>
+											<th>Beneficiary Name</th>
+											<th>Invoice Number</th>
+											<th>Approval Status</th>
+											<th>Due Date</th>
+											<th>Invoice Amount</th>
+											<th>Payment Amount</th>
+											<th>Process Date</th>
+											<th>Payment Date</th>
+											<th><input type="checkbox" value="">&nbsp;
+												Select All</th>
+
+										</tr>
+									</thead>
+									
+									<tbody>
+										<tr ng-repeat="payOb in vm.paymentList">
+											<td>
+												<div class="select_select pull-left dropdown">
+													<button class="btn btn-default dropdown-toggle select_btn"
+														type="button" id="dropdownMenu1" data-toggle="dropdown"
+														aria-haspopup="true" aria-expanded="true">
+														<i class="fa fa-chevron-circle-down" aria-hidden="true"	class="arrow_select"></i>
+													</button>
+													<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+														<li ng-click="getPaymentInfo(payOb)" data-toggle="modal" data-target="#myModalView2">
+														           <span>View </span></li>
+														<li ng-click="auditTrailLog(payOb.paymentId)"
+															data-toggle="modal" data-target="#myModalLog">Audit	Log</li>
+														<li ng-click="getApprovalLogInfo(payOb.paymentId)" data-toggle="modal" 
+															data-target="#myModalApprovallog">Approval Log</li>
+														<li ng-click="cancelCreatedPayment(payOb.paymentId)"
+															ng-if="payOb.approvalStatus == 0? true: false" data-toggle="modal">Cancel</li>
+													</ul>
+												</div> <span class="mt-2 pull-left"	ng-click="getVendorInfo(payOb.vendorId)"><a href=""
+													data-toggle="modal" data-target="#myModalView" ng-bind="payOb.vendorName"></a></span>
+												<div class="clearfix"></div>
+											</td>
+
+											<td><a href="#" data-toggle="modal" ng-click ="getInvoiceInfo(payOb.invoiceId)"
+													data-target="#myModalInvoice" ng-bind="payOb.invoiceNo"></a></td>
+											<td	ng-bind="payOb.approvalStatus == 0?'Pending': payOb.approvalStatus == 1?'Approved':
+								                      payOb.approvalStatus == 2?'InProgress..': payOb.approvalStatus == 3?'Declined': 
+								                      payOb.approvalStatus == 4?'Cancelled' : payOb.approvalStatus == 5?'Draft' : 
+								                      payOb.approvalStatus == 6?'Scheduled' : 'Paid'"></td>
+											<td ng-bind="payOb.dueDate"></td>
+											<td ng-init="itemTotal = itemTotal + payOb.invoiceAmount; vm.invoiceAmtTotal = vm.invoiceAmtTotal + itemTotal"     ng-model="payOb.invoiceAmount">{{payOb.invoiceAmount}}</td>
+											<td ng-init="payTotal = payTotal + payOb.paymentAmount; vm.paymentAmtTotal = vm.paymentAmtTotal + payTotal">
+											    <input ng-readonly="(payOb.approvalStatus == 0 ?false : true)" min="1"  class="payAmtID" ng-model="payOb.paymentAmount" type="number">
+											</td>
+											<td>
+											   <input ng-readonly="payOb.approvalStatus == 0 ?false : true" class="proDate" ng-model="payOb.paymentProcessDate" type="text" >
+											</td>
+											<td ng-model="payOb.paymentDate">{{payOb.paymentDate}}</td>
+											<td><input class="tocheck" type="checkbox" ng-click="addValueForEditPayment($index, valueOfCheckBox, payOb.paymentAmount,
+											           payOb.paymentProcessDate, payOb.invoiceAmount, payOb.paymentId)" id ="checkBoxId"
+											          ng-model="valueOfCheckBox"  ng-disabled="payOb.approvalStatus != 0? true: false" ></td>
+										</tr>
+										<tr>
+											<td class="show_none">&nbsp;</td>
+											<td class="show_none">&nbsp;</td>
+											<td class="show_none">&nbsp;</td>
+											<td> Grand Total</td>
+											<td>{{vm.invoiceAmtTotal}}</td>
+											<td>{{vm.paymentAmtTotal}}</td>
+											<td class="show_none">&nbsp;</td>
+											<td class="show_none">&nbsp;</td>
+											<td class="show_none">&nbsp;</td>
+										</tr>
+
+
+									</tbody>
+								</table>
+
+								<div class="row">
+									<div class="col-md-8">
+										<div class="col-md-3 col-xs-12 note_approver">
+											<textarea ng-model = "noteForApprover" class="form-control" rows="3"	placeholder="Note For Approver"></textarea>
+										</div>
+
+								   <div class="col-md-8 pull-left" style="margin-left: 15px !important;">										
+										<div class="col-sm-5">
+											<div class="list-group list_my" id="list1">
+												<ul>
+													<li class="list-group-item active bdr_none">Approver List</li>
+													<li ng-repeat="appView in paymentApprover"
+														class="list-group-item bdr_none"><label>
+														 <input	type="checkbox" class="all check_sel" style="margin-right: 5px;"
+															value="{{appView.userId}}" ng-model="appVew.userId">{{appView.userName}}
+													</label></li>
+												</ul>
+											</div>
+										</div>
+										<div class="col-md-1 p0 v-center">
+											<button type="button" title="Add to selected Approver list"
+												ng-click="addValueToApproverPayment()"	class="btn btn-default center-block mb-10">
+												<i class="glyphicon glyphicon-chevron-right"></i>
+											</button>
+											<button type="button" title="Remove from selected Approver list"
+												ng-click="removeValueToApproverPayment()"	class="btn btn-default center-block mb-10">
+												<i class="glyphicon glyphicon-chevron-left"></i>
+											</button>
+										</div>
+
+										<div class="col-sm-5">
+											<div class="list-group" id="list2">
+												<ul>
+													<li class="list-group-item active bdr_none">Selected List</li>
+													<li ng-repeat="selectedView in selectedPaymentApproverList"
+														class="list-group-item bdr_none"><label> 
+														<input	type="checkbox" class="all check_sel"	value="{{selectedView.userId}}"
+															ng-model="selectedView.userIdInSel">{{selectedView.userName}}
+													</label></li>
+												</ul>
+											</div>
+										</div>
+									</div>
+									</div>
+									<div class="col-sm-3">
+										<div class="pull-right col-sm-12 col-xs-12 total_invoice">
+											<div class="row">
+												<div class="col-md-6 pl-m0">Due total invoice amount</div>
+												<div class="col-md-6 pr">{{dueInvoiceAmt}}</div>
+											</div>
+											<div class="row">
+												<div class="col-md-6 pl-m0">Total payment amount</div>
+												<div class="col-md-6 pr">{{payTotalRowWise}}</div>
+											</div>
+										</div>
+										<div class="pull-right mt-10 mr-10">
+											<button type="button" ng-click = "savePaymentAsDraftOrSendForApproval('draft')" 
+											    class="btn btn-primary">Save as Draft</button>
+											<button type="button" ng-click = "savePaymentAsDraftOrSendForApproval('sendApproval')"
+											    class="btn btn-primary">Send For Approval</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						</form>
+						<hr>
+					</div>
+					
+
+					<!-- payment history -->
+					<div role="tabpanel" class="tab-pane" id="payment4">
+						<div class="main_search">
+							<div class="col-md-3 search_by">
+								<div class="form-group">
+									<label for=""><b>Search By Name :</b></label><br>
+									<div class="pl-0">
+										<input type="" ng-model="searchPay.searchByName" class="form-control" id="" placeholder="">
+									</div>
+								</div>
+							</div>
+							<div class="col-md-3 search_by">
+								<label for=""><b>Search By Payment Date:</b></label><br>
+								From <input id="payHistoryFromDate" type="text" ng-model="searchPay.fromDate" readonly=true>&nbsp; &nbsp;
+								To: &nbsp;<input readonly=true id="payHistoryToDate" ng-model="searchPay.toDate" type="text">
+							</div>
+							<div class="col-md-6 search_by">
+								<div class="form-group">
+									<lable for=""> <b>Search By Payment Amount :</b></lable><br> 
+									From <input type="number" ng-model="searchPay.fromAmt" min="1" id="" class="hasamount">		&nbsp; &nbsp;
+									To: &nbsp;<input type="number" min="1" ng-model="searchPay.toAmt" id=""	class="hasamount">
+									<button class="btn btn-primary" ng-click="getSearchesForPayment('History')" type="submit">Search</button>
+									<button class="btn btn-primary" ng-click="getHistoryPaymentData()" type="submit">Reset Search</button>
+								</div>
+							</div>
+						</div>
+
+
+						<table class="table table-hover">
+							<thead class="table-head">
+								<tr>
+									<th>Beneficiary Name</th>
+									<th>Payment Amount</th>
+									<th>Payment Date</th>
+									<th>Bank Account Number</th>
+									<th>Payment Status</th>
+									<th>Paid Date</th>
+									<th>Cheque Number</th>
+									<th>UTR Number</th>
+									<th>Remarks</th>
+								</tr>
+							</thead>
+
+							<tbody>
+								<tr ng-repeat ="hisObj in payHistory">
+									<td>
+										<div class="select_select pull-left dropdown">
+											<button class="btn btn-default dropdown-toggle select_btn"
+												type="button" id="dropdownMenu1" data-toggle="dropdown"
+												aria-haspopup="true" aria-expanded="true">
+												<i class="fa fa-chevron-circle-down" aria-hidden="true"
+													class="arrow_select"></i>
+											</button>
+											
+											<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+												<li ng-click="getPaymentInfo(hisObj)" data-toggle="modal"
+													data-target="#myModalView2"><span>View </span></li>
+												<li ng-click="auditTrailLog(hisObj.paymentId)"
+													data-toggle="modal" data-target="#myModalLog">Audit	Log</li>
+												<li ng-click="getApprovalLogInfo(hisObj.paymentId)"
+													data-toggle="modal" data-target="#myModalApprovallog">Approval	Log</li>
+											</ul>
+										</div> <span class="mt-2 pull-left"><a href="" ng-click="getVendorInfo(hisObj.vendorId)"
+											data-toggle="modal" data-target="#myModalView">{{hisObj.vendorName}}</a></span>
+									</td>
+									<td ng-bind ="hisObj.paymentAmount"></td>
+									<td ng-bind ="hisObj.paymentDate"></td>
+									<td ng-bind ="hisObj.accNo"></td>
+									<td ></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
+
+					<!-- payment release -->
+					<div role="tabpanel" class="tab-pane" id="payment5">
+
+						<div role="tabpanel" class="tab-pane" id="payment5">
+
+						<div class="main_search">
+							<div class="col-md-3 search_by">
+								<div class="form-group">
+									<label for=""><b>Search By Name :</b></label><br>
+									<div class="pl-0">
+										<input type="" ng-model="searchPay.searchByName" class="form-control" id="" placeholder="">
+									</div>
+								</div>
+							</div>
+							<div class="col-md-3 search_by">
+								<label for=""><b>Search By Process Date:</b></label><br>
+								From <input id="proRleaseFromDate" type="text" ng-model="searchPay.fromDate" readonly=true>&nbsp; &nbsp;
+								To: &nbsp;<input readonly=true id="proRleaseToDate" ng-model="searchPay.toDate" type="text">
+							</div>
+							<div class="col-md-6 search_by">
+								<div class="form-group">
+									<lable for=""> <b>Search By Payment Amount :</b></lable><br> 
+									From <input type="number" ng-model="searchPay.fromAmt" min="1" id="" class="hasamount">		&nbsp; &nbsp;
+									To: &nbsp;<input type="number" min="1" ng-model="searchPay.toAmt" id=""	class="hasamount">
+									<button class="btn btn-primary mt-3" ng-click="getSearchesForPayment('Release')" type="submit">Search</button>
+									<button class="btn btn-primary mt-3" ng-click ="paymentReleaseTriger()" type="submit">Reset</button>
+								</div>
+							</div>
+						</div>
+
+						<table class="table table-hover">
+							<thead class="table-head">
+								<tr>
+									<th>Beneficiary Name</th>
+									<th>Invoice Amount</th>
+									<th>Payment Amount</th>
+									<th>Payment Date</th>
+									<th>Process Date</th>
+									<th>Account Number</th>
+									<th>IFSC</th>
+									<th>Bank</th>
+									<th><input type="checkbox" value="">&nbsp; Select All</th>
+								</tr>
+							</thead>
+
+							<tbody>
+								<tr ng-repeat = "payRelObj in payRelease">
+									 <td>
+										<div class="select_select pull-left dropdown">
+											<button class="btn btn-default dropdown-toggle select_btn"
+												type="button" id="dropdownMenu1" data-toggle="dropdown"
+												aria-haspopup="true" aria-expanded="true">
+												<i class="fa fa-chevron-circle-down" aria-hidden="true"
+													class="arrow_select"></i>
+											</button>
+
+											<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+												<li ng-click="getPaymentInfo(payRelObj)" data-toggle="modal"
+													data-target="#myModalView2"><span>View </span></li>
+												<li ng-click="auditTrailLog(payRelObj.paymentId)"
+													data-toggle="modal" data-target="#myModalLog">Audit	Log</li>
+												<li ng-click="getApprovalLogInfo(payRelObj.paymentId)"
+													data-toggle="modal" data-target="#myModalApprovallog">Approval	Log</li>
+											</ul>
+										</div> <span class="mt-2 pull-left"><a href="" ng-click="getVendorInfo(payRelObj.vendorId)"
+											data-toggle="modal" data-target="#myModalView">{{payRelObj.vendorName}}</a></span>
+									</td>
+									<td><a href="#" data-toggle="modal" ng-click ="getInvoiceInfo(payRelObj.invoiceId)"
+													data-target="#myModalInvoice" ng-bind="payRelObj.invoiceAmount"></a></td>
+									<td ng-bind ="payRelObj.paymentAmount"></td>
+									<td ng-bind ="payRelObj.paymentDate"></td>
+									<td ng-bind ="payRelObj.paymentProcessDate"></td>
+									<td ng-bind ="payRelObj.accNo"></td>
+									<td ng-bind ="payRelObj.ifscCode"></td>
+									<td ng-bind ="payRelObj.bankName"></td>
+									<td><input class="releaseCheck" ng-model="releaseValueCheckBox" ng-click="addValueForEditPaymentRelease($index, 
+									            releaseValueCheckBox, payRelObj.paymentAmount, payRelObj.paymentId)" type="checkbox" ></td>
+								</tr>
+							</tbody>
+						</table>
+
+						<div class="pull-right col-md-6 col-xs-12 total_invoice">
+							<div class="row">
+								<div class="col-md-6">Total Payment Amount</div>
+								<div class="col-md-6 pr">{{payReleaseTotal}}</div>
+							</div>
+							<div class="row">
+								<div class="col-md-6">Charges</div>
+								<div class="col-md-6 pr">{{totalChargesCal}}</div>
+							</div>
+							<div class="row">
+								<div class="col-md-6">Grand Total Amount</div>
+								<div class="col-md-6 pr">{{+payReleaseTotal + +totalChargesCal}}</div>
+							</div>
+
+							<div class="pull-right">
+								<div class="row mt-10">
+									<button type="submit" ng-click ="finalReleaseOfPayment()"class="btn btn-primary">Release Payment</button>
+								</div>
+							</div>
+						</div>
+						<div class="form-group pull-left col-md-5">
+							<div class="row">
+								<label for="" class="col-md-6">Select Bank Account For Payment</label>
+								<div class="col-md-6 p0">
+									<select class="form-control">
+										<option ng-repeat="accNo in accNoList"	value="{{accNo.bankId}}">{{accNo.accountName}}</option>
+									</select>
+								</div>
+							</div>
+
+							<div class="row mt-10">
+								<label for="" class="col-md-6">Enter Process Date</label> 
+								<input ng-model="releaseProDate"  ng-change="processDateChangeInReleasePayment(releaseProDate)" 
+								                     type="text" id="proRleaseDate" class="col-md-6" />
+							</div>
+
+							<div class="row mt-10">
+								<label for="" class="col-md-6">Enter Payment Date</label>
+								 <input type="text" ng-model= "releasePayDate" id="payRleaseDate" class="col-md-6" />
+							</div>
+
+							<div class="mt-10">
+								<div class="col-md-6 pl-0">
+									<label for=""><b>Enter Transaction Password</b></label><br>
+									<input type="password" class="form-control" id=""
+										placeholder="">
+								</div>
+								<div class="col-md-3 pl-0">
+									<label for=""><b>Enter OTP</b></label><br> <input
+										type="password" class="form-control" id="" placeholder="">
+								</div>
+							</div>
+
+
+						</div>
+					</div>
+
+					<!-- payment release end -->
+				</div>
+
+			</div>
+
+
+				<!-- edit user -->
+				<div class="modal fade" tabindex="-1" role="dialog" id="myModalEdit">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal"
+									aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+								<h4 class="modal-title">
+									<i class="fa fa-edit"></i> Edit
+								</h4>
+							</div>
+							<div class="modal-body">
+								<form class="form-horizontal">
+									<div class="form-group">
+										<label for="" class="col-sm-4 control-label">Beneficiary
+											Name </label>
+										<div class="col-sm-6">
+											<input type="email" class="form-control" id=""
+												placeholder="Prefilled">
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="" class="col-sm-4 control-label">Invoice
+											Number</label>
+										<div class="col-sm-6">
+											<input type="type" class="form-control" id=""
+												placeholder="Prefilled">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="" class="col-sm-4 control-label">Due Date
+										</label>
+										<div class="col-sm-6">
+											<input id="datepicker15" type="text" class="width100"
+												placeholder="12.02.2016">
+										</div>
+									</div>
+
+
+									<div class="form-group">
+										<label for="" class="col-sm-4 control-label">Invoice
+											Amount</label>
+										<div class="col-sm-6">
+											<input type="email" class="form-control" id=""
+												placeholder="Prefilled">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="" class="col-sm-4 control-label">Payment
+											Amount</label>
+										<div class="col-sm-6">
+											<input type="email" class="form-control" id=""
+												placeholder="Prefilled">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="" class="col-sm-4 control-label">Process
+											Date </label>
+										<div class="col-sm-6">
+											<input id="datepicker_due" type="text" class="width100"
+												placeholder="12.02.2016">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="" class="col-sm-4 control-label">Payment
+											Date </label>
+										<div class="col-sm-6">
+											<input id="datepicker_x" type="text" class="width100"
+												placeholder="14.02.2016">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="" class="col-sm-4 control-label">Note For
+											Approver </label>
+										<div class="col-sm-6">
+											<textarea class="form-control" rows="3"
+												placeholder="Note goes here"></textarea>
+										</div>
+									</div>
+
+								</form>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-default"
+									data-dismiss="modal">Cancel</button>
+								<button type="button" class="btn btn-primary">Create</button>
+							</div>
+						</div>
+					</div>
+				</div>
+
+
+
+				<!-- create payment from web form user -->
+				<div class="modal fade" tabindex="-1" role="dialog" id="myModalPayment">
+					<div class="modal-dialog">
+						<form class="form-horizontal" name="form" id="addPayment">
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal"
+										aria-label="Close">
+										<span aria-hidden="true">&times;</span>
+									</button>
+									<h4 class="modal-title">
+										<i class="fa fa-edit"></i> Create Payment From Web Form
+									</h4>
+								</div>
+								<div class="modal-body">
+									<div class="form-group">
+										<label for="" class="col-sm-4 control-label">Beneficiary Name </label>
+										<div class="col-sm-6">
+											<select class="form-control form_select" name="vendorId"
+												ng-model="payment.vendorId"	ng-change="getInvoiceForVendor(payment.vendorId)">
+												<option value="">--Select Beneficiary Name--</option>
+												<option ng-repeat="vendorObj in vm.approvedVenList"	
+												                   value="{{vendorObj.beneficryID}}">{{vendorObj.beneficiaryName}}</option>
+											</select>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="" class="col-sm-4 control-label">Invoice	Number</label>
+										<div class="col-sm-6">
+										<input ng-model="payment.invoiceNo"  ng-blur="findInvoiceBasedOnInvoiceNo()"
+										        type="text" maxlength="45" name="invoiceNumber" id="invoiceNumber" class="form-control col-md-7"/>
+											<!-- <select class="form-control form_select" name="invoiceId"	ng-model="payment.invoiceId"
+												ng-change="getInvoiceObj(payment.invoiceId)">
+												<option ng-repeat="venInvoiceObj in vm.venInvoiceList"
+													value="{{venInvoiceObj.invoiceID}}">{{venInvoiceObj.invoiceID}}</option>
+											</select> -->
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="" class="col-sm-4 control-label">Due Date
+										</label>
+										<div class="col-sm-6">
+											<input type="text" class="width100" id="dueDateForPayment" readonly="true"
+												ng-model="payment.dueDate"  ng-disabled="(dueDateFlag == 0 ?false : true)" required/>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="" class="col-sm-4 control-label">Invoice Amount</label>
+										<div class="col-sm-6">
+											<input type="text" class="form-control" ng-model="payment.invoiceAmount" 
+											    ng-disabled="(invoiceAmountFlag == 0 ?false : true)" required>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="" class="col-sm-4 control-label">Payment Amount</label>
+										<div class="col-sm-6">
+											<input type="text" ng-focus="focus('paymentAmount')"
+												ng-model="payment.paymentAmount" name="payment" id="payment"
+												placeholder="Payment Amount" class="form-control" required />
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="" class="col-sm-4 control-label">Process Date </label>
+										<div class="col-sm-6">
+											<input type="text" ng-model="payment.paymentProcessDate" readonly="true"
+												ng-change="onProcessDateChange(payment)" name="paymentProcessDate" id="paymentProcessDate">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="" class="col-sm-4 control-label">Payment	Date </label>
+										<div class="col-sm-6">
+											<input type="text" ng-model="payment.paymentDate" readonly="true"
+												name="paymentDate" id="paymentDate">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="" class="col-sm-4 control-label">Note For
+											Approver </label>
+										<div class="col-sm-6">
+											<textarea class="form-control" rows="3"
+												ng-model="payment.remarks" name="remarks" id=""></textarea>
+										</div>
+									</div>
+
+
+
+									<div class="container-fluid p0"
+										style="margin-left: 15px !important;">
+										<label for="" class="col-md-5 pl-m0"
+											style="font-size: 12px !important;">Approver List</label>
+										<div class="clearfix"></div>
+										<div class="col-sm-5">
+											<div class="list-group list_my" id="list1">
+												<ul>
+													<li class="list-group-item active bdr_none">Source List</li>
+													<li ng-repeat="appView in paymentApprover"
+														class="list-group-item bdr_none"><label> <input
+															type="checkbox" class="all check_sel"
+															value="{{appView.userId}}" ng-model="appVew.userId">
+															{{appView.userName}}
+													</label></li>
+												</ul>
+											</div>
+										</div>
+										<div class="col-md-1 p0 v-center">
+											<button type="button" title="Add to selected Approver list"
+												ng-click="addValueToApproverPayment()"
+												class="btn btn-default center-block mb-10">
+												<i class="glyphicon glyphicon-chevron-right"></i>
+											</button>
+											<button type="button"
+												title="Remove from selected Approver list"
+												ng-click="removeValueToApproverPayment()"
+												class="btn btn-default center-block mb-10">
+												<i class="glyphicon glyphicon-chevron-left"></i>
+											</button>
+										</div>
+
+										<div class="col-sm-5">
+											<div class="list-group" id="list2">
+												<ul>
+													<li class="list-group-item active bdr_none">Target List</li>
+													<li ng-repeat="selectedView in selectedPaymentApproverList"	class="list-group-item bdr_none">
+													<label> <input
+															type="checkbox" class="all check_sel" value="{{selectedView.userId}}"
+															ng-model="selectedView.userIdInSel">{{selectedView.userName}}</label></li>
+												</ul>
+											</div>
+										</div>
+									</div>
+
+
+
+
+									<div class="clearfix"></div>
+									<div class="container-fluid otherdoc otherdoc_set">
+										<label for="" class="control-label text-left"><b>Add Files</b></label>
+										<div class="clearfix"></div>
+										<div class="col-md-4 pl-0">
+											<input type="text" name="manuallyGivenFileName"	ng-model="addFiles.manuallyGivenFileName"
+												id="manualFileNmae" class="form-control w100" placeholder="Enter File Name">
+										</div>
+
+										<div class="form-group col-sm-6">
+											<input type="file" id="fileSelected" ng-click="setAttributeForFileUpload('manualFileSelected')"
+												nv-file-select="" uploader="uploader" class="w100">
+										</div>
+
+										<button type="button"	ng-click="addManualFileForPayment(addFiles)"
+											class="stdbtn btn_black btn-xs addbtn mb-10-m">Add</button>									
+
+										<div class="clearfix"></div>
+										<div class="row">
+											<div class="col-md-12">
+												<div id="doc-view-{{docView.docInfoId}}"
+													ng-repeat="docView in DocViewObjList" class="row list_add">
+													<div class="col-md-5 col-sm-2 col-xs-5">{{docView.manuallyGivenFileName}}</div>
+													<a target="_blank"
+														href="https://paymentvista.com:8443/resources/public/tmpFiles/{{docView.fileName}}">
+														<div class="col-md-5 col-sm-2 col-xs-5">{{docView.fileName}}</div>
+													</a>
+													<div class="col-md-2 col-sm-2 col-xs-2">
+														<button type="button"	ng-click="deleteDocInfo(docView.docInfoId)"
+															title="Remove this row">X</button>
+													</div>
+												</div>
+											</div>
+
+										</div>
+									</div>
+								</div>
+								<div class="clearfix"></div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-default" ng-click="resetPayment()"	data-dismiss="modal">Cancel</button>
+									<button type="button" ng-click="addNewPayment(payment, 'draft')" class="btn btn-primary">Save as Draft</button>
+									<button type="button" ng-click="addNewPayment(payment, 'sendForApproval')" class="btn btn-primary">Send For Approval</button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+
+
+				<!-- cancel the payment -->
+				<button style="opacity:0;" type="button" class="btn btn-primary sr-only" id="btn-open-modal" data-toggle="modal"
+				                 data-target="#myModalDelete"></button> 
+				<div class="modal fade" id="myModalDelete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+					<div class="modal-dialog ">
+						<div class="modal-content">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						    </button>
+							<div class="modal-body">
+								<h3 class="text-center">Are you sure you want to Cancel?</h3>
+							</div>
+							<div class="modal-footer">
+								<button type="button" ng-click = "finalSubmitToCancelPayment()" data-dismiss="modal" class="btn btn-default">Yes</button>
+								<button type="button" class="btn btn-primary" data-dismiss="modal">No</button>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- trace close-->
+
+
+		<!-- view patment detail -->
+		<!-- create payment from web form user -->
+		<div class="modal fade" tabindex="-1" role="dialog" id="myModalView2">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<h4 class="modal-title">
+							<i class="fa fa-edit"></i>Payment View
+						</h4>
+					</div>
+					<div class="modal-body">
+						<form class="form-horizontal">
+							<div class="form-group">
+								<label for="" class="col-sm-4 control-label">Beneficiary
+									Name </label>
+								<div class="col-sm-6 pt-7" ng-bind="payDetail.vendorName"></div>
+							</div>
+							<div class="form-group">
+								<label for="" class="col-sm-4 control-label">Invoice
+									Number</label>
+								<div class="col-sm-6 pt-7" ng-bind="payDetail.invoiceNo"></div>
+							</div>
+
+							<div class="form-group">
+								<label for="" class="col-sm-4 control-label">Due Date </label>
+								<div class="col-sm-6 pt-7" ng-bind="payDetail.dueDate"></div>
+							</div>
+
+
+							<div class="form-group">
+								<label for="" class="col-sm-4 control-label">Invoice Amount</label>
+								<div class="col-sm-6 pt-7" ng-bind="payDetail.invoiceAmount"></div>
+							</div>
+
+							<div class="form-group">
+								<label for="" class="col-sm-4 control-label">Payment Amount</label>
+								<div class="col-sm-6 pt-7" ng-bind="payDetail.paymentAmount"></div>
+							</div>
+
+							<div class="form-group">
+								<label for="" class="col-sm-4 control-label">Process Date </label>
+								<div class="col-sm-6" ng-bind="payDetail.paymentProcessDate"></div>
+							</div>
+
+							<div class="form-group">
+								<label for="" class="col-sm-4 control-label">Payment	Date </label>
+								<div class="col-sm-6 pt-7" ng-bind="payDetail.paymentDate"></div>
+							</div>
+
+							<div class="form-group">
+								<label for="" class="col-sm-4 control-label">Note For Approver </label>
+								<div class="col-sm-6 pt-7" ng-bind="payDetail.remarks"></div>
+							</div>
+
+							<div class="form-group">
+								<label for="" class="col-sm-4 control-label">Approver </label>
+								<div class="col-sm-6 pt-7">: Vinod Kumar</div>
+							</div>
+
+							<div class="clearfix"></div>
+							<label for="" class="col-md-12 p0"><h5 class="added_h5">Added Files -</h5></label>
+							<table class="table table-condensed">
+								<thead class="table-head">
+									<tr>
+										<th>File Name</th>
+										<th>File Attachment</th>
+										<th>Uploaed Date</th>
+										<th>Uploaded By</th>
+									</tr>
+								</thead>
+
+								<tbody>
+									<tr ng-repeat="docView in DocViewObjList">
+										<td ng-bind="docView.manuallyGivenFileName"></td>
+										<td ng-bind ="docView.fileName"><a href="#" ></a></td>
+										<td ng-bind ="docView.uploadedDate"></td>
+										<td>Pallavi</td>
+									</tr>
+								</tbody>
+							</table>
+
+							<label for="" class="col-md-12 p0"><h5 class="added_h5">Audit Log - </h5></label>
+							<table class="table table-hover">
+								<thead class="table-head">
+									<tr>
+										<th>Date - a</th>
+										<th>Action</th>
+										<th>Action By</th>
+									</tr>
+								</thead>
+
+								<tbody ng-repeat="auditLogOb in auditLogDetail">
+									<tr>
+										<td ng-bind="auditLogOb.creationDateTime"></td>
+										<td ng-bind="auditLogOb.actionType"></td>
+										<td ng-bind="auditLogOb.createdBy"></td>
+									</tr>
+
+								</tbody>
+							</table>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- view user end -->
+
+
+
+
+
+		<!-- view user 4-->
+		<div class="modal fade" tabindex="-1" role="dialog" id="myModalView4">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header loginboxinner">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<h4 class="modal-title">
+							<i class="fa fa-eye"></i> View
+						</h4>
+					</div>
+					<div class="modal-body">
+						<form class="form-horizontal">
+							<div class="form-group">
+								<label for="" class="col-sm-4 control-label">Beneficiary
+									Name :</label>
+								<div class="col-sm-8 pt-7">12545362</div>
+							</div>
+							<hr class="viewhr">
+							<div class="form-group">
+								<label for="" class="col-sm-4 control-label">Payment
+									Amount :</label>
+								<div class="col-sm-8 pt-7">20,000</div>
+							</div>
+
+							<hr class="viewhr">
+
+							<div class="form-group">
+								<label for="" class="col-sm-4 control-label">Payment
+									Date :</label>
+								<div class="col-sm-8 pt-7">20.02.2016</div>
+							</div>
+							<hr class="viewhr">
+
+							<div class="form-group">
+								<label for="" class="col-sm-4 control-label">Amount Paid
+									:</label>
+								<div class="col-sm-8 pt-7">20,000</div>
+							</div>
+							<hr class="viewhr">
+
+							<div class="form-group">
+								<label for="" class="col-sm-4 control-label">Bank
+									Account Number :</label>
+								<div class="col-sm-8 pt-7">3123121322</div>
+							</div>
+							<hr class="viewhr">
+
+							<div class="form-group">
+								<label for="" class="col-sm-4 control-label">Payment
+									Status :</label>
+								<div class="col-sm-8 pt-7">Paid</div>
+							</div>
+							<hr class="viewhr">
+
+
+
+							<div class="form-group">
+								<label for="" class="col-sm-4 control-label">Paid Date :</label>
+								<div class="col-sm-8 pt-7">24.02.16</div>
+							</div>
+							<hr class="viewhr">
+
+							<div class="form-group">
+								<label for="" class="col-sm-4 control-label">Cheque
+									Number :</label>
+								<div class="col-sm-8 pt-7">532456451</div>
+							</div>
+
+							<div class="form-group">
+								<label for="" class="col-sm-4 control-label">UTR Number
+									:</label>
+								<div class="col-sm-8 pt-7">3251453</div>
+							</div>
+
+							<div class="form-group">
+								<label for="" class="col-sm-4 control-label">Remark :</label>
+								<div class="col-sm-8 pt-7">Remark goes here</div>
+							</div>
+
+						</form>
+						<table class="table table-hover">
+							<thead class="table-head">
+								<tr>
+									<th>Date</th>
+									<th>Action</th>
+									<th>Action By</th>
+								</tr>
+							</thead>
+
+							<tbody>
+								<tr>
+									<td>25.07.2016</td>
+									<td>Approve</td>
+									<td>Manoj Kumar</td>
+								</tr>
+
+								<tr>
+									<td>24.07.2016</td>
+									<td>Payment</td>
+									<td>45,000</td>
+								</tr>
+
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- view user end -->
+
+
+
+
+		<!-- audit log -->
+		<div class="modal fade" tabindex="-1" role="dialog" id="myModalLog">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<h4 class="modal-title">
+							<i class="fa fa-edit"></i> Audit Log
+						</h4>
+					</div>
+					<div class="modal-body">
+						<form class="form-horizontal">
+							<table class="table table-hover">
+								<thead class="table-head">
+									<tr>
+										<th>Operation Type</th>
+										<th>Action Type</th>
+										<th>Field Type</th>
+										<th>Old Value</th>
+										<th>New Value</th>
+										<th>Creation Date/time</th>
+										<th>Created By</th>
+									</tr>
+								</thead>
+
+								<tbody ng-repeat="auditLogOb in auditLogDetail">
+									<tr>
+										<td ng-bind="auditLogOb.operationType"></td>
+										<td ng-bind="auditLogOb.actionType"></td>
+										<td ng-bind="auditLogOb.fieldType"></td>
+										<td ng-bind="auditLogOb.oldValue"></td>
+										<td ng-bind="auditLogOb.newValue"></td>
+										<td ng-bind="auditLogOb.creationDateTime"></td>
+										<td ng-bind="auditLogOb.createdBy"></td>
+									</tr>
+								</tbody>
+							</table>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+
+		<!-- approval log -->
+		<div class="modal fade" tabindex="-1" role="dialog"	id="myModalApprovallog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<h4 class="modal-title">
+							<i class="fa fa-edit"></i> Approval Log
+						</h4>
+					</div>
+					<div class="modal-body">
+						<form class="form-horizontal">
+							<table class="table table-hover">
+								<thead class="table-head">
+									<tr>
+										<th>Date</th>
+										<th>Approver Name</th>
+										<th>Approval Status</th>
+										<th>Comment</th>
+									</tr>
+								</thead>
+
+								<tbody>
+									<tr ng-repeat="appLog in appLogList">
+									<td ng-bind = "appLog.payAppCreatedDate"></td>
+									<td ng-bind = "appLog.payApprovalName"></td>
+									<td	ng-bind ="appLog.payAppStatus==0?'Pending':appLog.payAppStatus==1?'Approved':
+								            appLog.payAppStatus==2?'InProgress..':'Declined'"></td>
+									<td ng-bind = "appLog.payAppcomment"></td>
+								</tr>
+								</tbody>
+							</table>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+
+
+
+
+		<!-- view vendor -->
+		
+		<div class="modal fade" tabindex="-1" role="dialog" id="myModalView">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header loginboxinner">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"><i class="fa fa-eye"></i> View Vendor Info</h4>
+              </div>
+              <div class="modal-body">
+                <form class="form-horizontal">
+                  
+                    <div class="form-group">
+                    <label for="" class="col-md-4 col-sm-4 col-xs-4 control-label"> Name :</label>
+                    <div class="col-sm-8 pt-7">
+                     {{ven.firstName}}
+                    </div>
+                  </div>
+                  <hr class="viewhr">
+                  <div class="form-group">
+                    <label for="" class="col-md-4 col-sm-4 col-xs-4 control-label">Email ID :</label>
+                    <div class="col-sm-8 pt-7">
+                      {{ven.email}}
+                    </div>
+                  </div>
+                  <hr class="viewhr">
+                  <div class="form-group">
+                    <label for="" class="col-md-4 col-sm-4 col-xs-4 control-label">Supplier Name :</label>
+                    <div ng-bind="ven.suplierName" class="col-sm-8 pt-7">
+                    </div>
+                  </div>
+                  <hr class="viewhr">
+                  <div class="form-group">
+                    <label for="" class="col-md-4 col-sm-4 col-xs-4 control-label">Supplier No :</label>
+                    <div class="col-sm-8 pt-7">
+                      {{ven.suplierNo}}
+                    </div>
+                  </div>
+
+                  <hr class="viewhr">
+
+                    <div class="form-group">
+                        <label for="" class="col-md-4 col-sm-4 col-xs-4 control-label">Payment Name :</label>
+                        <div class="col-sm-8 pt-7">
+                            {{ven.paymentName}}
+                        </div>
+                    </div>
+                    <hr class="viewhr">
+                   
+                    <div class="form-group">
+                        <label for="" class="col-md-4 col-sm-4 col-xs-4 control-label">PAN Number :</label>
+                        <div class="col-sm-8 pt-7">
+                        {{ven.panNumber}}
+                        </div>
+                    </div>
+                    <hr class="viewhr">
+
+                    <div class="form-group">
+                        <label for="" class="col-md-4 col-sm-4 col-xs-4 control-label">Vendor Type :</label>
+                        <div class="col-sm-8 pt-7">
+                         {{ven.vendorType}}
+                        </div>
+                    </div>
+                    <hr class="viewhr">
+
+                    <div class="form-group">
+                        <label for="" class="col-md-4 col-sm-4 col-xs-4 control-label">Company Type :</label>
+                        <div class="col-sm-8 pt-7">
+                          {{ven.companyType}}
+                        </div>
+                    </div>
+                    <hr class="viewhr">
+
+                    <div class="form-group">
+                        <label for="" class="col-md-4 col-sm-4 col-xs-4 control-label">Payment Method :</label>
+                        <div class="col-sm-8 pt-7">
+                          {{ven.paymentMethod}}
+                        </div>
+                    </div>
+                    <hr class="viewhr">
+
+                    <div class="form-group">
+                        <label for="" class="col-md-4 col-sm-4 col-xs-4 control-label">Payment Terms :</label>
+                        <div class="col-sm-8 pt-7">
+                          {{ven.paymentTerm}}
+                        </div>
+                    </div>
+                    <hr class="viewhr">
+                    <div class="form-group">
+                        <label for="" class="col-md-4 col-sm-4 col-xs-4 control-label">Bank Name :</label>
+                        <div class="col-sm-8 pt-7">
+                          {{ven.bankName}}
+                        </div>
+                    </div>
+                    <hr class="viewhr">
+                    <div class="form-group">
+                        <label for="" class="col-md-4 col-sm-4 col-xs-4 control-label">Branch Name:</label>
+                        <div class="col-sm-8 pt-7">
+                         {{ven.branchAddress}}
+                        </div>
+                    </div>
+                    <hr class="viewhr">
+                    <div class="form-group">
+                        <label for="" class="col-md-4 col-sm-4 col-xs-4 control-label">Account No.:</label>
+                        <div class="col-sm-8 pt-7">
+                          {{ven.accountNo}}
+                        </div>
+                    </div>
+                    <hr class="viewhr">
+                    <div class="form-group">
+                        <label for="" class="col-md-4 col-sm-4 col-xs-4 control-label">Currency:</label>
+                        <div class="col-sm-8 pt-7">
+                          {{ven.currency}}
+                        </div>
+                    </div>
+                    <hr class="viewhr">
+                    <div class="form-group">
+                        <label for="" class="col-md-4 col-sm-4 col-xs-4 control-label">IFSC :</label>
+                        <div class="col-sm-8 pt-7">
+                          {{ven.ifscCode}}
+                        </div>
+                    </div>
+                    <hr class="viewhr">
+                    <div class="form-group">
+                        <label for="" class="col-md-4 col-sm-4 col-xs-4 control-label">Address :</label>
+                        <div class="col-sm-8 pt-7">
+                          {{ven.addressLine1}}
+                        </div>
+                    </div>
+                </form>
+                <div class= "container-fluid">
+                <table class="table table-hover pull-left">
+                    <thead class="table-head">
+                        <tr>
+                            <th>Date</th>
+                            <th>Action </th>
+                            <th>Action By</th>
+                        </tr>
+                    </thead>
+
+                    <tbody> 
+                        <tr ng-repeat="auditObj in auditData">
+                           <td ng-bind="(auditObj.creationDateTime == null) ? '-----' : auditObj.creationDateTime"></td>
+                           <td ng-bind="(auditObj.actionType == null) ? '-----' : auditObj.actionType"></td>
+                           <td ng-bind="(auditObj.createdBy == null) ? '-----' : auditObj.createdBy"></td>                           
+                        </tr>
+
+                    </tbody>
+                </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+		
+		<!-- view vendor end -->
+
+
+
+		<!-- invoice modal -->
+	<div class="modal fade" tabindex="-1" role="dialog" id="myModalInvoice">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header loginboxinner">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title">
+						<i class="fa fa-plus"></i> View Invoice Info
+					</h4>
+				</div>
+				<div class="modal-body">
+					<div class="col-md-12" id="contentwrapper">
+						<form class="form-inline">
+							<div class="">
+								<div class="row">
+									<div class="row">
+										<div class="form-group col-md-6">
+											<label for="" class="col-md-5">Beneficiary Name </label> : {{invObj.beneficiaryName}}
+										</div>
+										<div class="form-group col-md-6">
+											<label for="" class="col-md-5">Invoice Type</label> : {{invObj.invoiceType}}
+										</div>
+									</div>
+
+									<div class="row">
+										<div class="form-group col-md-6">
+											<label for="" class="col-md-5">Invoice Number </label> :
+											{{invObj.invoiceNumber}}
+										</div>
+										<div class="form-group col-md-6">
+											<label for="" class="col-md-5">Invoice Date </label>
+											{{invObj.invoiceDate}}
+										</div>
+									</div>
+
+									<div class="row">
+										<div class="form-group col-md-6">
+											<label for="" class="col-md-5">Payment Term</label> : {{invObj.paymentTerm}}
+										</div>
+
+										<div class="form-group col-md-6">
+											<label for="" class="col-md-5">Approver</label> : 
+										</div>
+									</div>
+
+
+									<div class="row">
+										<div class="form-group col-md-6">
+											<label for="" class="col-md-5">Due Date</label> : {{invObj.dueDate}}
+										</div>
+
+										<div class="form-group col-md-6">
+											<label for="" class="col-md-5">Amount</label> : {{invObj.amount}}
+										</div>
+									</div>
+									<div class="row">
+										<div class="form-group col-md-6">
+											<label for="" class="col-md-5">Description</label> : {{invObj.description}}
+										</div>
+
+										<div class="form-group col-md-6">
+											<label for="" class="col-md-5">PO Number</label> : {{invObj.poNumber}}
+										</div>
+									</div>
+
+									<div class="row">
+										<div class="form-group col-md-6">
+											<label for="" class="col-md-5">Taxes (%)</label> : {{invObj.taxPercent}}%
+										</div>
+										<div class="form-group col-md-6">
+											<label for="" class="col-md-5">Taxes(Amount)</label> : {{invObj.taxAmount}}
+										</div>
+									</div>
+
+									<div class="row">
+										<div class="form-group col-md-6">
+											<label for="" class="col-md-5">Total Amount</label> : Pending
+										</div>
+
+										<div class="form-group col-md-6">
+											<label for="" class="col-md-5">TDS Deduction(%)</label> : {{invObj.tdsDeductionPrecnt}}%
+										</div>
+									</div>
+
+									<div class="row">
+										<div class="form-group col-md-6">
+											<label for="" class="col-md-5">TDS Deduction(Amount)</label>: {{invObj.tdsDeductionAmt}}
+										</div>
+
+										<div class="form-group col-md-6">
+											<label for="" class="col-md-5">Any Other Deductions</label> :{{invObj.otherDeductionAmt}}
+										</div>
+									</div>
+
+									<!-- <div class="row">
+										<div class="form-group col-md-6">
+											<label for="" class="col-md-5">Note For Approver</label> :	{{invObj.beneficiaryName}}
+										</div>
+									</div> -->
+
+									<div class="clearfix"></div>
+									<div class="col-md-12">
+										<label for="" class="col-md-6 p0"><h5 class="added_h5">Added Files -</h5></label>
+										<table class="table table-hover">
+											<thead class="table-head">
+												<tr>
+													<th>File Name</th>
+													<th>File Attachment</th>
+													<th>Uploaed Date</th>
+													<th>Uploaded By</th>
+												</tr>
+											</thead>
+
+											<tbody>
+												<tr ng-repeat="docView in DocViewObjList">
+													<td>{{docView.manuallyGivenFileName}}</td>
+													<td><a target="_blank"
+														href="https://paymentvista.com:8443/resources/public/tmpFiles/{{docView.fileName}}">
+															<div class="col-md-5 col-sm-2 col-xs-5">{{docView.fileName}}</div>
+													</a></td>
+													<td>{{docView.uploadedDate}}</td>
+													<td>{{docView.createdBy}}</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+
+
+									<div class="col-md-12">
+										<label for="" class="col-md-12 p0"><h5
+												class="added_h5">Audit Log -</h5></label>
+										<hr>
+											<table class="table table-hover">
+												<thead class="table-head">
+													<tr>
+														<th>Date</th>
+														<th>Action</th>
+														<th>Action By</th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr ng-repeat="auditObj in auditData">
+														<td ng-bind="(auditObj.creationDateTime == null) ? '-----' : auditObj.creationDateTime"></td>
+														<td ng-bind="(auditObj.actionType == null) ? '-----' : auditObj.actionType"></td>
+														<td ng-bind="(auditObj.createdBy == null) ? '-----' : auditObj.createdBy"></td>
+													</tr>
+												</tbody>
+											</table>
+									</div>
+
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+				<div class="clearfix"></div>
+
+			</div>
+		</div>
+	</div>
+		<!-- view invoice end -->
+
+
+		<!-- error table -->
+		<div class="modal fade" tabindex="-1" role="dialog"
+			id="myModalSubmiterror">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<h4 class="modal-title">
+							<i class="fa fa-edit"></i> Batch Upload
+						</h4>
+					</div>
+					<div class="modal-body">
+						<form class="form-horizontal">
+							<table class="table table-hover">
+								<thead class="table-head">
+									<tr>
+										<th>No.</th>
+										<th>Row No</th>
+										<th>Column No</th>										
+										<th>Value</th>
+										<th>Error Message</th>
+									</tr>
+								</thead>
+
+								<tbody>
+									<tr ng-repeat = "errorObj in batchError">
+										<td ng-bind="errorObj.serialNo"></td>
+										<td ng-bind="errorObj.rowNo"></td>
+										<td ng-bind="errorObj.columnName"></td>										
+										<td ng-bind="errorObj.fieldValue"></td>
+										<td ng-bind="errorObj.errorMsg" class="text-danger"></td>
+									</tr>
+								</tbody>
+
+							</table>
+							Please correct these fields.
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+	
+	</div>
+<script>
+    $(document).on("shown.bs.dropdown", ".dropdown", function () {
+    // calculate the required sizes, spaces
+    var $ul = $(this).children(".dropdown-menu");
+    var $button = $(this).children(".dropdown-toggle");
+    var ulOffset = $ul.offset();
+    // how much space would be left on the top if the dropdown opened that direction
+    var spaceUp = (ulOffset.top - $button.height() - $ul.height()) - $(window).scrollTop();
+    // how much space is left at the bottom
+    var spaceDown = $(window).scrollTop() + $(window).height() - (ulOffset.top + $ul.height());
+    // switch to dropup only if there is no space at the bottom AND there is space at the top, or there isn't either but it would be still better fit
+    if (spaceDown < 0 && (spaceUp >= 0 || spaceUp > spaceDown))
+      $(this).addClass("dropup");
+}).on("hidden.bs.dropdown", ".dropdown", function() {
+    // always reset after close
+    $(this).removeClass("dropup");
+});
+</script>
+
+
+	<script src="/resources/public/js/bootstrap-button-to-input-file.js"></script>
+	<script src="/resources/public/js/custom/adddom.js"></script>
+
+		<script>
+			$(document).ready(function() {
+				$("#paymentProcessDate").datepicker({dateFormat: 'dd/mm/yy' });
+				$("#paymentDate").datepicker({dateFormat: 'dd/mm/yy' });
+				$("#dueDateForPayment").datepicker({dateFormat: 'dd/mm/yy' });
+				$("#payRleaseDate").datepicker();
+				$("#proRleaseDate").datepicker();
+				$("#fromDateOfSearch").datepicker({maxDate: '0'});
+				$("#toDateOfSearch").datepicker({maxDate: '0'});
+				$("#proRleaseFromDate").datepicker();
+				$("#proRleaseToDate").datepicker();
+				$("#payHistoryFromDate").datepicker({maxDate: '0'});
+				$("#payHistoryToDate").datepicker({maxDate: '0'});
+			});
+		</script>
+
+
+</body>
+
+</html>
