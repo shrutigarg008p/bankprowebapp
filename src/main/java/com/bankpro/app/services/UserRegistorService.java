@@ -48,8 +48,8 @@ public class UserRegistorService {
 	static String BODY =  "Dear User,\n\n you have successfully registered paymentvista. Please click on below link to set your password.\n\n";
 	static final String SUBJECT = "Welcome to paymentvista";
 	// Supply your SMTP credentials below. Note that your SMTP credentials are different from your AWS credentials.
-	static final String SMTP_USERNAME = "AKIAIVOBMRYIRQQIY2MQ"; // Replace with your SMTP username.
-	static final String SMTP_PASSWORD = "Am5Dk40a6l1GMzWEHmqZlO5Tt8Q4juDc1lHb9ZEXsa2y"; // Replace with your SMTP password.
+	static final String SMTP_USERNAME = ""; // Replace with your SMTP username.
+	static final String SMTP_PASSWORD = ""; // Replace with your SMTP password.
 
 	// Amazon SES SMTP host name. This example uses the US West (Oregon) region.
 	static final String HOST = "email-smtp.eu-west-1.amazonaws.com";
